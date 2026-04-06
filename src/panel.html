@@ -1,0 +1,850 @@
+<style>
+  /* ── Reset & Tokens ───────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --accent:       #1337ec;
+    --accent-dim:   #0d28b8;
+    --accent-hi:    #3d5ff5;
+    --accent-glow:  rgba(19,55,236,0.15);
+    --accent-glow2: rgba(19,55,236,0.08);
+    --bg:           #0e0e14;
+    --bg-card:      #13131c;
+    --bg-input:     #1a1a26;
+    --bg-hover:     #1e1e2e;
+    --bg-code:      #0a0a12;
+    --border:       rgba(255,255,255,0.07);
+    --border-hi:    rgba(255,255,255,0.12);
+    --text:         #ddddf0;
+    --text-muted:   #6868a0;
+    --text-dim:     #36365a;
+    --radius:       10px;
+    --mono:         'DM Mono','Fira Mono','Cascadia Code',monospace;
+    --ui:           'Syne','Space Grotesk',sans-serif;
+  }
+
+  #ai-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    background: var(--bg);
+    font-family: var(--ui);
+    color: var(--text);
+    font-size: 13px;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ───────────────────────────────────── */
+  .panel-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 10px 8px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 10;
+  }
+  .panel-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+    opacity: 0.4;
+  }
+  .header-brand { display: flex; align-items: center; gap: 7px; }
+  .brand-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); box-shadow: 0 0 7px var(--accent);
+    animation: blink 2.8s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%,100% { opacity:1; box-shadow:0 0 7px var(--accent); }
+    50%      { opacity:0.4; box-shadow:0 0 2px var(--accent); }
+  }
+  .brand-name {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text);
+  }
+  .brand-name em { color: var(--accent); font-style: normal; }
+  .header-actions { display: flex; gap: 2px; align-items: center; }
+  .hbtn {
+    width: 28px; height: 28px; border-radius: 7px; border: none;
+    background: transparent; color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .hbtn:hover { background: var(--bg-hover); color: var(--text); }
+  .hbtn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Context Bar ──────────────────────────────── */
+  .ctx-bar {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; gap: 5px; align-items: center;
+  }
+  .ctx-label {
+    font-size: 9px; font-family: var(--mono);
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim);
+    margin-right: 2px;
+  }
+  .ctx-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--bg-card); border: 1px solid var(--border-hi);
+    border-radius: 5px; padding: 2px 6px 2px 5px;
+    font-size: 10px; font-family: var(--mono); color: var(--text-muted);
+    animation: chip-in 0.15s ease-out;
+  }
+  @keyframes chip-in {
+    from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); }
+  }
+  .ctx-chip svg { width: 10px; height: 10px; stroke: var(--accent); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .ctx-chip-name { max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ctx-remove {
+    background: none; border: none; cursor: pointer; color: var(--text-dim);
+    padding: 0; line-height: 1; display: flex; align-items: center; transition: color 0.1s;
+  }
+  .ctx-remove:hover { color: var(--text-muted); }
+  .ctx-remove svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+  .ctx-add-btn {
+    background: none; border: none; cursor: pointer; color: var(--text-dim);
+    font-size: 9px; font-family: var(--mono);
+    display: flex; align-items: center; gap: 3px;
+    padding: 2px 4px; border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .ctx-add-btn:hover { color: var(--accent); background: var(--accent-glow2); }
+  .ctx-add-btn svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+  /* ── Model Bar ────────────────────────────────── */
+  .model-bar {
+    flex-shrink: 0; display: flex; align-items: center; gap: 6px;
+    padding: 5px 10px; border-bottom: 1px solid var(--border); background: var(--bg-card);
+  }
+  .model-label {
+    font-size: 9px; font-family: var(--mono);
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim);
+  }
+  .model-select {
+    flex: 1; background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 5px; color: var(--text-muted); font-family: var(--mono);
+    font-size: 10px; padding: 3px 7px; outline: none; cursor: pointer;
+    appearance: none; -webkit-appearance: none;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .model-select:focus { border-color: var(--accent); color: var(--text); }
+
+  /* ── Messages ─────────────────────────────────── */
+  .msgs-wrap {
+    flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0;
+    display: flex; flex-direction: column; scroll-behavior: smooth;
+  }
+  .msgs-wrap::-webkit-scrollbar { width: 3px; }
+  .msgs-wrap::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 2px; }
+  .msgs-inner { display: flex; flex-direction: column; padding: 10px 0 8px; flex: 1; }
+
+  /* ── Empty State ──────────────────────────────── */
+  .empty-state {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 20px 14px; text-align: center; gap: 10px;
+  }
+  .empty-icon-wrap {
+    width: 40px; height: 40px; background: var(--accent-glow);
+    border: 1px solid rgba(19,55,236,0.28); border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .empty-icon-wrap svg { width: 19px; height: 19px; stroke: var(--accent); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .empty-title { font-size: 12px; font-weight: 700; color: var(--text); }
+  .empty-sub { font-size: 10px; color: var(--text-muted); line-height: 1.55; font-family: var(--mono); }
+  .suggestions { display: flex; flex-direction: column; gap: 5px; width: 100%; margin-top: 4px; }
+  .sug-chip {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 7px; padding: 7px 9px;
+    font-size: 10px; font-family: var(--mono); color: var(--text-muted);
+    cursor: pointer; text-align: left; display: flex; align-items: center; gap: 7px;
+    transition: border-color 0.15s, color 0.15s, background 0.15s; line-height: 1.4;
+  }
+  .sug-chip:hover { border-color: var(--accent); color: var(--text); background: var(--accent-glow2); }
+  .sug-chip svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; opacity: 0.7; }
+
+  /* ── Message Row ──────────────────────────────── */
+  .msg-row {
+    padding: 8px 10px 4px;
+    position: relative;
+    animation: msg-in 0.18s ease-out both;
+  }
+  @keyframes msg-in {
+    from { opacity:0; transform:translateY(5px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .msg-row:hover .msg-actions { opacity: 1; pointer-events: auto; }
+  .msg-row.user { display: flex; flex-direction: column; align-items: flex-end; }
+  .msg-row.ai   { display: flex; flex-direction: column; align-items: flex-start; }
+  .msg-row.ai { border-top: 1px solid var(--border); padding-top: 12px; margin-top: 4px; }
+  .msg-row.ai:first-of-type { border-top: none; margin-top: 0; }
+
+  .msg-meta { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; padding: 0 2px; }
+  .msg-avatar {
+    width: 16px; height: 16px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .msg-avatar.user-av { background: var(--accent); }
+  .msg-avatar.ai-av   { background: var(--bg-card); border: 1px solid var(--border-hi); }
+  .msg-avatar svg { width: 9px; height: 9px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .msg-avatar.user-av svg { stroke: #fff; }
+  .msg-avatar.ai-av   svg { stroke: var(--accent); }
+  .msg-name { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-dim); }
+  .msg-row.user .msg-name { color: var(--accent); }
+
+  /* ── User bubble ──────────────────────────────── */
+  .user-bubble {
+    background: var(--accent); color: #fff;
+    border-radius: 10px 10px 2px 10px;
+    padding: 8px 11px; font-size: 12px; line-height: 1.55;
+    max-width: 94%; word-break: break-word; white-space: pre-wrap;
+  }
+  .user-ctx-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.15); border-radius: 4px;
+    padding: 1px 5px; font-size: 9.5px; font-family: var(--mono);
+    margin-bottom: 5px; opacity: 0.9;
+  }
+  .user-ctx-chip svg { width: 9px; height: 9px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── AI Content ───────────────────────────────── */
+  .ai-content { width: 100%; font-size: 12px; line-height: 1.7; color: var(--text); word-break: break-word; }
+  .ai-content p { margin: 0 0 7px; }
+  .ai-content p:last-child { margin-bottom: 0; }
+  .ai-content h1,.ai-content h2,.ai-content h3 { font-weight: 700; color: var(--text); margin: 10px 0 5px; line-height: 1.3; }
+  .ai-content h1 { font-size: 14px; }
+  .ai-content h2 { font-size: 13px; }
+  .ai-content h3 { font-size: 12px; color: var(--text-muted); }
+  .ai-content ul,.ai-content ol { margin: 4px 0 8px 14px; display: flex; flex-direction: column; gap: 3px; }
+  .ai-content li { font-size: 12px; }
+  .ai-content strong { color: var(--text); font-weight: 700; }
+  .ai-content em { color: var(--text-muted); font-style: italic; }
+  .ai-content blockquote { border-left: 2px solid var(--accent); padding: 4px 0 4px 10px; color: var(--text-muted); margin: 6px 0; font-style: italic; }
+  .ai-content code {
+    background: var(--bg-code); border: 1px solid var(--border-hi);
+    border-radius: 4px; padding: 1px 5px;
+    font-family: var(--mono); font-size: 10.5px;
+    color: #a5b4fc; white-space: nowrap;
+  }
+
+  /* ── Code Block ───────────────────────────────── */
+  .code-block { background: var(--bg-code); border: 1px solid var(--border-hi); border-radius: 8px; margin: 8px 0; overflow: hidden; }
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 10px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border);
+  }
+  .code-lang { font-size: 9.5px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); }
+  .code-actions { display: flex; gap: 4px; }
+  .code-btn {
+    display: flex; align-items: center; gap: 4px;
+    background: transparent; border: 1px solid var(--border); border-radius: 5px;
+    padding: 2px 7px; font-size: 9px; font-family: var(--mono); color: var(--text-muted);
+    cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .code-btn:hover { background: var(--bg-hover); border-color: var(--border-hi); color: var(--text); }
+  .code-btn.copied,.code-btn.inserted { color: #4ade80; border-color: rgba(74,222,128,0.5); }
+  .code-btn svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .code-body {
+    padding: 10px 12px; overflow-x: auto;
+    font-family: var(--mono); font-size: 11px; line-height: 1.6;
+    color: #c8c8f0; white-space: pre; tab-size: 2;
+  }
+  .code-body::-webkit-scrollbar { height: 3px; }
+  .code-body::-webkit-scrollbar-thumb { background: var(--text-dim); border-radius: 2px; }
+
+  /* ── Message Actions ──────────────────────────── */
+  .msg-actions {
+    display: flex; gap: 3px; margin-top: 6px;
+    opacity: 0; pointer-events: none; transition: opacity 0.15s;
+  }
+  .msg-row.user .msg-actions { justify-content: flex-end; }
+  .act-btn {
+    display: flex; align-items: center; gap: 4px;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 5px;
+    padding: 3px 7px; font-size: 9px; font-family: var(--mono); color: var(--text-muted);
+    cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .act-btn:hover { background: var(--bg-hover); border-color: var(--border-hi); color: var(--text); }
+  .act-btn.active { color: var(--accent); border-color: var(--accent); background: var(--accent-glow2); }
+  .act-btn svg { width: 10px; height: 10px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ── Stream cursor ────────────────────────────── */
+  .stream-cursor {
+    display: inline-block; width: 2px; height: 13px;
+    background: var(--accent); border-radius: 1px;
+    margin-left: 2px; vertical-align: middle;
+    animation: cur-blink 0.9s step-end infinite;
+  }
+  @keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* ── Thinking row ─────────────────────────────── */
+  .thinking-row {
+    padding: 10px 10px 4px;
+    display: flex; align-items: center; gap: 7px;
+    animation: msg-in 0.18s ease-out;
+  }
+  .thinking-dots { display: flex; gap: 4px; }
+  .t-dot { width: 5px; height: 5px; background: var(--text-dim); border-radius: 50%; animation: tdot 1.2s ease-in-out infinite; }
+  .t-dot:nth-child(2){ animation-delay:0.2s; }
+  .t-dot:nth-child(3){ animation-delay:0.4s; }
+  @keyframes tdot { 0%,80%,100%{transform:scale(1);opacity:0.3} 40%{transform:scale(1.35);opacity:1} }
+  .thinking-label { font-size: 10px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 0.05em; }
+
+  /* ── Input Area ───────────────────────────────── */
+  .input-area {
+    flex-shrink: 0; background: var(--bg-card); border-top: 1px solid var(--border);
+    padding: 8px 10px 10px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .input-box {
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: var(--radius); display: flex; flex-direction: column;
+    overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+  .input-body { display: flex; align-items: flex-end; padding: 7px 7px 7px 11px; gap: 6px; }
+  #chat-input {
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--text); font-family: var(--mono); font-size: 11.5px;
+    line-height: 1.55; resize: none; max-height: 120px; min-height: 20px;
+    overflow-y: auto; caret-color: var(--accent); padding: 2px 0;
+  }
+  #chat-input::placeholder { color: var(--text-dim); }
+  #chat-input::-webkit-scrollbar { width: 2px; }
+  #chat-input::-webkit-scrollbar-thumb { background: var(--text-dim); }
+  .input-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 8px; border-top: 1px solid var(--border);
+  }
+  .input-left { display: flex; gap: 3px; align-items: center; }
+  .tbtn {
+    width: 26px; height: 26px; border-radius: 6px; border: none;
+    background: transparent; color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .tbtn:hover { background: var(--bg-hover); color: var(--text); }
+  .tbtn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  #send-btn {
+    width: 30px; height: 30px; border-radius: 7px; border: none;
+    background: var(--accent); color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, transform 0.1s; flex-shrink: 0;
+  }
+  #send-btn:hover  { background: var(--accent-hi); }
+  #send-btn:active { transform: scale(0.93); }
+  #send-btn.stop, #send-btn.stop:hover { background: #ef4444; }
+  #send-btn:disabled { background: var(--bg); color: var(--text-dim); cursor: not-allowed; }
+  #send-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .input-footer { display: flex; align-items: center; justify-content: space-between; padding: 0 2px; }
+  .input-hint { font-size: 9px; font-family: var(--mono); color: var(--text-dim); letter-spacing: 0.03em; }
+  .input-hint kbd { background: var(--bg-input); border: 1px solid var(--text-dim); border-radius: 3px; padding: 0 3px; font-family: inherit; font-size: 9px; }
+  .char-count { font-size: 9px; font-family: var(--mono); color: var(--text-dim); }
+  .char-count.warn { color: #f59e0b; }
+</style>
+
+<div id="ai-panel">
+
+  <!-- Header -->
+  <div class="panel-header">
+    <div class="header-brand">
+      <div class="brand-dot"></div>
+      <span class="brand-name">AI <em>Coder</em></span>
+    </div>
+    <div class="header-actions">
+      <button class="hbtn" id="new-chat-btn" title="New chat">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <button class="hbtn" id="settings-btn" title="Settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Context Bar -->
+  <div class="ctx-bar" id="ctx-bar">
+    <span class="ctx-label">ctx</span>
+    <button class="ctx-add-btn" id="ctx-add-btn" title="Add current file as context">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      add file
+    </button>
+  </div>
+
+  <!-- Model Bar -->
+  <div class="model-bar">
+    <span class="model-label">via</span>
+    <select class="model-select" id="model-select">
+      <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+      <option value="llama-3.1-8b-instant">llama-3.1-8b-instant</option>
+      <option value="deepseek-r1-distill-llama-70b">deepseek-r1-distill-70b</option>
+      <option value="gemma2-9b-it">gemma2-9b-it</option>
+      <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
+    </select>
+  </div>
+
+  <!-- Messages -->
+  <div class="msgs-wrap" id="msgs-wrap">
+    <div class="msgs-inner" id="msgs-inner">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <span class="empty-title">Ask anything</span>
+        <span class="empty-sub">Groq · streaming · context-aware</span>
+        <div class="suggestions">
+          <button class="sug-chip" data-prompt="Explain the selected code in detail">
+            <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Explain selected code
+          </button>
+          <button class="sug-chip" data-prompt="Find all bugs in my code and suggest fixes with examples">
+            <svg viewBox="0 0 24 24"><rect x="8" y="6" width="8" height="14" rx="4"/><path d="M19 13H5M12 6V2M7 9l-3-3M17 9l3-3M7 17l-3 3M17 17l3 3"/></svg>
+            Find bugs &amp; suggest fixes
+          </button>
+          <button class="sug-chip" data-prompt="Refactor this code to be cleaner and more efficient">
+            <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10"/></svg>
+            Refactor for clarity
+          </button>
+          <button class="sug-chip" data-prompt="Write a function to ">
+            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            Write a function to…
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <div class="input-box">
+      <div class="input-body">
+        <textarea
+          id="chat-input" rows="1"
+          placeholder="Ask AI Coder… (@ to add context)"
+          spellcheck="false" autocomplete="off"
+          autocorrect="off" autocapitalize="off"
+        ></textarea>
+        <button id="send-btn" title="Send (Enter)">
+          <svg id="send-icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          <svg id="stop-icon" viewBox="0 0 24 24" style="display:none"><rect x="4" y="4" width="16" height="16" rx="2" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+      <div class="input-toolbar">
+        <div class="input-left">
+          <button class="tbtn" id="attach-btn" title="Attach current file as context">
+            <svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+          </button>
+          <button class="tbtn" id="sel-btn" title="Insert editor selection">
+            <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          </button>
+          <button class="tbtn" id="clear-btn" title="Clear chat">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+        <span class="char-count" id="char-count">0</span>
+      </div>
+    </div>
+    <div class="input-footer">
+      <span class="input-hint"><kbd>Enter</kbd> send &nbsp;·&nbsp; <kbd>Shift+Enter</kbd> newline</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  /* ── Refs ─────────────────────────────────────── */
+  const msgsInner  = document.getElementById('msgs-inner');
+  const msgsWrap   = document.getElementById('msgs-wrap');
+  const emptyState = document.getElementById('empty-state');
+  const inputEl    = document.getElementById('chat-input');
+  const sendBtn    = document.getElementById('send-btn');
+  const sendIcon   = document.getElementById('send-icon');
+  const stopIcon   = document.getElementById('stop-icon');
+  const charCount  = document.getElementById('char-count');
+  const modelSel   = document.getElementById('model-select');
+  const ctxBar     = document.getElementById('ctx-bar');
+  const ctxAddBtn  = document.getElementById('ctx-add-btn');
+  const newChatBtn = document.getElementById('new-chat-btn');
+  const attachBtn  = document.getElementById('attach-btn');
+  const selBtn     = document.getElementById('sel-btn');
+  const clearBtn   = document.getElementById('clear-btn');
+
+  /* ── State ────────────────────────────────────── */
+  let messages    = [];   // { role:'user'|'ai', text, ctxName? }
+  let ctxFiles    = [];   // { name, content }
+  let isStreaming = false;
+  let abortFn     = null;
+
+  /* ── Suggestions ──────────────────────────────── */
+  document.querySelectorAll('.sug-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      inputEl.value = chip.dataset.prompt;
+      inputEl.focus(); resize(); updateCount();
+    });
+  });
+
+  /* ── Textarea ─────────────────────────────────── */
+  function resize() {
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+  }
+  function updateCount() {
+    const n = inputEl.value.length;
+    charCount.textContent = n || '0';
+    charCount.classList.toggle('warn', n > 2000);
+  }
+  inputEl.addEventListener('input', () => { resize(); updateCount(); });
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      isStreaming ? stopStream() : handleSend();
+    }
+  });
+
+  /* ── Buttons ──────────────────────────────────── */
+  sendBtn.addEventListener('click', () => isStreaming ? stopStream() : handleSend());
+  newChatBtn.addEventListener('click', () => { messages = []; renderAll(); });
+  clearBtn.addEventListener('click',   () => { messages = []; renderAll(); });
+
+  ctxAddBtn.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('ai-panel-get-file', {
+      detail: { onFile: ({ name, content }) => {
+        if (!ctxFiles.find(f => f.name === name)) {
+          ctxFiles.push({ name, content }); renderCtxBar();
+        }
+      }}
+    }));
+  });
+  attachBtn.addEventListener('click', () => ctxAddBtn.click());
+
+  selBtn.addEventListener('click', () => {
+    document.dispatchEvent(new CustomEvent('ai-panel-get-selection', {
+      detail: { onSelection: (text) => {
+        if (!text) return;
+        inputEl.value += '\n```\n' + text + '\n```\n';
+        resize(); updateCount(); inputEl.focus();
+      }}
+    }));
+  });
+
+  /* ── Context Bar ──────────────────────────────── */
+  function renderCtxBar() {
+    ctxBar.querySelectorAll('.ctx-chip').forEach(c => c.remove());
+    ctxFiles.forEach((f, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'ctx-chip';
+      chip.innerHTML = `
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <span class="ctx-chip-name">${esc(f.name)}</span>
+        <button class="ctx-remove" title="Remove">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>`;
+      chip.querySelector('.ctx-remove').addEventListener('click', () => {
+        ctxFiles.splice(i, 1); renderCtxBar();
+      });
+      ctxBar.insertBefore(chip, ctxAddBtn);
+    });
+  }
+
+  /* ── Render all messages ──────────────────────── */
+  function renderAll() {
+    msgsInner.querySelectorAll('.msg-row, .thinking-row').forEach(n => n.remove());
+    emptyState.style.display = messages.length === 0 ? 'flex' : 'none';
+    messages.forEach((m, i) => msgsInner.appendChild(buildRow(m, i)));
+    scrollBottom();
+  }
+
+  /* ── Build row ────────────────────────────────── */
+  function buildRow(msg, idx) {
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + msg.role;
+    row.dataset.idx = idx;
+
+    if (msg.role === 'user') {
+      row.innerHTML = `
+        <div class="msg-meta">
+          <div class="msg-avatar user-av"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <span class="msg-name">you</span>
+        </div>
+        <div class="user-bubble">
+          ${msg.ctxName ? `<div class="user-ctx-chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(msg.ctxName)}</div>` : ''}
+          ${esc(msg.text)}
+        </div>
+        <div class="msg-actions">
+          <button class="act-btn copy-btn" title="Copy">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
+          </button>
+          <button class="act-btn edit-btn" title="Edit &amp; resend">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> edit
+          </button>
+        </div>`;
+
+      row.querySelector('.copy-btn').addEventListener('click', () => copyText(msg.text, row.querySelector('.copy-btn')));
+      row.querySelector('.edit-btn').addEventListener('click', () => {
+        inputEl.value = msg.text;
+        messages.splice(idx);
+        renderAll(); resize(); updateCount(); inputEl.focus();
+      });
+
+    } else {
+      row.innerHTML = `
+        <div class="msg-meta">
+          <div class="msg-avatar ai-av"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <span class="msg-name">AI Coder</span>
+        </div>
+        <div class="ai-content">${renderMD(msg.text)}</div>
+        <div class="msg-actions">
+          <button class="act-btn copy-btn" title="Copy">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
+          </button>
+          <button class="act-btn regen-btn" title="Retry">
+            <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10"/></svg> retry
+          </button>
+          <button class="act-btn thumbup-btn" title="Good">
+            <svg viewBox="0 0 24 24"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          </button>
+          <button class="act-btn thumbdn-btn" title="Bad">
+            <svg viewBox="0 0 24 24"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/><path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>
+          </button>
+        </div>`;
+
+      attachCodeBtns(row.querySelector('.ai-content'));
+      row.querySelector('.copy-btn').addEventListener('click', () => copyText(msg.text, row.querySelector('.copy-btn')));
+      row.querySelector('.regen-btn').addEventListener('click', () => {
+        if (idx > 0) {
+          const prev = messages[idx - 1];
+          messages.splice(idx - 1, 2); renderAll();
+          sendMessage(prev.text, prev.ctxName, null);
+        }
+      });
+      row.querySelector('.thumbup-btn').addEventListener('click', e => e.currentTarget.classList.toggle('active'));
+      row.querySelector('.thumbdn-btn').addEventListener('click', e => e.currentTarget.classList.toggle('active'));
+    }
+    return row;
+  }
+
+  /* ── Stop stream ──────────────────────────────── */
+  function stopStream() {
+    if (abortFn) { abortFn(); abortFn = null; }
+    endStream();
+  }
+  function endStream() {
+    isStreaming = false;
+    sendIcon.style.display = ''; stopIcon.style.display = 'none';
+    sendBtn.classList.remove('stop'); sendBtn.disabled = false;
+    msgsInner.querySelectorAll('.thinking-row, .stream-cursor').forEach(n => n.remove());
+    renderAll();
+  }
+
+  /* ── Handle send ──────────────────────────────── */
+  function handleSend() {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    const ctxContent = ctxFiles.length ? ctxFiles.map(f => `// ${f.name}\n${f.content}`).join('\n\n---\n\n') : null;
+    const ctxName    = ctxFiles.length ? ctxFiles.map(f => f.name).join(', ') : null;
+    inputEl.value = ''; inputEl.style.height = 'auto'; updateCount();
+    sendMessage(text, ctxName, ctxContent);
+  }
+
+  function sendMessage(text, ctxName, ctxContent) {
+    messages.push({ role: 'user', text, ctxName });
+    emptyState.style.display = 'none';
+    renderAll();
+
+    // Thinking indicator
+    const thinking = document.createElement('div');
+    thinking.className = 'thinking-row';
+    thinking.innerHTML = `<div class="thinking-dots"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div><span class="thinking-label">thinking…</span>`;
+    msgsInner.appendChild(thinking);
+    scrollBottom();
+
+    isStreaming = true;
+    sendIcon.style.display = 'none'; stopIcon.style.display = '';
+    sendBtn.classList.add('stop'); sendBtn.disabled = false;
+
+    // Build API messages
+    const apiMsgs = [{
+      role: 'system',
+      content: ctxContent
+        ? `You are an expert AI coding assistant in the Acode mobile editor. Be concise and format code in fenced blocks with language identifiers.\n\nFile context:\n${ctxContent}`
+        : `You are an expert AI coding assistant in the Acode mobile editor. Be concise, helpful, and format all code in fenced blocks with the language identifier.`
+    }];
+    messages.forEach(m => {
+      if (m.text) apiMsgs.push({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text });
+    });
+
+    let aiText = '';
+    let aiIdx  = null;
+    let liveRow = null;
+    let liveContent = null;
+
+    document.dispatchEvent(new CustomEvent('ai-panel-send', {
+      detail: {
+        messages: apiMsgs,
+        model: modelSel.value,
+        setAbort: fn => { abortFn = fn; },
+        onChunk: chunk => {
+          if (aiIdx === null) {
+            thinking.remove();
+            messages.push({ role: 'ai', text: '' });
+            aiIdx = messages.length - 1;
+            liveRow = document.createElement('div');
+            liveRow.className = 'msg-row ai';
+            liveRow.innerHTML = `
+              <div class="msg-meta">
+                <div class="msg-avatar ai-av"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+                <span class="msg-name">AI Coder</span>
+              </div>
+              <div class="ai-content" id="live-ai-content"></div>`;
+            msgsInner.appendChild(liveRow);
+            liveContent = liveRow.querySelector('#live-ai-content');
+          }
+          aiText += chunk;
+          messages[aiIdx].text = aiText;
+          if (liveContent) {
+            liveContent.innerHTML = renderMD(aiText) + '<span class="stream-cursor"></span>';
+            attachCodeBtns(liveContent);
+          }
+          scrollBottom();
+        },
+        onDone: () => { abortFn = null; endStream(); },
+        onError: err => {
+          thinking.remove();
+          messages.push({ role: 'ai', text: '**Error:** ' + esc(err || 'Something went wrong. Check your API key.') });
+          abortFn = null; endStream();
+        }
+      }
+    }));
+  }
+
+  /* ── Markdown ─────────────────────────────────── */
+  function renderMD(raw) {
+    let h = esc(raw);
+
+    // Fenced code blocks
+    h = h.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
+      const l = lang || 'code';
+      const enc = btoa(unescape(encodeURIComponent(code.trimEnd())));
+      return `<div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">${esc(l)}</span>
+          <div class="code-actions">
+            <button class="code-btn copy-code-btn" data-enc="${enc}">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>copy
+            </button>
+            <button class="code-btn insert-code-btn" data-enc="${enc}">
+              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>insert
+            </button>
+          </div>
+        </div>
+        <div class="code-body">${esc(code.trimEnd())}</div>
+      </div>`;
+    });
+
+    // Headings
+    h = h.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    h = h.replace(/^## (.+)$/gm,  '<h2>$1</h2>');
+    h = h.replace(/^# (.+)$/gm,   '<h1>$1</h1>');
+
+    // Bold / italic
+    h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    h = h.replace(/\*(.+?)\*/g,     '<em>$1</em>');
+
+    // Blockquote
+    h = h.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+    // Lists
+    h = h.replace(/((?:^[-*] .+(?:\n|$))+)/gm, blk => {
+      const items = blk.trim().split('\n').map(l => `<li>${l.replace(/^[-*] /, '')}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    });
+    h = h.replace(/((?:^\d+\. .+(?:\n|$))+)/gm, blk => {
+      const items = blk.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
+      return `<ol>${items}</ol>`;
+    });
+
+    // Inline code
+    h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+
+    // Paragraphs
+    h = h.replace(/\n{2,}/g, '</p><p>');
+    h = h.replace(/\n/g, '<br>');
+    h = '<p>' + h + '</p>';
+
+    // Unwrap p around block elements
+    h = h.replace(/<p>(<(?:div|ul|ol|h[1-3]|blockquote))/g, '$1');
+    h = h.replace(/((?:div|ul|ol|h[1-3]|blockquote)>)<\/p>/g, '$1');
+
+    return h;
+  }
+
+  /* ── Code button listeners ────────────────────── */
+  function attachCodeBtns(root) {
+    if (!root) return;
+    root.querySelectorAll('.copy-code-btn:not([data-b])').forEach(btn => {
+      btn.dataset.b = '1';
+      btn.addEventListener('click', () => {
+        copyText(decode(btn.dataset.enc), btn);
+      });
+    });
+    root.querySelectorAll('.insert-code-btn:not([data-b])').forEach(btn => {
+      btn.dataset.b = '1';
+      btn.addEventListener('click', () => {
+        const code = decode(btn.dataset.enc);
+        document.dispatchEvent(new CustomEvent('ai-panel-insert', { detail: { code } }));
+        const origHTML = btn.innerHTML;
+        btn.innerHTML = `<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>inserted!`;
+        btn.classList.add('inserted');
+        setTimeout(() => { btn.innerHTML = origHTML; btn.classList.remove('inserted'); }, 1800);
+      });
+    });
+  }
+
+  /* ── Clipboard ────────────────────────────────── */
+  function copyText(text, btn) {
+    const done = () => {
+      if (!btn) return;
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> copied!`;
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1800);
+    };
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(done);
+    else {
+      const ta = Object.assign(document.createElement('textarea'), { value: text });
+      ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy'); ta.remove(); done();
+    }
+  }
+
+  /* ── Helpers ──────────────────────────────────── */
+  function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function decode(enc) {
+    try { return decodeURIComponent(escape(atob(enc))); } catch(e) { return ''; }
+  }
+  function scrollBottom() { msgsWrap.scrollTop = msgsWrap.scrollHeight; }
+
+  /* ── Public API for main.js ───────────────────── */
+  window.aiPanel = {
+    addContext:   (name, content) => { ctxFiles.push({ name, content }); renderCtxBar(); },
+    clearContext: ()              => { ctxFiles = []; renderCtxBar(); },
+    setModel:     m              => { modelSel.value = m; },
+    clear:        ()             => { messages = []; renderAll(); }
+  };
+
+  renderCtxBar();
+  renderAll();
+  inputEl.focus();
+})();
+</script>

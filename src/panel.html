@@ -25,9 +25,10 @@
 			var(--border-color, rgba(255, 255, 255, 0.12))
 		);
 		--text: var(--secondary-text-color, #ddddf0);
-		--text-muted: var(--primary-text-color, #9090cf);
-		--text-dim: var(--scrollbar-color, #7e7e93);
+		--text-muted: color-mix(in srgb, var(--text) 78%, var(--bg) 22%);
+		--text-dim: color-mix(in srgb, var(--text) 62%, var(--bg) 38%);
 		--on-accent: var(--button-text-color, #fff);
+		--success: var(--success-color, var(--link-text-color, #4ade80));
 		--danger: var(--danger-color, #ef4444);
 		--radius: 10px;
 		--mono: 'DM Mono', 'Fira Mono', 'Cascadia Code', monospace;
@@ -636,8 +637,8 @@
 	}
 	.code-btn.copied,
 	.code-btn.inserted {
-		color: var(--link-text-color, #4ade80);
-		border-color: var(--link-text-color, #4ade80);
+		color: var(--success);
+		border-color: var(--success);
 	}
 	.code-btn svg {
 		width: 10px;

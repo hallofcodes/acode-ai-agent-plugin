@@ -3,6 +3,8 @@ import panel from './panel.html'
 const renderPanel = container => {
 	container.style.padding = '0'
 	container.innerHTML = panel
+	const doc = container.ownerDocument || document
+	const createEl = tag => doc.createElement(tag)
 
 	/* ── Refs ─────────────────────────────────────── */
 	const msgsInner = container.querySelector('#msgs-inner')
@@ -70,16 +72,30 @@ const renderPanel = container => {
 		charCount.textContent = n || '0'
 		charCount.classList.toggle('warn', n > 2000)
 	}
-	inputEl.oninput = () => {
+	const syncInputState = () => {
 		resize()
 		updateCount()
 	}
-	inputEl.onkeydown = e => {
+	const maybeSendFromEnter = e => {
 		if (e.key === 'Enter' && !e.shiftKey) {
 			e.preventDefault()
 			isStreaming ? stopStream() : handleSend()
 		}
 	}
+	inputEl.addEventListener('input', syncInputState)
+	inputEl.addEventListener('change', syncInputState)
+	inputEl.addEventListener('keyup', syncInputState)
+	inputEl.addEventListener('keydown', maybeSendFromEnter)
+	inputEl.addEventListener('beforeinput', e => {
+		if (
+			e.inputType === 'insertLineBreak' &&
+			!e.shiftKey &&
+			!e.isComposing
+		) {
+			e.preventDefault()
+			isStreaming ? stopStream() : handleSend()
+		}
+	})
 
 	/* ── Buttons ──────────────────────────────────── */
 	sendBtn.onclick = () => (isStreaming ? stopStream() : handleSend())
@@ -129,7 +145,7 @@ const renderPanel = container => {
 	function renderCtxBar() {
 		ctxBar.querySelectorAll('.ctx-chip').forEach(c => c.remove())
 		ctxFiles.forEach((f, i) => {
-			const chip = container.createElement('div')
+			const chip = createEl('div')
 			chip.className = 'ctx-chip'
 			chip.innerHTML = `
      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -157,7 +173,7 @@ const renderPanel = container => {
 
 	/* ── Build row ────────────────────────────────── */
 	function buildRow(msg, idx) {
-		const row = container.createElement('div')
+		const row = createEl('div')
 		row.className = 'msg-row ' + msg.role
 		row.dataset.idx = idx
 
@@ -267,7 +283,7 @@ const renderPanel = container => {
 		renderAll()
 
 		// Thinking indicator
-		const thinking = container.createElement('div')
+		const thinking = createEl('div')
 		thinking.className = 'thinking-row'
 		thinking.innerHTML = `<div class="thinking-dots"><div class="t-dot"></div><div class="t-dot"></div><div class="t-dot"></div></div><span class="thinking-label">thinking…</span>`
 		msgsInner.appendChild(thinking)
@@ -313,7 +329,7 @@ const renderPanel = container => {
 					thinking.remove()
 					messages.push({ role: 'ai', text: '' })
 					aiIdx = messages.length - 1
-					liveRow = container.createElement('div')
+					liveRow = createEl('div')
 					liveRow.className = 'msg-row ai'
 					liveRow.innerHTML = `
            <div class="msg-meta">
@@ -474,13 +490,13 @@ const renderPanel = container => {
 		}
 		if (navigator.clipboard) navigator.clipboard.writeText(text).then(done)
 		else {
-			const ta = Object.assign(container.createElement('textarea'), {
+			const ta = Object.assign(createEl('textarea'), {
 				value: text
 			})
 			ta.style.cssText = 'position:fixed;opacity:0'
-			container.body.appendChild(ta)
+			doc.body.appendChild(ta)
 			ta.select()
-			container.execCommand('copy')
+			doc.execCommand('copy')
 			ta.remove()
 			done()
 		}

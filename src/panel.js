@@ -25,7 +25,30 @@ const renderPanel = container => {
 	let messages = [] // { role:'user'|'ai', text, ctxName? }
 	let ctxFiles = [] // { name, content }
 	let isStreaming = false
-	let abortFn = null
+	let streamTimeout = null
+
+	/* ── Random AI Responses ───────────────────────── */
+	const randomResponses = [
+		"I understand you're working on that. Here's what I think would help:\n\n```javascript\n// Example solution\nfunction solveProblem(input) {\n  return input.map(item => item * 2);\n}\n```\n\nThis should handle your use case efficiently.",
+		
+		"Great question! Based on your context, I'd suggest looking at it this way:\n\n```python\ndef process_data(data):\n    \"\"\"Process the incoming data structure\"\"\"\n    result = {}\n    for key, value in data.items():\n        result[key.upper()] = value\n    return result\n```\n\nLet me know if you need clarification on any part.",
+		
+		"I see what you're trying to accomplish. Here's a practical approach:\n\n```bash\n# Here's a command that might help\ngrep -r \"pattern\" --include=\"*.js\" .\n```\n\nThis will search through all your JavaScript files for the pattern you need.",
+		
+		"Let me break this down for you. The key insight is to think about data flow:\n\n```typescript\ninterface DataStructure {\n  id: string;\n  value: number;\n  metadata: Record<string, unknown>;\n}\n\nfunction transform(item: DataStructure): DataStructure {\n  return {\n    ...item,\n    value: item.value * 2\n  };\n}\n```\n\nDoes this align with what you had in mind?",
+		
+		"Interesting challenge! Here's how I would approach it:\n\n```javascript\n// Event-driven solution\nclass EventHandler {\n  constructor() {\n    this.events = {};\n  }\n  \n  on(event, callback) {\n    if (!this.events[event]) this.events[event] = [];\n    this.events[event].push(callback);\n  }\n  \n  emit(event, data) {\n    (this.events[event] || []).forEach(cb => cb(data));\n  }\n}\n```\n\nThis pattern should give you the flexibility you need.",
+		
+		"Based on what you're asking, consider this refactoring:\n\n```python\ndef optimized_function(items):\n    # Using list comprehension for better performance\n    return [item for item in items if item.is_valid()]\n```\n\nThis is more Pythonic and efficient than using traditional loops.",
+		
+		"I think you'll find this pattern useful:\n\n```javascript\n// Memoization for expensive operations\nconst memoize = (fn) => {\n  const cache = new Map();\n  return (...args) => {\n    const key = JSON.stringify(args);\n    if (cache.has(key)) return cache.get(key);\n    const result = fn(...args);\n    cache.set(key, result);\n    return result;\n  };\n};\n```\n\nThis will cache results and improve performance significantly.",
+		
+		"Here's a different perspective on your problem:\n\n```sql\n-- Query to get the data you need\nSELECT \n  u.name,\n  COUNT(o.id) as order_count,\n  SUM(o.total) as total_spent\nFROM users u\nLEFT JOIN orders o ON u.id = o.user_id\nGROUP BY u.id\nHAVING total_spent > 1000;\n```\n\nThis should give you the aggregated insights you're looking for.",
+		
+		"Let me show you a clean way to implement that:\n\n```javascript\n// Async error handling wrapper\nconst asyncHandler = (fn) => (req, res, next) => {\n  Promise.resolve(fn(req, res, next)).catch(next);\n};\n\n// Usage\napp.get('/data', asyncHandler(async (req, res) => {\n  const data = await fetchData();\n  res.json(data);\n}));\n```\n\nThis eliminates try-catch boilerplate throughout your codebase.",
+		
+		"I appreciate your question. Here's the solution I'd recommend:\n\n```rust\nfn process_vector(vec: Vec<i32>) -> Vec<i32> {\n    vec.into_iter()\n        .filter(|&x| x > 0)\n        .map(|x| x * 2)\n        .collect()\n}\n```\n\nRust's iterator system makes this very efficient and safe."
+	];
 
 	/* ── Suggestions ──────────────────────────────── */
 	container.querySelectorAll('.sug-chip').forEach(chip => {
@@ -205,7 +228,7 @@ const renderPanel = container => {
 					const prev = messages[idx - 1]
 					messages.splice(idx - 1, 2)
 					renderAll()
-					sendMessage(prev.text, prev.ctxName, null)
+					simulateAIResponse(prev.text, prev.ctxName)
 				}
 			})
 			row.querySelector('.thumbup-btn').addEventListener('click', e =>
@@ -220,9 +243,9 @@ const renderPanel = container => {
 
 	/* ── Stop stream ──────────────────────────────── */
 	function stopStream() {
-		if (abortFn) {
-			abortFn()
-			abortFn = null
+		if (streamTimeout) {
+			clearTimeout(streamTimeout)
+			streamTimeout = null
 		}
 		endStream()
 	}
@@ -238,24 +261,8 @@ const renderPanel = container => {
 		renderAll()
 	}
 
-	/* ── Handle send ──────────────────────────────── */
-	function handleSend() {
-		const text = inputEl.value.trim()
-		if (!text) return
-		const ctxContent = ctxFiles.length
-			? ctxFiles.map(f => `// ${f.name}\n${f.content}`).join('\n\n---\n\n')
-			: null
-		const ctxName = ctxFiles.length
-			? ctxFiles.map(f => f.name).join(', ')
-			: null
-		inputEl.value = ''
-		inputEl.style.height = 'auto'
-		updateCount()
-		sendMessage(text, ctxName, ctxContent)
-	}
-
-	function sendMessage(text, ctxName, ctxContent) {
-		messages.push({ role: 'user', text, ctxName })
+	/* ── Simulate AI Response (No API) ────────────── */
+	function simulateAIResponse(userMessage, ctxName) {
 		emptyState.style.display = 'none'
 		renderAll()
 
@@ -272,79 +279,87 @@ const renderPanel = container => {
 		sendBtn.classList.add('stop')
 		sendBtn.disabled = false
 
-		// Build API messages
-		const apiMsgs = [
-			{
-				role: 'system',
-				content: ctxContent
-					? `You are an expert AI coding assistant in the Acode mobile editor. Be concise and format code in fenced blocks with language identifiers.\n\nFile context:\n${ctxContent}`
-					: `You are an expert AI coding assistant in the Acode mobile editor. Be concise, helpful, and format all code in fenced blocks with the language identifier.`
-			}
-		]
-		messages.forEach(m => {
-			if (m.text)
-				apiMsgs.push({
-					role: m.role === 'user' ? 'user' : 'assistant',
-					content: m.text
-				})
-		})
-
+		// Pick a random response
+		const randomIndex = Math.floor(Math.random() * randomResponses.length)
+		let fullResponse = randomResponses[randomIndex]
+		
+		// Add context awareness if files are attached
+		if (ctxName && ctxFiles.length > 0) {
+			fullResponse = `**Context loaded:** ${ctxName}\n\n` + fullResponse;
+		}
+		
 		let aiText = ''
 		let aiIdx = null
 		let liveRow = null
 		let liveContent = null
-
-		container.dispatchEvent(
-			new CustomEvent('ai-panel-send', {
-				detail: {
-					messages: apiMsgs,
-					model: modelSel.value,
-					setAbort: fn => {
-						abortFn = fn
-					},
-					onChunk: chunk => {
-						if (aiIdx === null) {
-							thinking.remove()
-							messages.push({ role: 'ai', text: '' })
-							aiIdx = messages.length - 1
-							liveRow = container.createElement('div')
-							liveRow.className = 'msg-row ai'
-							liveRow.innerHTML = `
+		let chunkIndex = 0
+		
+		// Split response into chunks for streaming effect
+		const chunks = []
+		const words = fullResponse.split(/(\s+)/)
+		let currentChunk = ''
+		
+		for (let i = 0; i < words.length; i++) {
+			currentChunk += words[i]
+			if (currentChunk.length >= 5 || i === words.length - 1) {
+				chunks.push(currentChunk)
+				currentChunk = ''
+			}
+		}
+		
+		function sendChunk() {
+			if (chunkIndex < chunks.length) {
+				if (aiIdx === null) {
+					thinking.remove()
+					messages.push({ role: 'ai', text: '' })
+					aiIdx = messages.length - 1
+					liveRow = container.createElement('div')
+					liveRow.className = 'msg-row ai'
+					liveRow.innerHTML = `
            <div class="msg-meta">
              <div class="msg-avatar ai-av"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-             <span class="msg-name">AI Agent</span>
+             <span class="msg-name">Rutex AI Agent</span>
            </div>
            <div class="ai-content" id="live-ai-content"></div>`
-							msgsInner.appendChild(liveRow)
-							liveContent = liveRow.querySelector('#live-ai-content')
-						}
-						aiText += chunk
-						messages[aiIdx].text = aiText
-						if (liveContent) {
-							liveContent.innerHTML =
-								renderMD(aiText) + '<span class="stream-cursor"></span>'
-							attachCodeBtns(liveContent)
-						}
-						scrollBottom()
-					},
-					onDone: () => {
-						abortFn = null
-						endStream()
-					},
-					onError: err => {
-						thinking.remove()
-						messages.push({
-							role: 'ai',
-							text:
-								'**Error:** ' +
-								esc(err || 'Something went wrong. Check your API key.')
-						})
-						abortFn = null
-						endStream()
-					}
+					msgsInner.appendChild(liveRow)
+					liveContent = liveRow.querySelector('#live-ai-content')
 				}
-			})
-		)
+				
+				aiText += chunks[chunkIndex]
+				messages[aiIdx].text = aiText
+				if (liveContent) {
+					liveContent.innerHTML =
+						renderMD(aiText) + '<span class="stream-cursor"></span>'
+					attachCodeBtns(liveContent)
+				}
+				scrollBottom()
+				chunkIndex++
+				streamTimeout = setTimeout(sendChunk, 30 + Math.random() * 50)
+			} else {
+				endStream()
+			}
+		}
+		
+		streamTimeout = setTimeout(sendChunk, 100)
+	}
+
+	/* ── Handle send ──────────────────────────────── */
+	function handleSend() {
+		const text = inputEl.value.trim()
+		if (!text) return
+		
+		const ctxName = ctxFiles.length
+			? ctxFiles.map(f => f.name).join(', ')
+			: null
+			
+		inputEl.value = ''
+		inputEl.style.height = 'auto'
+		updateCount()
+		
+		messages.push({ role: 'user', text, ctxName })
+		renderAll()
+		
+		simulateAIResponse(text, ctxName)
 	}
 
 	/* ── Markdown ─────────────────────────────────── */

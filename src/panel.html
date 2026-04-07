@@ -9,15 +9,15 @@
 	}
 
 	#ai-panel {
-		--accent: var(--button-background-color, var(--active-color, #1337ec));
+		--accent: var(--active-color, var(--button-background-color, #1337ec));
 		--accent-dim: var(--button-active-color, var(--active-icon-color, #0d28b8));
 		--accent-hi: var(--active-color, var(--button-background-color, #3d5ff5));
-		--accent-glow: var(--active-icon-color, rgba(19, 55, 236, 0.15));
-		--accent-glow2: var(--active-icon-color, rgba(19, 55, 236, 0.08));
+		--accent-glow: color-mix(in srgb, var(--accent) 15%, transparent);
+		--accent-glow2: color-mix(in srgb, var(--accent) 8%, transparent);
 		--bg: var(--primary-color, #0e0e14);
 		--bg-card: var(--secondary-color, #13131c);
 		--bg-input: var(--popup-background-color, var(--secondary-color, #1a1a26));
-		--bg-hover: var(--active-icon-color, #1e1e2e);
+		--bg-hover: color-mix(in srgb, var(--text) 12%, transparent);
 		--bg-code: var(--secondary-color, #0a0a12);
 		--border: var(--border-color, rgba(255, 255, 255, 0.07));
 		--border-hi: var(
@@ -25,8 +25,8 @@
 			var(--border-color, rgba(255, 255, 255, 0.12))
 		);
 		--text: var(--secondary-text-color, #ddddf0);
-		--text-muted: var(--secondary-text-color, #9090cf);
-		--text-dim: var(--secondary-text-color, #7e7e93);
+		--text-muted: var(--primary-text-color, #9090cf);
+		--text-dim: var(--scrollbar-color, #7e7e93);
 		--on-accent: var(--button-text-color, #fff);
 		--danger: var(--danger-color, #ef4444);
 		--radius: 10px;

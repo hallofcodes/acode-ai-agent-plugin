@@ -40,9 +40,15 @@ const renderPanel = container => {
 
 	/* ── State ────────────────────────────────────── */
 	let messages = [] // { role:'user'|'ai', text, ctxName? }
-	let ctxFiles = [] // { name, content }
+	let ctxFiles = [] // { name, content, path? }
 	let isStreaming = false
 	let streamTimeout = null
+	let ctxMenuOpen = false
+
+	const aiPanelEl = container.querySelector('#ai-panel')
+	const ctxMenuEl = createEl('div')
+	ctxMenuEl.className = 'ctx-menu'
+	aiPanelEl.appendChild(ctxMenuEl)
 
 	/* ── Random AI Responses ───────────────────────── */
 	const randomResponses = [
@@ -112,7 +118,7 @@ const renderPanel = container => {
 		if (debounceTimer != undefined) clearTimeout(debounceTimer)
 
 		debounceTimer = setTimeout(() => {
-			localStorage.setItem('draft-message', inputEl.value.trim())
+			localStorage.setItem('draft-message', inputEl.value)
 			debounceTimer = undefined
 		}, 500)
 	}
@@ -164,21 +170,8 @@ const renderPanel = container => {
 		renderAll()
 	}
 
-	ctxAddBtn.onclick = () => {
-		container.dispatchEvent(
-			new CustomEvent('ai-panel-get-file', {
-				detail: {
-					onFile: ({ name, content }) => {
-						if (!ctxFiles.find(f => f.name === name)) {
-							ctxFiles.push({ name, content })
-							renderCtxBar()
-						}
-					}
-				}
-			})
-		)
-	}
-	attachBtn.onclick = () => ctxAddBtn.click()
+	ctxAddBtn.onclick = e => openContextMenu(e.currentTarget)
+	attachBtn.onclick = e => openContextMenu(e.currentTarget)
 
 	selBtn.onclick = () => {
 		container.dispatchEvent(
@@ -214,6 +207,137 @@ const renderPanel = container => {
 			})
 			ctxBar.insertBefore(chip, ctxAddBtn)
 		})
+	}
+
+	function getFileNameFromPath(path) {
+		if (!path) return ''
+		return String(path).split(/[\\/]/).pop() || String(path)
+	}
+
+	function getActiveFiles() {
+		const editorManager = acode?.require?.('editorManager')
+		const candidates = []
+		const seen = new Set()
+
+		const pushCandidate = file => {
+			if (!file) return
+			const path =
+				file.path ||
+				file.uri ||
+				file.url ||
+				file.location ||
+				file.fullPath ||
+				file.file?.path ||
+				file.file?.uri ||
+				file.file?.url ||
+				''
+			const name = file.name || file.filename || getFileNameFromPath(path)
+			if (!name) return
+			const key = path || name
+			if (seen.has(key)) return
+			seen.add(key)
+			const content =
+				file.content ||
+				file.session?.getValue?.() ||
+				file.editor?.getValue?.() ||
+				''
+			candidates.push({ name, path: path || name, content })
+		}
+
+		const fileCollections = [
+			editorManager?.files,
+			editorManager?.openFiles,
+			editorManager?.editorFiles
+		]
+
+		fileCollections.forEach(collection => {
+			if (!Array.isArray(collection)) return
+			collection.forEach(pushCandidate)
+		})
+
+		pushCandidate(editorManager?.activeFile)
+		pushCandidate(editorManager?.activeFile?.file)
+		pushCandidate(editorManager?.activeFile?.session)
+
+		return candidates
+	}
+
+	function addContextFile(file) {
+		if (!file?.name) return
+		const exists = ctxFiles.some(
+			ctx => (ctx.path || ctx.name) === (file.path || file.name)
+		)
+		if (exists) return
+		ctxFiles.push({
+			name: file.name,
+			content: file.content || '',
+			path: file.path || file.name
+		})
+		renderCtxBar()
+	}
+
+	function insertContextToken(file) {
+		if (!file?.name) return
+		const safePath = esc(file.path || file.name)
+		const safeName = esc(file.name)
+		const token = `<a data-path="${safePath}">${safeName}</a>`
+		const spacer = inputEl.value && !/\s$/.test(inputEl.value) ? ' ' : ''
+		inputEl.value += spacer + token + ' '
+		inputEl.focus()
+		syncInputState()
+	}
+
+	function closeContextMenu() {
+		ctxMenuEl.classList.remove('open')
+		ctxMenuEl.innerHTML = ''
+		ctxMenuOpen = false
+	}
+
+	function openContextMenu(triggerEl) {
+		const files = getActiveFiles()
+		ctxMenuEl.innerHTML = ''
+
+		if (!files.length) {
+			const empty = createEl('div')
+			empty.className = 'ctx-menu-empty'
+			empty.textContent = 'No active file. Open a file to attach.'
+			ctxMenuEl.appendChild(empty)
+		} else {
+			files.forEach(file => {
+				const option = createEl('button')
+				option.className = 'ctx-menu-option'
+				option.type = 'button'
+				option.textContent = file.name
+				option.value = file.path || file.name
+				option.title = file.path || file.name
+				option.addEventListener('click', () => {
+					addContextFile(file)
+					insertContextToken(file)
+					closeContextMenu()
+				})
+				ctxMenuEl.appendChild(option)
+			})
+		}
+
+		const panelRect = aiPanelEl.getBoundingClientRect()
+		const triggerRect = triggerEl.getBoundingClientRect()
+		const fromTop = triggerRect.top < panelRect.top + panelRect.height / 2
+		const left = Math.min(
+			Math.max(triggerRect.left - panelRect.left, 4),
+			Math.max(panelRect.width - 184, 4)
+		)
+
+		ctxMenuEl.style.left = `${left}px`
+		ctxMenuEl.style.right = 'auto'
+		ctxMenuEl.style.top = fromTop
+			? `${triggerRect.bottom - panelRect.top + 4}px`
+			: 'auto'
+		ctxMenuEl.style.bottom = fromTop
+			? 'auto'
+			: `${panelRect.bottom - triggerRect.top + 4}px`
+
+		ctxMenuEl.classList.add('open')
+		ctxMenuOpen = true
 	}
 
 	/* ── Render all messages ──────────────────────── */
@@ -416,8 +540,8 @@ const renderPanel = container => {
 
 	/* ── Handle send ──────────────────────────────── */
 	function handleSend() {
-		const text = inputEl.value.trim()
-		if (!text) return
+		const rawText = inputEl.value
+		if (!rawText.trim()) return
 
 		const ctxName = ctxFiles.length
 			? ctxFiles.map(f => f.name).join(', ')
@@ -428,10 +552,10 @@ const renderPanel = container => {
 		resize()
 		updateCount()
 
-		messages.push({ role: 'user', text, ctxName })
+		messages.push({ role: 'user', text: rawText, ctxName })
 		renderAll()
 
-		simulateAIResponse(text, ctxName)
+		simulateAIResponse(rawText, ctxName)
 	}
 
 	/* ── Markdown ─────────────────────────────────── */
@@ -496,6 +620,12 @@ const renderPanel = container => {
 		// Unwrap p around block elements
 		h = h.replace(/<p>(<(?:div|ul|ol|h[1-3]|blockquote))/g, '$1')
 		h = h.replace(/((?:div|ul|ol|h[1-3]|blockquote)>)<\/p>/g, '$1')
+		h = h.replace(
+			/<p>\s*(<div class="code-block">[\s\S]*?<\/div>)\s*<\/p>/g,
+			'$1'
+		)
+		h = h.replace(/<br>\s*(<div class="code-block">)/g, '$1')
+		h = h.replace(/(<\/div>)\s*<br>/g, '$1')
 
 		return h
 	}
@@ -576,6 +706,22 @@ const renderPanel = container => {
 	function scrollBottom() {
 		msgsWrap.scrollTop = msgsWrap.scrollHeight
 	}
+
+	doc.addEventListener(
+		'click',
+		e => {
+			if (!ctxMenuOpen) return
+			if (
+				ctxMenuEl.contains(e.target) ||
+				ctxAddBtn.contains(e.target) ||
+				attachBtn.contains(e.target)
+			) {
+				return
+			}
+			closeContextMenu()
+		},
+		true
+	)
 
 	/* ── Public API for main.js ───────────────────── */
 	window.aiPanel = {

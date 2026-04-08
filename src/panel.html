@@ -548,7 +548,6 @@
 		line-height: 1.55;
 		max-width: 94%;
 		word-break: break-word;
-		white-space: pre-wrap;
 	}
 	.user-ctx-chip {
 		display: inline-flex;
@@ -653,7 +652,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 5px 7px;
+		padding: 0;
+		padding-block: 5px;
+		margin-top: -20px;
 		background: var(--bg-hover);
 		border-bottom: 1px solid var(--border);
 		border-radius: 7px 7px 0 0;
@@ -664,10 +665,6 @@
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
 		color: var(--text-dim);
-	}
-	.code-actions {
-		display: flex;
-		gap: 4px;
 	}
 	.code-btn {
 		display: flex;
@@ -706,7 +703,7 @@
 		stroke-linejoin: round;
 	}
 	.code-body {
-		padding: 8px 10px 0;
+		padding: 8px;
 		overflow-x: auto;
 		font-family: var(--mono);
 		font-size: 11px;

@@ -335,6 +335,94 @@
 		color: var(--text);
 	}
 
+	/* ── Edited Files Bar ─────────────────────────── */
+	.edited-files-bar {
+		flex-shrink: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		padding: 7px 10px;
+		background: var(--bg-card);
+		border-bottom: 1px solid var(--border);
+	}
+	.edited-files-head {
+		display: flex;
+		justify-content: flex-end;
+	}
+	.edited-files-bulk-btn {
+		background: transparent;
+		border: 1px solid var(--border-hi);
+		border-radius: 5px;
+		padding: 2px 7px;
+		color: var(--text-muted);
+		font-family: var(--mono);
+		font-size: 9px;
+		line-height: 1.2;
+		cursor: pointer;
+	}
+	.edited-files-list {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+	}
+	.edited-file-option {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px 7px;
+		border: 1px solid var(--border);
+		border-radius: 7px;
+		background: var(--bg-input);
+	}
+	.edited-file-name {
+		flex: 1;
+		min-width: 0;
+		font-family: var(--mono);
+		font-size: 10px;
+		color: var(--text);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.edited-file-added,
+	.edited-file-removed {
+		font-family: var(--mono);
+		font-size: 10px;
+	}
+	.edited-file-added {
+		color: var(--success);
+	}
+	.edited-file-removed {
+		color: var(--danger);
+	}
+	.edited-file-action {
+		width: 20px;
+		height: 20px;
+		border: none;
+		border-radius: 5px;
+		background: transparent;
+		color: var(--text-dim);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+	}
+	.edited-file-action svg {
+		width: 12px;
+		height: 12px;
+		stroke: currentColor;
+		fill: none;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.edited-file-action.accept {
+		color: var(--success);
+	}
+	.edited-file-action.reject {
+		color: var(--danger);
+	}
+
 	/* ── Messages ─────────────────────────────────── */
 	.msgs-wrap {
 		flex: 1;
@@ -1052,6 +1140,49 @@
 			<option value="gemma2-9b-it">gemma2-9b-it</option>
 			<option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
 		</select>
+	</div>
+
+	<!-- Edited Files -->
+	<div class="edited-files-bar" id="edited-files-bar">
+		<div class="edited-files-head">
+			<button class="edited-files-bulk-btn" type="button">
+				Accept all / Reject all
+			</button>
+		</div>
+		<div class="edited-files-list">
+			<div class="edited-file-option">
+				<span class="edited-file-name">src/panel.ts</span>
+				<span class="edited-file-added">+42</span>
+				<span class="edited-file-removed">-11</span>
+				<button class="edited-file-action accept" type="button" title="Accept">
+					<svg viewBox="0 0 24 24">
+						<polyline points="20 6 9 17 4 12" />
+					</svg>
+				</button>
+				<button class="edited-file-action reject" type="button" title="Reject">
+					<svg viewBox="0 0 24 24">
+						<line x1="18" y1="6" x2="6" y2="18" />
+						<line x1="6" y1="6" x2="18" y2="18" />
+					</svg>
+				</button>
+			</div>
+			<div class="edited-file-option">
+				<span class="edited-file-name">src/panel/markdown.ts</span>
+				<span class="edited-file-added">+16</span>
+				<span class="edited-file-removed">-4</span>
+				<button class="edited-file-action accept" type="button" title="Accept">
+					<svg viewBox="0 0 24 24">
+						<polyline points="20 6 9 17 4 12" />
+					</svg>
+				</button>
+				<button class="edited-file-action reject" type="button" title="Reject">
+					<svg viewBox="0 0 24 24">
+						<line x1="18" y1="6" x2="6" y2="18" />
+						<line x1="6" y1="6" x2="18" y2="18" />
+					</svg>
+				</button>
+			</div>
+		</div>
 	</div>
 
 	<!-- Messages -->

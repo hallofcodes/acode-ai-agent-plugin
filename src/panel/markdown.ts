@@ -77,13 +77,21 @@ export const renderEditedFileLines = (
 		.sort((a, b) => a.lineNumber - b.lineNumber)
 
 	const rows = entries
-		.map(
-			entry =>
-				`<div class="edited-line ${entry.isAdded ? 'added' : 'removed'}"><span class="edited-line-number">${escapeHtml(
-					String(entry.lineNumber)
-				)}</span><span class="edited-line-prefix">${entry.isAdded ? '+' : '-'}</span><span class="edited-line-text">${escapeHtml(entry.text)}</span></div>`
+		.map(entry =>
+			[
+				`<div class="edited-line ${entry.isAdded ? 'added' : 'removed'}">`,
+				`<span class="edited-line-number">${escapeHtml(String(entry.lineNumber))}</span>`,
+				`<span class="edited-line-prefix">${entry.isAdded ? '+' : '-'}</span>`,
+				`<span class="edited-line-text">${escapeHtml(entry.text)}</span>`,
+				'</div>'
+			].join('')
 		)
 		.join('')
 
-	return `<div class="code-block edited-lines-block"><div class="code-header"><span class="code-lang">edited lines</span></div><div class="code-body edited-lines-body">${rows}</div></div>`
+	return [
+		'<div class="code-block edited-lines-block">',
+		'<div class="code-header"><span class="code-lang">edited lines</span></div>',
+		`<div class="code-body edited-lines-body">${rows}</div>`,
+		'</div>'
+	].join('')
 }

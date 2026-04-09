@@ -73,7 +73,7 @@ export const renderEditedFileLines = (
 			text: value?.[0] ?? '',
 			isAdded: Boolean(value?.[1])
 		}))
-		.filter(entry => Number.isFinite(entry.lineNumber))
+		.filter(entry => Number.isInteger(entry.lineNumber) && entry.lineNumber > 0)
 		.sort((a, b) => a.lineNumber - b.lineNumber)
 
 	const rows = entries

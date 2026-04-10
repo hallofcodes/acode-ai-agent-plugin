@@ -110,7 +110,7 @@ export const renderEditedFileLines = (
 				`<div class="edited-line ${entry.isAdded ? 'added' : 'removed'}">`,
 				`<span class="edited-line-number">${entry.line}</span>`,
 				`<span class="edited-line-prefix">${entry.isAdded ? '+' : '-'}</span>`,
-				`<span class="edited-line-text">${hljs.highlightAuto(entry.text)}</span>`,
+				`<span class="edited-line-text">${hljs.highlightAuto(entry.text).value}</span>`,
 				'</div>'
 			].join('')
 		)

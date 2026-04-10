@@ -24,5 +24,8 @@
 		"build-release": "webpack --mode production",
 		"start-dev": "node .vscode/start-dev"
 	},
-	"browserslist": "cover 100%,not android < 5"
+	"browserslist": "cover 100%,not android < 5",
+	"dependencies": {
+		"highlight.js": "^11.11.1"
+	}
 }

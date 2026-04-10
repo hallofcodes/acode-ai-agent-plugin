@@ -1,7 +1,7 @@
 export const escapeHtml = (doc: Document, value: string): string => {
-	const span = doc.createElement('span')
-	span.textContent = value
-	return span.innerHTML
+	const pre = doc.createElement('pre')
+	pre.textContent = value
+	return pre.innerHTML
 }
 
 export const decodeBase64Safe = (value: string): string => {

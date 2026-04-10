@@ -372,14 +372,14 @@ const renderPanel = (container: HTMLElement): void => {
        <span class="msg-name">you</span>
      </div>
      <div class="user-bubble">
-       ${
-				msg.ctxName
-					? `<div class="user-ctx-chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(
-							msg.ctxName
-					  )}</div>`
-					: ''
-			}
-       ${esc(msg.text)}
+      ${
+			msg.ctxName
+				? `<div class="user-ctx-chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(
+						msg.ctxName
+					)}</div>`
+				: ''
+		}
+      ${esc(msg.text).replace(/ /g, '&nbsp;').replace(/\n/g, '<br>')}
      </div>
      <div class="msg-actions">
        <button class="act-btn copy-btn" title="Copy">

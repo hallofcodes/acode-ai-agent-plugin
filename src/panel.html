@@ -436,6 +436,7 @@
 	}
 	.msgs-wrap::-webkit-scrollbar {
 		width: 2px;
+		height: 2px;
 	}
 	.msgs-wrap::-webkit-scrollbar-thumb {
 		background: var(--text-dim);
@@ -736,6 +737,9 @@
 		overflow: hidden;
 		padding: 0;
 	}
+	.code-header:not(.edited-h) {
+		margin-top: -20px;
+	}
 	.code-header {
 		display: flex;
 		align-items: center;
@@ -793,6 +797,8 @@
 	.code-body {
 		padding: 8px;
 		overflow-x: auto;
+		overflow-y: auto;
+		max-height: 200px;
 		font-family: var(--mono);
 		font-size: 11px;
 		line-height: 1.6;
@@ -802,6 +808,7 @@
 		-webkit-overflow-scrolling: touch;
 	}
 	.code-body::-webkit-scrollbar {
+		width: 2px;
 		height: 2px;
 	}
 	.code-body::-webkit-scrollbar-thumb {
@@ -811,7 +818,6 @@
 	.edited-lines-body {
 		padding: 0;
 		tab-size: 0;
-		overflow-x: auto;
 		white-space: normal;
 	}
 	.edited-line {

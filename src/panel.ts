@@ -182,6 +182,7 @@ const renderPanel = (container: HTMLElement): void => {
 
 	const formatTokenNumber = (value: number): string =>
 		Math.max(0, Math.round(value)).toLocaleString()
+	const CHARS_PER_ESTIMATED_TOKEN = 4
 
 	const refreshSettingsUI = (): void => {
 		modelSel.value = aiSettings.provider
@@ -201,7 +202,6 @@ const renderPanel = (container: HTMLElement): void => {
 	}
 
 	const openSettingsDialog = (): void => {
-		loadAiSettingsFromLocalStorage()
 		refreshSettingsUI()
 		settingsDialog.classList.add('open')
 		settingsDialogOpen = true
@@ -721,8 +721,15 @@ const renderPanel = (container: HTMLElement): void => {
 					30 + Math.random() * 50
 				)
 			} else {
-				const estimatedInputTokens = Math.max(1, Math.ceil(userMessage.length / 4))
-				const estimatedOutputTokens = Math.max(1, Math.ceil(fullResponse.length / 4))
+				// Approximation only: actual token usage varies by model/tokenizer.
+				const estimatedInputTokens = Math.max(
+					1,
+					Math.ceil(userMessage.length / CHARS_PER_ESTIMATED_TOKEN)
+				)
+				const estimatedOutputTokens = Math.max(
+					1,
+					Math.ceil(fullResponse.length / CHARS_PER_ESTIMATED_TOKEN)
+				)
 				addLifetimeTokens(estimatedInputTokens + estimatedOutputTokens)
 				lifetimeTokensEl.textContent = formatTokenNumber(aiSettings.lifetimeTokensUsed)
 				endStream()

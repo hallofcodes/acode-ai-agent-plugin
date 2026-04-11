@@ -192,5 +192,3 @@ export const addLifetimeTokens = (usedTokens: number): void => {
 	)
 	saveAiSettingsToLocalStorage()
 }
-
-loadAiSettingsFromLocalStorage()

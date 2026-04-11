@@ -1,6 +1,7 @@
 import { addIcon, removeIcon } from './sidebar'
 import { PLUGIN_ID } from './configs/constants'
 import { example } from './chats/handleAgents'
+import { loadAiSettingsFromLocalStorage } from './chats/settings'
 
 function clg(...messages: unknown[]) {
 	alert(messages.join(' '))
@@ -11,6 +12,7 @@ class MainPlugin {
 	static baseUrl: string = ''
 
 	async init() {
+		loadAiSettingsFromLocalStorage()
 		example().catch(clg)
 		//addIcon()
 	}

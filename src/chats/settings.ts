@@ -1,3 +1,5 @@
+import { Provider } from './types'
+
 // ─────────────────────────────────────────────
 // Global settings — edit this object to configure everything
 // ─────────────────────────────────────────────

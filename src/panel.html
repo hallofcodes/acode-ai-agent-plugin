@@ -1162,8 +1162,7 @@
 				<svg viewBox="0 0 24 24">
 					<circle cx="12" cy="12" r="3" />
 					<path
-						d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-					/>
+						d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
 				</svg>
 			</button>
 		</div>
@@ -1171,12 +1170,11 @@
 
 	<!-- Context Bar -->
 	<div class="ctx-bar" id="ctx-bar">
-		<span class="ctx-label">ctx</span>
+		<span class="ctx-label">CTX</span>
 		<button
 			class="ctx-add-btn"
 			id="ctx-add-btn"
-			title="Add current file as context"
-		>
+			title="Add current file as context">
 			<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
 			add file
 		</button>
@@ -1186,15 +1184,12 @@
 	<div class="model-bar">
 		<span class="model-label">MODEL</span>
 		<select class="model-select" id="model-select">
-			<option value="llama-3.3-70b-versatile">
-				llama-3.3-70b-versatile
-			</option>
-			<option value="llama-3.1-8b-instant">llama-3.1-8b-instant</option>
-			<option value="deepseek-r1-distill-llama-70b">
-				deepseek-r1-distill-70b
-			</option>
-			<option value="gemma2-9b-it">gemma2-9b-it</option>
-			<option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
+			<option value="gemini">Gemini</option>
+			<option value="claude">Claude</option>
+			<option value="deepseek">DeepSeek</option>
+			<option value="openai">OpenAI</option>
+			<option value="llama">Llama</option>
+			<option value="openrouter">OpenRouter</option>
 		</select>
 	</div>
 
@@ -1210,12 +1205,18 @@
 				<span class="edited-file-name">src/panel.ts</span>
 				<span class="edited-file-added">+42</span>
 				<span class="edited-file-removed">-11</span>
-				<button class="edited-file-action accept" type="button" title="Accept">
+				<button
+					class="edited-file-action accept"
+					type="button"
+					title="Accept">
 					<svg viewBox="0 0 24 24">
 						<polyline points="20 6 9 17 4 12" />
 					</svg>
 				</button>
-				<button class="edited-file-action reject" type="button" title="Reject">
+				<button
+					class="edited-file-action reject"
+					type="button"
+					title="Reject">
 					<svg viewBox="0 0 24 24">
 						<line x1="18" y1="6" x2="6" y2="18" />
 						<line x1="6" y1="6" x2="18" y2="18" />
@@ -1226,12 +1227,18 @@
 				<span class="edited-file-name">src/panel/markdown.ts</span>
 				<span class="edited-file-added">+16</span>
 				<span class="edited-file-removed">-4</span>
-				<button class="edited-file-action accept" type="button" title="Accept">
+				<button
+					class="edited-file-action accept"
+					type="button"
+					title="Accept">
 					<svg viewBox="0 0 24 24">
 						<polyline points="20 6 9 17 4 12" />
 					</svg>
 				</button>
-				<button class="edited-file-action reject" type="button" title="Reject">
+				<button
+					class="edited-file-action reject"
+					type="button"
+					title="Reject">
 					<svg viewBox="0 0 24 24">
 						<line x1="18" y1="6" x2="6" y2="18" />
 						<line x1="6" y1="6" x2="18" y2="18" />
@@ -1248,8 +1255,7 @@
 				<div class="empty-icon-wrap">
 					<svg viewBox="0 0 24 24">
 						<path
-							d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-						/>
+							d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
 					</svg>
 				</div>
 				<span class="empty-title">Ask anything</span>
@@ -1257,8 +1263,7 @@
 				<div class="suggestions">
 					<button
 						class="sug-chip"
-						data-prompt="Explain the selected code in detail"
-					>
+						data-prompt="Explain the selected code in detail">
 						<svg viewBox="0 0 24 24">
 							<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
 						</svg>
@@ -1266,20 +1271,17 @@
 					</button>
 					<button
 						class="sug-chip"
-						data-prompt="Find all bugs in my code and suggest fixes with examples"
-					>
+						data-prompt="Find all bugs in my code and suggest fixes with examples">
 						<svg viewBox="0 0 24 24">
 							<rect x="8" y="6" width="8" height="14" rx="4" />
 							<path
-								d="M19 13H5M12 6V2M7 9l-3-3M17 9l3-3M7 17l-3 3M17 17l3 3"
-							/>
+								d="M19 13H5M12 6V2M7 9l-3-3M17 9l3-3M7 17l-3 3M17 17l3 3" />
 						</svg>
 						Find bugs &amp; suggest fixes
 					</button>
 					<button
 						class="sug-chip"
-						data-prompt="Refactor this code to be cleaner and more efficient"
-					>
+						data-prompt="Refactor this code to be cleaner and more efficient">
 						<svg viewBox="0 0 24 24">
 							<polyline points="23 4 23 10 17 10" />
 							<path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10" />
@@ -1309,8 +1311,7 @@
 					spellcheck="false"
 					autocomplete="off"
 					autocorrect="off"
-					autocapitalize="off"
-				></textarea>
+					autocapitalize="off"></textarea>
 				<button id="send-btn" title="Send (Enter)">
 					<svg id="send-icon" viewBox="0 0 24 24">
 						<line x1="22" y1="2" x2="11" y2="13" />
@@ -1324,8 +1325,7 @@
 							height="16"
 							rx="2"
 							fill="currentColor"
-							stroke="none"
-						/>
+							stroke="none" />
 					</svg>
 				</button>
 			</div>
@@ -1334,31 +1334,26 @@
 					<button
 						class="tbtn"
 						id="attach-btn"
-						title="Attach current file as context"
-					>
+						title="Attach current file as context">
 						<svg viewBox="0 0 24 24">
 							<path
-								d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"
-							/>
+								d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
 						</svg>
 					</button>
 					<button
 						class="tbtn"
 						id="sel-btn"
-						title="Insert editor selection"
-					>
+						title="Insert editor selection">
 						<svg viewBox="0 0 24 24">
 							<path
-								d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"
-							/>
+								d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
 						</svg>
 					</button>
 					<button class="tbtn" id="clear-btn" title="Clear chat">
 						<svg viewBox="0 0 24 24">
 							<polyline points="3 6 5 6 21 6" />
 							<path
-								d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"
-							/>
+								d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6" />
 							<path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
 						</svg>
 					</button>

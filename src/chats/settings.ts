@@ -64,7 +64,7 @@ const PROVIDERS: Provider[] = [
 
 const AI_SETTINGS_STORAGE_KEY = 'acode-ai-agent:ai-settings'
 const runtimeEnv: Record<string, string> =
-	typeof process !== 'undefined' && process?.env
+	typeof process !== 'undefined' && process.env
 		? (process.env as Record<string, string>)
 		: {}
 

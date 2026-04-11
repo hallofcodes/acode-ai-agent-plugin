@@ -198,7 +198,8 @@ export const settingsContainer = (container: HTMLElement, doc: Document) => {
 	doc.addEventListener('click', event => {
 		if (
 			settingsDialogOpen &&
-			(event.currentTarget as HTMLDivElement)?.id === 'settings-dialog'
+			event.target instanceof Element &&
+			event.target.id === 'settings-dialog'
 		)
 			closeSettingsDialog()
 	})

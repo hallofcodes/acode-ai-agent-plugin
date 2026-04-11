@@ -63,6 +63,10 @@ const PROVIDERS: Provider[] = [
 ]
 
 const AI_SETTINGS_STORAGE_KEY = 'acode-ai-agent:ai-settings'
+const runtimeEnv: Record<string, string> =
+	typeof process !== 'undefined' && process?.env
+		? (process.env as Record<string, string>)
+		: {}
 
 const hasLocalStorage = (): boolean =>
 	typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
@@ -105,12 +109,12 @@ export const aiSettings: AISettings = {
 
 	// ── API keys ─────────────────────────────────
 	apiKeys: {
-		claude: process.env.ANTHROPIC_API_KEY ?? '',
-		openai: process.env.OPENAI_API_KEY ?? '',
-		gemini: process.env.GEMINI_API_KEY ?? '',
-		deepseek: process.env.DEEPSEEK_API_KEY ?? '',
+		claude: runtimeEnv.ANTHROPIC_API_KEY ?? '',
+		openai: runtimeEnv.OPENAI_API_KEY ?? '',
+		gemini: runtimeEnv.GEMINI_API_KEY ?? '',
+		deepseek: runtimeEnv.DEEPSEEK_API_KEY ?? '',
 		ollama: '', // no key needed for local Ollama
-		openrouter: process.env.OPENROUTER_API_KEY ?? ''
+		openrouter: runtimeEnv.OPENROUTER_API_KEY ?? ''
 	},
 
 	// ── System instruction ───────────────────────

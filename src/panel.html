@@ -1145,6 +1145,123 @@
 	.char-count.warn {
 		color: #f59e0b;
 	}
+
+	/* ── Settings Dialog ─────────────────────────── */
+	.settings-overlay {
+		position: absolute;
+		inset: 0;
+		z-index: 80;
+		display: none;
+		flex-direction: column;
+		background: var(--bg);
+	}
+	.settings-overlay.open {
+		display: flex;
+	}
+	.settings-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px;
+		border-bottom: 1px solid var(--border);
+		background: var(--bg-card);
+	}
+	.settings-title {
+		font-size: 11px;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--text);
+	}
+	.settings-close {
+		width: 28px;
+		height: 28px;
+		border: none;
+		border-radius: 7px;
+		background: transparent;
+		color: var(--text-muted);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.settings-close:hover {
+		background: var(--bg-hover);
+		color: var(--text);
+	}
+	.settings-close svg {
+		width: 13px;
+		height: 13px;
+		stroke: currentColor;
+		fill: none;
+		stroke-width: 2.2;
+		stroke-linecap: round;
+	}
+	.settings-body {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		padding: 10px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+	.settings-sec {
+		background: var(--bg-card);
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		padding: 8px;
+		display: flex;
+		flex-direction: column;
+		gap: 7px;
+	}
+	.settings-sec-title {
+		font-size: 10px;
+		font-family: var(--mono);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--text-dim);
+	}
+	.settings-row {
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+	}
+	.settings-label {
+		font-size: 10px;
+		color: var(--text-muted);
+		font-family: var(--mono);
+	}
+	.settings-input,
+	.settings-select {
+		width: 100%;
+		border: 1px solid var(--border);
+		border-radius: 6px;
+		background: var(--bg-input);
+		color: var(--text);
+		padding: 6px 7px;
+		font-size: 11px;
+		font-family: var(--mono);
+		outline: none;
+	}
+	.settings-input:focus,
+	.settings-select:focus {
+		border-color: var(--accent);
+	}
+	.settings-note {
+		font-size: 10px;
+		color: var(--text-dim);
+		text-align: center;
+		line-height: 1.45;
+		padding: 8px 4px 2px;
+		font-family: var(--mono);
+	}
+	.settings-token-value {
+		font-size: 12px;
+		color: var(--accent);
+		font-family: var(--mono);
+		font-weight: 700;
+	}
 </style>
 
 <div id="ai-panel">
@@ -1188,7 +1305,7 @@
 			<option value="claude">Claude</option>
 			<option value="deepseek">DeepSeek</option>
 			<option value="openai">OpenAI</option>
-			<option value="llama">Llama</option>
+			<option value="ollama">Ollama</option>
 			<option value="openrouter">OpenRouter</option>
 		</select>
 	</div>
@@ -1366,6 +1483,110 @@
 				><kbd>Shift + Enter</kbd> send &nbsp;·&nbsp;
 				<kbd>Enter</kbd> newline</span
 			>
+		</div>
+	</div>
+
+	<div class="settings-overlay" id="settings-dialog">
+		<div class="settings-head">
+			<span class="settings-title">AI Settings</span>
+			<button class="settings-close" id="settings-close-btn" title="Close">
+				<svg viewBox="0 0 24 24">
+					<line x1="18" y1="6" x2="6" y2="18" />
+					<line x1="6" y1="6" x2="18" y2="18" />
+				</svg>
+			</button>
+		</div>
+		<div class="settings-body">
+			<div class="settings-sec">
+				<span class="settings-sec-title">General</span>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-provider">Active provider</label>
+					<select class="settings-select" id="setting-provider">
+						<option value="gemini">Gemini</option>
+						<option value="claude">Claude</option>
+						<option value="deepseek">DeepSeek</option>
+						<option value="openai">OpenAI</option>
+						<option value="ollama">Ollama</option>
+						<option value="openrouter">OpenRouter</option>
+					</select>
+				</div>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-max-tokens">Max tokens</label>
+					<input class="settings-input" id="setting-max-tokens" type="number" min="1" step="1" />
+				</div>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-temperature">Temperature</label>
+					<input class="settings-input" id="setting-temperature" type="number" min="0" max="1" step="0.1" />
+				</div>
+				<div class="settings-row">
+					<span class="settings-label">Lifetime tokens used</span>
+					<span class="settings-token-value" id="setting-lifetime-tokens">0</span>
+				</div>
+			</div>
+
+			<div class="settings-sec">
+				<span class="settings-sec-title">OpenAI</span>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-model-openai">Model</label>
+					<input class="settings-input" id="setting-model-openai" type="text" />
+				</div>
+			</div>
+
+			<div class="settings-sec">
+				<span class="settings-sec-title">DeepSeek</span>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-model-deepseek">Model</label>
+					<input class="settings-input" id="setting-model-deepseek" type="text" />
+				</div>
+			</div>
+
+			<div class="settings-sec">
+				<span class="settings-sec-title">Claude</span>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-model-claude">Model</label>
+					<input class="settings-input" id="setting-model-claude" type="text" />
+				</div>
+			</div>
+
+			<div class="settings-sec">
+				<span class="settings-sec-title">Gemini</span>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-model-gemini">Model</label>
+					<input class="settings-input" id="setting-model-gemini" type="text" />
+				</div>
+			</div>
+
+			<div class="settings-sec">
+				<span class="settings-sec-title">Ollama</span>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-model-ollama">Model</label>
+					<input class="settings-input" id="setting-model-ollama" type="text" />
+				</div>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-ollama-host">Ollama host</label>
+					<input class="settings-input" id="setting-ollama-host" type="text" />
+				</div>
+			</div>
+
+			<div class="settings-sec">
+				<span class="settings-sec-title">OpenRouter</span>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-model-openrouter">Model</label>
+					<input class="settings-input" id="setting-model-openrouter" type="text" />
+				</div>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-openrouter-site-url">Site URL</label>
+					<input class="settings-input" id="setting-openrouter-site-url" type="url" />
+				</div>
+				<div class="settings-row">
+					<label class="settings-label" for="setting-openrouter-site-name">Site Name</label>
+					<input class="settings-input" id="setting-openrouter-site-name" type="text" />
+				</div>
+			</div>
+
+			<div class="settings-note">
+				Add your API key in the plugin settings on Acode.
+			</div>
 		</div>
 	</div>
 </div>

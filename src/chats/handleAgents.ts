@@ -50,7 +50,7 @@ export async function* sendChat(
 	const model = aiSettings.models[provider]
 	const apiKey = aiSettings.apiKeys[provider]
 
-	const StreamModel = (await require(`./providers/${provider}`)).default
+	const StreamModel = (await require(`./models/${provider}`)).default
 	clg('Provider:', provider, 'Loaded:', StreamModel)
 
 	if (StreamModel) {

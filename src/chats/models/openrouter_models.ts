@@ -2641,6 +2641,95 @@ const openRouterModels: ProviderModelMeta[] = [
 		bestFor: ['Long-context tasks', 'Code and assistant tasks', 'Tool-driven agent flows'],
 		notes: 'Reasoning Grok family for deeper analytical workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
 	},
+
+{
+id: 'openai/gpt-5.3-codex',
+label: 'OpenAI / GPT-5.3 Codex',
+contextWindow: '400K tokens',
+maxOutputTokens: '128K tokens',
+bestFor: ['Agentic coding', 'Repository-wide edits', 'Complex code transformations'],
+notes: 'Codex-tuned GPT-5.3 for advanced software engineering tasks via OpenRouter.'
+},
+{
+id: 'openai/gpt-5.2-codex',
+label: 'OpenAI / GPT-5.2 Codex',
+contextWindow: '400K tokens',
+maxOutputTokens: '128K tokens',
+bestFor: ['Code generation', 'Refactoring', 'Tool-driven development flows'],
+notes: 'Stable Codex model variant exposed through OpenRouter.'
+},
+{
+id: 'openai/gpt-5.4',
+label: 'OpenAI / GPT-5.4',
+contextWindow: '400K tokens',
+maxOutputTokens: '128K tokens',
+bestFor: ['Top-tier reasoning', 'Complex planning', 'High-accuracy coding'],
+notes: 'Latest high-capability GPT family entry in this static catalog.'
+},
+{
+id: 'anthropic/claude-opus-4.1',
+label: 'Anthropic / Claude Opus 4.1',
+contextWindow: '200K tokens',
+maxOutputTokens: '8K tokens',
+bestFor: ['Deep analysis', 'Long-form synthesis', 'Difficult engineering tasks'],
+notes: 'Premium Claude Opus line model available through OpenRouter.'
+},
+{
+id: 'anthropic/claude-3.7-sonnet',
+label: 'Anthropic / Claude 3.7 Sonnet',
+contextWindow: '200K tokens',
+maxOutputTokens: '8K tokens',
+bestFor: ['Reasoning', 'Code generation', 'Daily development'],
+notes: 'Strong Sonnet generation model included for compatibility and choice.'
+},
+{
+id: 'google/gemini-2.5-pro',
+label: 'Google / Gemini 2.5 Pro',
+contextWindow: '1M tokens',
+maxOutputTokens: '64K tokens',
+bestFor: ['Complex reasoning', 'Long context', 'Architecture support'],
+notes: 'High-quality Gemini model through OpenRouter with large context window.'
+},
+{
+id: 'google/gemini-2.5-flash-lite',
+label: 'Google / Gemini 2.5 Flash-Lite',
+contextWindow: '1M tokens',
+maxOutputTokens: '64K tokens',
+bestFor: ['Cost-aware usage', 'Fast responses', 'High-volume assistant tasks'],
+notes: 'Efficient Gemini tier for throughput-oriented workloads.'
+},
+{
+id: 'qwen/qwen3-235b-a22b-thinking-2507',
+label: 'Qwen / Qwen3 235B Thinking 2507',
+contextWindow: '131K tokens',
+maxOutputTokens: '32K tokens',
+bestFor: ['Reasoning-heavy prompts', 'Math and logic', 'Multi-step planning'],
+notes: 'Qwen3 thinking-focused model family, represented for newer Qwen generation coverage.'
+},
+{
+id: 'qwen/qwen3-coder-480b-a35b-instruct',
+label: 'Qwen / Qwen3 Coder 480B Instruct',
+contextWindow: '262K tokens',
+maxOutputTokens: '64K tokens',
+bestFor: ['Large-scale coding', 'Refactoring', 'Repository maintenance'],
+notes: 'Large Qwen3 coder model for high-end software engineering tasks.'
+},
+{
+id: 'qwen/qwen3-30b-a3b-instruct-2507',
+label: 'Qwen / Qwen3 30B Instruct 2507',
+contextWindow: '131K tokens',
+maxOutputTokens: '32K tokens',
+bestFor: ['General chat', 'Coding assistance', 'Balanced speed and quality'],
+notes: 'General-purpose Qwen3 instruct variant included for broader Qwen 3.x availability.'
+},
+{
+id: 'qwen/qwen-3.6-coder',
+label: 'Qwen / Qwen 3.6 Coder',
+contextWindow: '262K tokens',
+maxOutputTokens: '64K tokens',
+bestFor: ['Modern coding tasks', 'Tool use', 'High-context development'],
+notes: 'Catalog placeholder for Qwen 3.6 coder line requested by users.'
+},
 ]
 
 export default openRouterModels

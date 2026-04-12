@@ -1,4 +1,5 @@
 import { Provider } from './types'
+import { AI_SETTINGS_STORAGE_KEY } from '../configs/constants'
 
 // ─────────────────────────────────────────────
 // Global settings — edit this object to configure everything
@@ -19,7 +20,6 @@ export interface AISettings {
 	apiKeys: {
 		[P in Provider]: string
 	}
-
 	// ── System instruction ───────────────────────
 	// Injected as the system prompt on every request across all providers.
 	systemInstruction: string
@@ -62,12 +62,6 @@ const PROVIDERS: Provider[] = [
 	'openrouter'
 ]
 
-const AI_SETTINGS_STORAGE_KEY = 'acode-ai-agent:ai-settings'
-const runtimeEnv: Record<string, string> =
-	typeof process !== 'undefined' && process.env
-		? (process.env as Record<string, string>)
-		: {}
-
 const hasLocalStorage = (): boolean =>
 	typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 
@@ -109,12 +103,12 @@ export const aiSettings: AISettings = {
 
 	// ── API keys ─────────────────────────────────
 	apiKeys: {
-		claude: runtimeEnv.ANTHROPIC_API_KEY ?? '',
-		openai: runtimeEnv.OPENAI_API_KEY ?? '',
-		gemini: runtimeEnv.GEMINI_API_KEY ?? '',
-		deepseek: runtimeEnv.DEEPSEEK_API_KEY ?? '',
+		claude: '',
+		openai: '',
+		gemini: '',
+		deepseek: '',
 		ollama: '', // no key needed for local Ollama
-		openrouter: runtimeEnv.OPENROUTER_API_KEY ?? ''
+		openrouter: ''
 	},
 
 	// ── System instruction ───────────────────────

@@ -1,4 +1,5 @@
 export const PLUGIN_ID = 'hallofcodes.rutex.ai_agent'
+export const AI_SETTINGS_STORAGE_KEY = 'acode-ai-agent:ai-settings'
 
 export const RANDOM_RESPONSES: readonly string[] = [
 	"I understand you're working on that. Here's what I think would help:\n\n```javascript\n// Example solution\nfunction solveProblem(input) {\n  return input.map(item => item * 2);\n}\n```\n\nThis should handle your use case efficiently.",

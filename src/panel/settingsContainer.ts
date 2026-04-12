@@ -9,18 +9,15 @@ saveAiSettingsToLocalStorage
 import { Provider } from '../chats/types'
 import { ProviderModelMeta } from '../chats/models/types'
 
-const DROPDOWN_PROVIDERS: Provider[] = [
-'openai',
-'deepseek',
-'claude',
-'gemini',
-'openrouter'
-]
+const DROPDOWN_PROVIDERS = [
+	'openai',
+	'deepseek',
+	'claude',
+	'gemini',
+	'openrouter'
+] as const satisfies readonly Provider[]
 
 type DropdownProvider = (typeof DROPDOWN_PROVIDERS)[number]
-
-const isDropdownProvider = (provider: Provider): provider is DropdownProvider =>
-DROPDOWN_PROVIDERS.includes(provider)
 
 const modelMetaCache: Partial<Record<Provider, ProviderModelMeta[]>> = {}
 

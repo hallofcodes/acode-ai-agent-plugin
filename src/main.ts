@@ -66,7 +66,7 @@ if (window.acode) {
 				{
 					key: 'deepseek',
 					text: 'DeepSeek API Key',
-					prompt: 'Enter your DeekSeek API Key',
+					prompt: 'Enter your DeepSeek API Key',
 					promptType: 'text',
 					value: saved.deepseek ?? ''
 				},

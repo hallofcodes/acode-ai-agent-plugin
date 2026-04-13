@@ -1,9 +1,8 @@
-export type MessageRole = 'user' | 'ai'
-
 export interface ChatMessage {
-	role: MessageRole
+	role: 'user' | 'assistant'
 	text: string
-	ctxName?: string | null
+	ctx?: string | null
+	modelUsed?: string
 }
 
 export interface ContextFile {

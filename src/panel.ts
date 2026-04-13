@@ -19,6 +19,12 @@ import {
 	formatTokenNumber,
 	addLifetimeTokens
 } from './chats/settings'
+import {
+	retrieveChatHistory,
+	deleteChatHistory,
+	saveChatHistory,
+	newChatHistory
+} from './chats/history/chatHistory'
 
 declare global {
 	interface Window {
@@ -106,10 +112,8 @@ const renderPanel = (container: HTMLElement): void => {
 		el.ontouchmove = event => event.stopPropagation()
 	})
 
-	settingsContainer(container, doc)
-
-	let ctxFiles: ContextFile[] = []
 	let messages: ChatMessage[] = []
+	let ctxFiles: ContextFile[] = []
 	let isStreaming = false
 	let streamTimeout: number | null = null
 	let ctxMenuOpen = false
@@ -141,12 +145,6 @@ const renderPanel = (container: HTMLElement): void => {
 		charCount.classList.toggle('warn', length > 2000)
 	}
 
-	const draftMessage = localStorage.getItem('draft-message')
-	if (draftMessage) inputEl.value = draftMessage
-
-	resize()
-	updateCount()
-
 	let debounceTimer: number | undefined
 
 	const syncInputState = (): void => {
@@ -154,14 +152,14 @@ const renderPanel = (container: HTMLElement): void => {
 		updateCount()
 
 		if (inputEl.value.trim() === '') {
-			localStorage.removeItem('draft-message')
+			window.localStorage?.removeItem('draft-message')
 			return
 		}
 
 		if (debounceTimer != null) window.clearTimeout(debounceTimer)
 
 		debounceTimer = window.setTimeout(() => {
-			localStorage.setItem('draft-message', inputEl.value)
+			window.localStorage?.setItem('draft-message', inputEl.value)
 			debounceTimer = undefined
 		}, 500)
 	}
@@ -213,11 +211,13 @@ const renderPanel = (container: HTMLElement): void => {
 
 	newChatBtn.onclick = () => {
 		messages = []
+		newChatHistory()
 		renderAll()
 	}
 	clearBtn.onclick = () => {
 		messages = []
 		renderAll()
+		deleteChatHistory()
 	}
 	ctxAddBtn.onclick = event =>
 		openContextMenu(event.currentTarget as HTMLElement)
@@ -312,10 +312,20 @@ const renderPanel = (container: HTMLElement): void => {
 		msgsInner
 			.querySelectorAll('.msg-row, .thinking-row')
 			.forEach(node => node.remove())
+
 		emptyState.style.display = messages.length === 0 ? 'flex' : 'none'
+
 		messages.forEach((message, index) =>
 			msgsInner.appendChild(buildRow(message, index))
 		)
+		scrollBottom()
+	}
+
+	function render(): void {
+		if (emptyState.style.display !== 'none') emptyState.style.display = 'none'
+
+		const msgIndex = messages.length - 1
+		msgsInner.appendChild(buildRow(messages[msgIndex], msgIndex))
 		scrollBottom()
 	}
 
@@ -332,9 +342,9 @@ const renderPanel = (container: HTMLElement): void => {
      </div>
      <div class="user-bubble">
       ${
-			msg.ctxName
+			msg.ctx
 				? `<div class="user-ctx-chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(
-						msg.ctxName
+						msg.ctx
 				  )}</div>`
 				: ''
 		}
@@ -363,6 +373,7 @@ const renderPanel = (container: HTMLElement): void => {
 			const editedFiles: EditedFileLines = [
 				{ line: 1, text: '<html>', isAdded: false },
 				{ line: 1, text: '<?php', isAdded: true },
+				{ line: 2, text: '<Hello>', isAdded: false },
 				{ line: 2, text: 'echo "Hello";', isAdded: true },
 				{ line: 3, text: '<div class="msg-actions">', isAdded: false },
 				{
@@ -400,7 +411,7 @@ const renderPanel = (container: HTMLElement): void => {
 					const prev = messages[idx - 1]
 					messages.splice(idx - 1, 2)
 					renderAll()
-					simulateAIResponse(prev.text, prev.ctxName || null)
+					simulateAIResponse(prev.text, prev.ctx || null)
 				}
 			})
 		}
@@ -417,8 +428,6 @@ const renderPanel = (container: HTMLElement): void => {
 	}
 
 	function endStream(): void {
-		localStorage.removeItem('draft-message')
-
 		isStreaming = false
 		sendIcon.style.display = ''
 		stopIcon.style.display = 'none'
@@ -430,13 +439,7 @@ const renderPanel = (container: HTMLElement): void => {
 		renderAll()
 	}
 
-	function simulateAIResponse(
-		userMessage: string,
-		ctxName: string | null
-	): void {
-		emptyState.style.display = 'none'
-		renderAll()
-
+	function simulateAIResponse(userMessage: string, ctx: string | null): void {
 		const thinking = createEl('div')
 		thinking.className = 'thinking-row'
 		thinking.innerHTML =
@@ -449,12 +452,13 @@ const renderPanel = (container: HTMLElement): void => {
 		stopIcon.style.display = ''
 		sendBtn.classList.add('stop')
 		sendBtn.disabled = false
-
+		return
+		/*
 		const randomIndex = Math.floor(Math.random() * RANDOM_RESPONSES.length)
 		let fullResponse = RANDOM_RESPONSES[randomIndex]
 
-		if (ctxName) {
-			fullResponse = `**Context loaded:** ${ctxName}\n\n${fullResponse}`
+		if (ctx) {
+			fullResponse = `**Context loaded:** ${ctx}\n\n${fullResponse}`
 		}
 
 		let aiText = ''
@@ -482,7 +486,7 @@ const renderPanel = (container: HTMLElement): void => {
 					messages.push({ role: 'ai', text: '' })
 					aiIdx = messages.length - 1
 					liveRow = createEl('div')
-					liveRow.className = 'msg-row ai'
+					liveRow.className = 'msg-row assistant'
 					liveRow.innerHTML = `
            <div class="msg-meta">
              <div class="msg-avatar ai-av"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
@@ -532,15 +536,15 @@ const renderPanel = (container: HTMLElement): void => {
 			}
 		}
 
-		streamTimeout = window.setTimeout(sendChunk, 100)
+		streamTimeout = window.setTimeout(sendChunk, 100)*/
 	}
 
 	function handleSend(): void {
-		const userText = inputEl.value
-		if (!userText.trim()) return
+		const text = inputEl.value
+		if (!text.trim()) return
 
-		const ctxName = ctxFiles.length
-			? ctxFiles.map(file => file.uri).join(', ')
+		const ctx = ctxFiles.length
+			? ctxFiles.map(file => file.uri).join(' | ')
 			: null
 
 		ctxFiles = []
@@ -549,9 +553,13 @@ const renderPanel = (container: HTMLElement): void => {
 		updateCount()
 		renderCtxBar()
 
-		messages.push({ role: 'user', text: userText, ctxName })
-		renderAll()
-		simulateAIResponse(userText, ctxName)
+		messages.push({ role: 'user', text, ctx })
+		render()
+
+		saveChatHistory(messages)
+		window.localStorage?.removeItem('draft-message')
+
+		simulateAIResponse(text, ctx)
 	}
 
 	function attachCodeButtons(root: ParentNode | null): void {
@@ -653,10 +661,19 @@ const renderPanel = (container: HTMLElement): void => {
 		},
 		clear: (): void => {
 			messages = []
+			deleteChatHistory()
 			renderAll()
 		}
 	}
 
+	const draftMessage = window.localStorage?.getItem('draft-message')
+	if (draftMessage) inputEl.value = draftMessage
+
+	messages = retrieveChatHistory()
+	settingsContainer(container, doc)
+	scrollBottom()
+	resize()
+	updateCount()
 	renderCtxBar()
 	renderAll()
 	inputEl.focus()

@@ -15,7 +15,8 @@ async function* streamDeepSeek(
 ): AsyncGenerator<StreamChunk> {
 	const client = new OpenAI({
 		apiKey: aiSettings.apiKeys.deepseek,
-		baseURL: 'https://api.deepseek.com'
+		baseURL: 'https://api.deepseek.com',
+		dangerouslyAllowBrowser: true
 	})
 
 	const stream = await client.chat.completions.create(

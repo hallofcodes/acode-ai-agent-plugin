@@ -62,7 +62,7 @@ const PROVIDERS: Provider[] = [
 	'openrouter'
 ]
 
-const hasLocalStorage = (): boolean =>
+export const hasLocalStorage = (): boolean =>
 	typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 
 const toFiniteNumber = (value: unknown): number | null => {

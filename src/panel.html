@@ -563,17 +563,17 @@
 		flex-direction: column;
 		align-items: flex-end;
 	}
-	.msg-row.ai {
+	.msg-row.assistant {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 	}
-	.msg-row.ai {
+	.msg-row.assistant {
 		border-top: 1px solid var(--border);
 		padding-top: 12px;
 		margin-top: 4px;
 	}
-	.msg-row.ai:first-of-type {
+	.msg-row.assistant:first-of-type {
 		border-top: none;
 		margin-top: 0;
 	}
@@ -1601,7 +1601,9 @@
 			<div class="settings-sec">
 				<span class="settings-sec-title">General</span>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-provider">Active provider</label>
+					<label class="settings-label" for="setting-provider"
+						>Active provider</label
+					>
 					<select class="settings-select" id="setting-provider">
 						<option value="gemini">Gemini</option>
 						<option value="claude">Claude</option>
@@ -1612,81 +1614,153 @@
 					</select>
 				</div>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-max-tokens">Max tokens</label>
-					<input class="settings-input" id="setting-max-tokens" type="number" min="1" step="1" />
+					<label class="settings-label" for="setting-max-tokens"
+						>Max tokens</label
+					>
+					<input
+						class="settings-input"
+						id="setting-max-tokens"
+						type="number"
+						min="1"
+						step="1" />
 				</div>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-temperature">Temperature</label>
-					<input class="settings-input" id="setting-temperature" type="number" min="0" max="1" step="0.1" />
+					<label class="settings-label" for="setting-temperature"
+						>Temperature</label
+					>
+					<input
+						class="settings-input"
+						id="setting-temperature"
+						type="number"
+						min="0"
+						max="1"
+						step="0.1" />
 				</div>
 				<div class="settings-row">
 					<span class="settings-label">Lifetime tokens used</span>
-					<span class="settings-token-value" id="setting-lifetime-tokens">0</span>
+					<span class="settings-token-value" id="setting-lifetime-tokens"
+						>0</span
+					>
 				</div>
 			</div>
 
 			<div class="settings-sec">
 				<span class="settings-sec-title">OpenAI</span>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-model-openai-btn">Model</label>
-					<button class="settings-model-trigger" id="setting-model-openai-btn" type="button"></button>
-					<div class="settings-model-info" id="setting-model-info-openai"></div>
+					<label class="settings-label" for="setting-model-openai-btn"
+						>Model</label
+					>
+					<button
+						class="settings-model-trigger"
+						id="setting-model-openai-btn"
+						type="button"></button>
+					<div
+						class="settings-model-info"
+						id="setting-model-info-openai"></div>
 				</div>
 			</div>
 
 			<div class="settings-sec">
 				<span class="settings-sec-title">DeepSeek</span>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-model-deepseek-btn">Model</label>
-					<button class="settings-model-trigger" id="setting-model-deepseek-btn" type="button"></button>
-					<div class="settings-model-info" id="setting-model-info-deepseek"></div>
+					<label class="settings-label" for="setting-model-deepseek-btn"
+						>Model</label
+					>
+					<button
+						class="settings-model-trigger"
+						id="setting-model-deepseek-btn"
+						type="button"></button>
+					<div
+						class="settings-model-info"
+						id="setting-model-info-deepseek"></div>
 				</div>
 			</div>
 
 			<div class="settings-sec">
 				<span class="settings-sec-title">Claude</span>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-model-claude-btn">Model</label>
-					<button class="settings-model-trigger" id="setting-model-claude-btn" type="button"></button>
-					<div class="settings-model-info" id="setting-model-info-claude"></div>
+					<label class="settings-label" for="setting-model-claude-btn"
+						>Model</label
+					>
+					<button
+						class="settings-model-trigger"
+						id="setting-model-claude-btn"
+						type="button"></button>
+					<div
+						class="settings-model-info"
+						id="setting-model-info-claude"></div>
 				</div>
 			</div>
 
 			<div class="settings-sec">
 				<span class="settings-sec-title">Gemini</span>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-model-gemini-btn">Model</label>
-					<button class="settings-model-trigger" id="setting-model-gemini-btn" type="button"></button>
-					<div class="settings-model-info" id="setting-model-info-gemini"></div>
+					<label class="settings-label" for="setting-model-gemini-btn"
+						>Model</label
+					>
+					<button
+						class="settings-model-trigger"
+						id="setting-model-gemini-btn"
+						type="button"></button>
+					<div
+						class="settings-model-info"
+						id="setting-model-info-gemini"></div>
 				</div>
 			</div>
 
 			<div class="settings-sec">
 				<span class="settings-sec-title">Ollama</span>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-model-ollama">Model</label>
-					<input class="settings-input" id="setting-model-ollama" type="text" />
+					<label class="settings-label" for="setting-model-ollama"
+						>Model</label
+					>
+					<input
+						class="settings-input"
+						id="setting-model-ollama"
+						type="text" />
 				</div>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-ollama-host">Ollama host</label>
-					<input class="settings-input" id="setting-ollama-host" type="text" />
+					<label class="settings-label" for="setting-ollama-host"
+						>Ollama host</label
+					>
+					<input
+						class="settings-input"
+						id="setting-ollama-host"
+						type="text" />
 				</div>
 			</div>
 
 			<div class="settings-sec">
 				<span class="settings-sec-title">OpenRouter</span>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-model-openrouter-btn">Model</label>
-					<button class="settings-model-trigger" id="setting-model-openrouter-btn" type="button"></button>
-					<div class="settings-model-info" id="setting-model-info-openrouter"></div>
+					<label class="settings-label" for="setting-model-openrouter-btn"
+						>Model</label
+					>
+					<button
+						class="settings-model-trigger"
+						id="setting-model-openrouter-btn"
+						type="button"></button>
+					<div
+						class="settings-model-info"
+						id="setting-model-info-openrouter"></div>
 				</div>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-openrouter-site-url">Site URL</label>
-					<input class="settings-input" id="setting-openrouter-site-url" type="url" />
+					<label class="settings-label" for="setting-openrouter-site-url"
+						>Site URL</label
+					>
+					<input
+						class="settings-input"
+						id="setting-openrouter-site-url"
+						type="url" />
 				</div>
 				<div class="settings-row">
-					<label class="settings-label" for="setting-openrouter-site-name">Site Name</label>
-					<input class="settings-input" id="setting-openrouter-site-name" type="text" />
+					<label class="settings-label" for="setting-openrouter-site-name"
+						>Site Name</label
+					>
+					<input
+						class="settings-input"
+						id="setting-openrouter-site-name"
+						type="text" />
 				</div>
 			</div>
 

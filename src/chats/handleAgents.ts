@@ -10,7 +10,7 @@
  */
 
 import { aiSettings } from './settings'
-import { StreamChunk, ChatMessage } from './types'
+import { StreamChunk, StreamFunction, ChatMessage } from './types'
 
 // ─────────────────────────────────────────────
 // Main entry point — async generator
@@ -50,14 +50,19 @@ export async function* sendChat(
 	const model = aiSettings.models[provider]
 	const apiKey = aiSettings.apiKeys[provider]
 
-	const StreamModel = (await require(`./models/${provider}`)).default
-	clg('Provider:', provider, 'Loaded:', StreamModel)
+	let StreamModel: StreamFunction
 
-	if (StreamModel) {
-		yield* StreamModel(model, messages, signal)
-	} else {
-		alert(`Unknown provider: "${provider}"`)
+	try {
+		StreamModel = (await require(`./providers/${provider}`)).default
+	} catch {
+		clg(`Unknown provider: "${provider}"`)
+		throw new Error()
 	}
+
+	// Now StreamModel is accessible here
+	clg('Provider:', provider, 'Model:', model, 'API Key:', apiKey)
+
+	yield* StreamModel(model, messages, signal)
 }
 
 // ─────────────────────────────────────────────
@@ -65,10 +70,8 @@ export async function* sendChat(
 // ─────────────────────────────────────────────
 
 export async function example() {
-	aiSettings.provider = 'claude'
 	aiSettings.systemInstruction =
 		'You are a senior software engineer. Be concise.'
-	aiSettings.temperature = 0.4
 
 	const messages: ChatMessage[] = [
 		{ role: 'user', content: 'Explain recursion in one sentence.' }
@@ -77,34 +80,33 @@ export async function example() {
 	// ── Basic streaming ──────────────────────────
 	clg('Response: ')
 
-	for await (const chunk of sendChat(messages)) {
-		if (chunk.type === 'text') {
-			clg(chunk.delta) // append each token as it arrives
-		}
-		if (chunk.type === 'done') {
-			clg(`\n\n[${chunk.provider} / ${chunk.model}]`)
-			clg(
-				`Tokens — in: ${chunk.usage.inputTokens}, out: ${chunk.usage.outputTokens}`
-			)
-		}
-	}
-
 	// ── With stop button (AbortController) ───────
 	const controller = new AbortController()
 
-	// Simulate user clicking stop after 2 seconds
-	setTimeout(() => controller.abort(), 2000)
-
 	try {
 		for await (const chunk of sendChat(messages, controller.signal)) {
-			if (chunk.type === 'text') clg(chunk.delta)
-			if (chunk.type === 'done') clg('\nDone.')
+			clg('In loop')
+			if (chunk.type === 'text') {
+				clg(chunk.delta) // append each token as it arrives
+			} else if (chunk.type === 'done') {
+				clg(`\n\n[${chunk.provider} / ${chunk.model}]`)
+				clg(
+					`Tokens — in: ${chunk.usage.inputTokens}, out: ${chunk.usage.outputTokens}`
+				)
+			} else {
+				clg('Nothing from stream result', chunk)
+			}
 		}
-	} catch (e) {
+	} catch (e: unknown) {
 		if (e instanceof Error && e.name === 'AbortError') {
 			clg('\nStream cancelled by user.')
+		} else if (e instanceof Error) {
+			clg('Error:', e.message)
 		} else {
-			throw e
+			clg('Unknown Error:', e)
 		}
 	}
+
+	// Simulate user clicking stop after 2 seconds
+	setTimeout(() => controller.abort(), 2000)
 }

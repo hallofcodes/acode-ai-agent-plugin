@@ -13,7 +13,10 @@ async function* streamOpenAI(
 	messages: ChatMessage[],
 	signal?: AbortSignal
 ): AsyncGenerator<StreamChunk> {
-	const client = new OpenAI({ apiKey: aiSettings.apiKeys.openai })
+	const client = new OpenAI({
+		apiKey: aiSettings.apiKeys.openai,
+		dangerouslyAllowBrowser: true
+	})
 
 	const stream = await client.chat.completions.create(
 		{

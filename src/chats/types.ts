@@ -1,27 +1,26 @@
-
 // ─────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────
 
-export type Role = "user" | "assistant";
+export type Role = 'user' | 'assistant'
 
 export interface ChatMessage {
-  role: Role;
-  content: string;
+	role: Role
+	content: string
 }
 
 export type Provider =
-  | "claude"
-  | "openai"
-  | "gemini"
-  | "deepseek"
-  | "ollama"
-  | "openrouter";
+	| 'claude'
+	| 'openai'
+	| 'gemini'
+	| 'deepseek'
+	| 'ollama'
+	| 'openrouter'
 
 export interface Usage {
-  inputTokens:  number;
-  outputTokens: number;
-  totalTokens:  number;
+	inputTokens: number
+	outputTokens: number
+	totalTokens: number
 }
 
 /**
@@ -31,6 +30,17 @@ export interface Usage {
  * - { type: "done" }  — stream finished, contains full text + usage stats
  */
 export type StreamChunk =
-  | { type: "text"; delta: string }
-  | { type: "done"; text: string; provider: Provider; model: string; usage: Usage };
-  
+	| { type: 'text'; delta: string }
+	| {
+			type: 'done'
+			text: string
+			provider: Provider
+			model: string
+			usage: Usage
+	  }
+
+export type StreamFunction = (
+	model: string,
+	messages: ChatMessage[],
+	signal?: AbortSignal
+) => AsyncGenerator<StreamChunk>

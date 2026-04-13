@@ -8,9 +8,9 @@ import { Usage, StreamChunk, ChatMessage } from '../types'
 async function* streamOpenRouter(
 	model: string,
 	messages: ChatMessage[],
-	apiKey: string,
 	signal?: AbortSignal
 ): AsyncGenerator<StreamChunk> {
+	clg('Gotten.here')
 	const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
 		method: 'POST',
 		signal,
@@ -38,7 +38,7 @@ async function* streamOpenRouter(
 
 	if (!res.ok) {
 		const err = await res.text()
-		throw new Error(`OpenRouter error ${res.status}: ${err}`)
+		throw new Error(err)
 	}
 
 	const reader = res.body!.getReader()
@@ -48,13 +48,13 @@ async function* streamOpenRouter(
 	let resolvedModel = model
 	let usage: Usage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 }
 
-	while (true) {
-		if (signal?.aborted) break
-
+	while (!signal?.aborted) {
 		const { done, value } = await reader.read()
 		if (done) break
 
 		buffer += decoder.decode(value, { stream: true })
+
+		clg('Buffer', buffer)
 
 		// SSE lines are separated by \n — process each complete line
 		const lines = buffer.split('\n')

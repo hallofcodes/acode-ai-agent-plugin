@@ -3,7 +3,6 @@ import {
 	addLifetimeTokens,
 	aiSettings,
 	formatTokenNumber,
-	loadAiSettingsFromLocalStorage,
 	saveAiSettingsToLocalStorage
 } from '../chats/settings'
 import { Provider } from '../chats/types'
@@ -407,9 +406,6 @@ ${
 		persistSettings()
 	})
 
-	loadAiSettingsFromLocalStorage()
-	refreshSettingsUI()
-
 	doc.addEventListener('click', event => {
 		if (
 			settingsDialogOpen &&
@@ -436,4 +432,5 @@ ${
 	)
 
 	selBtn.disabled = false
+	refreshSettingsUI()
 }

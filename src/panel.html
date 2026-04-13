@@ -1371,6 +1371,60 @@
 		font-family: var(--mono);
 		font-weight: 700;
 	}
+	.history-list {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+	.history-item {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 7px;
+		border: 1px solid var(--border);
+		border-radius: 7px;
+		background: var(--bg-card);
+	}
+	.history-item-title {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		font-family: var(--mono);
+		font-size: 10px;
+		color: var(--text-muted);
+	}
+	.history-item-actions {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+	.history-item-btn {
+		border: 1px solid var(--border);
+		border-radius: 5px;
+		background: transparent;
+		padding: 3px 6px;
+		font-size: 9px;
+		font-family: var(--mono);
+		color: var(--text-muted);
+		cursor: pointer;
+	}
+	.history-item-btn:hover {
+		background: var(--bg-hover);
+		color: var(--text);
+	}
+	.history-item-btn.delete {
+		border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+		color: var(--danger);
+	}
+	.history-empty {
+		padding: 10px;
+		text-align: center;
+		font-family: var(--mono);
+		font-size: 10px;
+		color: var(--text-dim);
+	}
 </style>
 
 <div id="ai-panel">
@@ -1383,6 +1437,12 @@
 		<div class="header-actions">
 			<button class="hbtn" id="new-chat-btn" title="New chat">
 				<svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+			</button>
+			<button class="hbtn" id="history-btn" title="History">
+				<svg viewBox="0 0 24 24">
+					<circle cx="12" cy="12" r="9" />
+					<polyline points="12 7 12 12 16 14" />
+				</svg>
 			</button>
 			<button class="hbtn" id="settings-btn" title="Settings">
 				<svg viewBox="0 0 24 24">
@@ -1775,6 +1835,21 @@
 			<div class="settings-note">
 				Add your API key in the plugin settings on Acode.
 			</div>
+		</div>
+	</div>
+
+	<div class="settings-overlay" id="history-dialog">
+		<div class="settings-head">
+			<span class="settings-title">Chat History</span>
+			<button class="settings-close" id="history-close-btn" title="Close">
+				<svg viewBox="0 0 24 24">
+					<line x1="18" y1="6" x2="6" y2="18" />
+					<line x1="6" y1="6" x2="18" y2="18" />
+				</svg>
+			</button>
+		</div>
+		<div class="settings-body">
+			<div class="history-list" id="history-list"></div>
 		</div>
 	</div>
 </div>

@@ -1,4 +1,3 @@
-import { hasLocalStorage } from '../settings'
 import { ChatMessage } from '../../panel/types'
 import {
 	CHAT_HISTORY_PREFIX,
@@ -15,6 +14,8 @@ type ChatHistoryRecord = {
 	id: string
 	messages: ChatMessage[]
 }
+
+// --- CHECKING hasLocalStorage() IS USELESS SINCE localStorage IS ALWAYS AVAILABLE IN ACODE ---
 
 export type HistoryList = Record<string, string>
 
@@ -65,8 +66,6 @@ const getLocalStorageChat = (chatID: string): ChatMessage[] => {
 }
 
 export const getHistoryList = (): HistoryList => {
-	if (!hasLocalStorage()) return {} as HistoryList
-
 	try {
 		return JSON.parse(
 			localStorage.getItem(CHAT_HISTORY_PREFIX) || '{}'
@@ -77,8 +76,6 @@ export const getHistoryList = (): HistoryList => {
 }
 
 export function editChatHistoryList(historyList: (lists: HistoryList) => void) {
-	if (!hasLocalStorage()) return
-
 	const history = getHistoryList()
 	historyList(history)
 	localStorage.setItem(CHAT_HISTORY_PREFIX, JSON.stringify(history))
@@ -93,10 +90,8 @@ export const saveChatHistory = async (messages: ChatMessage[]) => {
 		const chatName = messages[0]?.text.substring(0, 25)
 		currentChatID = crypto.randomUUID()
 
-		if (hasLocalStorage()) {
-			localStorage.setItem(LAST_ACTIVE_CHAT_HISTORY_KEY, currentChatID)
-			editChatHistoryList(lists => (lists[currentChatID] = chatName))
-		}
+		localStorage.setItem(LAST_ACTIVE_CHAT_HISTORY_KEY, currentChatID)
+		editChatHistoryList(lists => (lists[currentChatID] = chatName))
 	}
 
 	if (supportsIndexedDB()) {
@@ -106,7 +101,7 @@ export const saveChatHistory = async (messages: ChatMessage[]) => {
 		return
 	}
 
-	if (hasLocalStorage()) {
+	else {
 		localStorage.setItem(
 			CHAT_HISTORY_PREFIX + currentChatID,
 			JSON.stringify(messages)
@@ -114,11 +109,12 @@ export const saveChatHistory = async (messages: ChatMessage[]) => {
 	}
 }
 
-export const retrieveChatHistory = async (): Promise<ChatMessage[]> => {
-	if (currentChatID == '') {
-		if (hasLocalStorage()) {
-			currentChatID = localStorage.getItem(LAST_ACTIVE_CHAT_HISTORY_KEY) || ''
-		}
+export const retrieveChatHistory = async (chatID: string | null = null): Promise<ChatMessage[]> => {
+	if (chatID) {
+		currentChatID = chatID
+		localStorage.setItem(LAST_ACTIVE_CHAT_HISTORY_KEY, currentChatID)
+	} else if (currentChatID == '') {
+		currentChatID = localStorage.getItem(LAST_ACTIVE_CHAT_HISTORY_KEY) || ''
 	}
 
 	if (currentChatID === '') return []
@@ -134,7 +130,6 @@ export const retrieveChatHistory = async (): Promise<ChatMessage[]> => {
 		}
 	}
 
-	if (!hasLocalStorage()) return [] as ChatMessage[]
 	return getLocalStorageChat(currentChatID)
 }
 
@@ -152,7 +147,7 @@ export const deleteChatHistory = async (chatID: string | null = null) => {
 		}
 	}
 
-	if (hasLocalStorage()) {
+	else {
 		editChatHistoryList(lists => delete lists[chatID])
 		localStorage.removeItem(CHAT_HISTORY_PREFIX + chatID)
 	}
@@ -166,8 +161,8 @@ export const deleteAllChatHistory = async () => {
 			// no-op fallback: localStorage cleanup below handles legacy entries.
 		}
 	}
-	
-	if (hasLocalStorage()) {
+
+	else {
 		editChatHistoryList(lists => {
 			for (const chatID in lists) {
 				localStorage.removeItem(CHAT_HISTORY_PREFIX + chatID)

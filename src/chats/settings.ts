@@ -25,7 +25,7 @@ export interface AISettings {
 	systemInstruction: string
 
 	// ── Shared inference parameters ──────────────
-	temperature: number // 0–1
+	temperature: number // 0-1
 	maxTokens: number
 
 	// ── Ollama-only ───────────────────────────────
@@ -61,9 +61,6 @@ const PROVIDERS: Provider[] = [
 	'ollama',
 	'openrouter'
 ]
-
-export const hasLocalStorage = (): boolean =>
-	typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 
 const toFiniteNumber = (value: unknown): number | null => {
 	if (typeof value !== 'number' || !Number.isFinite(value)) return null
@@ -116,7 +113,7 @@ export const aiSettings: AISettings = {
 	systemInstruction: 'You are a helpful, concise assistant.',
 
 	// ── Shared inference parameters ──────────────
-	temperature: 0.7, // 0–1
+	temperature: 0.7, // 0-1
 	maxTokens: 2048,
 
 	// ── Ollama-only ───────────────────────────────
@@ -131,7 +128,6 @@ export const aiSettings: AISettings = {
 }
 
 export const saveAiSettingsToLocalStorage = (): void => {
-	if (!hasLocalStorage()) return
 	const persistable: PersistedAISettings = {
 		provider: aiSettings.provider,
 		models: { ...aiSettings.models },
@@ -146,9 +142,9 @@ export const saveAiSettingsToLocalStorage = (): void => {
 }
 
 export const loadAiSettingsFromLocalStorage = (): void => {
-	if (!hasLocalStorage()) return
 	const raw = localStorage.getItem(AI_SETTINGS_STORAGE_KEY)
 	if (!raw) return
+
 	try {
 		const parsed = JSON.parse(raw) as PersistedAISettings
 		const provider = toProvider(parsed.provider)

@@ -13,6 +13,7 @@ import {
 	copyText
 } from './panel/utils'
 import { settingsContainer } from './panel/settingsContainer'
+import { historyContainer } from './panel/historyContainer'
 import {
 	retrieveChatHistory,
 	deleteChatHistory,
@@ -425,7 +426,6 @@ const renderPanel = (container: HTMLElement): void => {
 		msgsInner
 			.querySelectorAll('.thinking-row, .stream-cursor')
 			.forEach(node => node.remove())
-		renderAll()
 	}
 
 
@@ -595,12 +595,17 @@ const renderPanel = (container: HTMLElement): void => {
 		renderAll()
 		scrollBottom()
 	})
+	historyContainer(container, doc, history => {
+		messages = history
+		renderAll()
+		scrollBottom()
+		inputEl.focus()
+	})
 	settingsContainer(container, doc)
 	scrollBottom()
 	resize()
 	updateCount()
 	renderCtxBar()
-	renderAll()
 	inputEl.focus()
 }
 

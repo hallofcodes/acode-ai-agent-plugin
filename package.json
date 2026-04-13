@@ -29,6 +29,7 @@
 	"dependencies": {
 		"@anthropic-ai/sdk": "^0.88.0",
 		"@google/genai": "^1.49.0",
+		"@openrouter/sdk": "^0.12.2",
 		"highlight.js": "^11.11.1",
 		"ollama": "^0.6.3",
 		"openai": "^6.34.0",

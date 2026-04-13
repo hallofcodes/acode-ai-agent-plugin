@@ -31,7 +31,8 @@ export const getFileNameFromPath = (path: string): string => {
 
 export function copyText(
 	text: string,
-	button?: HTMLButtonElement | null
+	button?: HTMLButtonElement | null,
+	doc: Document = document
 ): void {
 	const done = (): void => {
 		if (!button) return
@@ -46,7 +47,7 @@ export function copyText(
 	}
 
 	const fallbackCopy = (): void => {
-		const textarea = Object.assign(createEl('textarea'), { value: text })
+		const textarea = Object.assign(doc.createElement('textarea'), { value: text })
 		textarea.style.cssText = 'position:fixed;opacity:0'
 		doc.body.appendChild(textarea)
 		textarea.select()

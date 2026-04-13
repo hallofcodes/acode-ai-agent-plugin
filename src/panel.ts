@@ -1,6 +1,5 @@
 import panel from './panel.html'
-import { RANDOM_RESPONSES } from './configs/constants'
-import { Provider } from './chats/types'
+import { ChatMessage as AgentChatMessage } from './chats/types'
 import {
 	renderMarkdown,
 	renderEditedFileLines,
@@ -11,21 +10,16 @@ import {
 	decodeBase64Safe,
 	escapeHtml,
 	getElement,
-	getFileNameFromPath,
 	copyText
 } from './panel/utils'
 import { settingsContainer } from './panel/settingsContainer'
-import {
-	aiSettings,
-	formatTokenNumber,
-	addLifetimeTokens
-} from './chats/settings'
 import {
 	retrieveChatHistory,
 	deleteChatHistory,
 	saveChatHistory,
 	newChatHistory
 } from './chats/history/chatHistory'
+import { sendChat } from './chats/handleAgents'
 
 declare global {
 	interface Window {
@@ -116,8 +110,8 @@ const renderPanel = (container: HTMLElement): void => {
 	let messages: ChatMessage[] = []
 	let ctxFiles: ContextFile[] = []
 	let isStreaming = false
-	let streamTimeout: number | null = null
 	let ctxMenuOpen = false
+	let controller: AbortController | null = null
 
 	const aiPanelEl = getElement<HTMLElement>(container, '#ai-panel')
 	const ctxMenuEl = createEl('div')
@@ -337,28 +331,29 @@ const renderPanel = (container: HTMLElement): void => {
 
 		if (msg.role === 'user') {
 			row.innerHTML = `
-     <div class="msg-meta">
-       <div class="msg-avatar user-av"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-       <span class="msg-name">you</span>
-     </div>
-     <div class="user-bubble">
-      ${
-			msg.ctx
-				? `<div class="user-ctx-chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(
+				<div class="msg-meta">
+					<div class="msg-avatar user-av"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+					<span class="msg-name">you</span>
+				</div>
+				<div class="user-bubble">
+					${
 						msg.ctx
-				  )}</div>`
-				: ''
-		}
-      ${esc(msg.text).replace(/ /g, '&nbsp;').replace(/\n/g, '<br>')}
-     </div>
-     <div class="msg-actions">
-       <button class="act-btn copy-btn" title="Copy">
-         <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
-       </button>
-       <button class="act-btn edit-btn" title="Edit &amp; resend">
-         <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> edit
-       </button>
-     </div>`
+							? `<div class="user-ctx-chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(
+									msg.ctx
+							)}</div>`
+							: ''
+					}
+					${esc(msg.text).replace(/ /g, '&nbsp;').replace(/\n/g, '<br>')}
+				</div>
+				<div class="msg-actions">
+					<button class="act-btn copy-btn" title="Copy">
+						<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
+					</button>
+					<button class="act-btn edit-btn" title="Edit &amp; resend">
+						<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> edit
+					</button>
+				</div>
+			`
 
 			const copyBtn = row.querySelector<HTMLButtonElement>('.copy-btn')
 			const editBtn = row.querySelector<HTMLButtonElement>('.edit-btn')
@@ -390,7 +385,7 @@ const renderPanel = (container: HTMLElement): void => {
 					<span class="msg-name">Rutex AI Agent</span>
 				</div>
 				<div class="ai-content">
-					${renderMarkdown(msg.text, esc)}
+					${renderMarkdown(msg.text)}
 					${renderEditedFileLines(editedFiles, esc, 'index.php')}
 				</div>
 				<div class="msg-actions">
@@ -406,13 +401,12 @@ const renderPanel = (container: HTMLElement): void => {
 			const copyBtn = row.querySelector<HTMLButtonElement>('.copy-btn')
 			const regenBtn = row.querySelector<HTMLButtonElement>('.regen-btn')
 			attachCodeButtons(aiContent)
-			copyBtn?.addEventListener('click', () => copyText(msg.text, copyBtn))
+			copyBtn?.addEventListener('click', () => copyText(msg.text, copyBtn, doc))
 			regenBtn?.addEventListener('click', () => {
 				if (idx > 0) {
-					const prev = messages[idx - 1]
-					messages.splice(idx - 1, 2)
+					messages.splice(idx - 1)
 					renderAll()
-					simulateAIResponse(prev.text, prev.ctx || null)
+					simulateAIResponse()
 				}
 			})
 		}
@@ -421,14 +415,8 @@ const renderPanel = (container: HTMLElement): void => {
 	}
 
 	function stopStream(): void {
-		if (streamTimeout != null) {
-			window.clearTimeout(streamTimeout)
-			streamTimeout = null
-		}
-		endStream()
-	}
-
-	function endStream(): void {
+		controller?.abort()
+		controller = null
 		isStreaming = false
 		sendIcon.style.display = ''
 		stopIcon.style.display = 'none'
@@ -440,7 +428,12 @@ const renderPanel = (container: HTMLElement): void => {
 		renderAll()
 	}
 
-	function simulateAIResponse(): void {
+
+
+	// ─────────────────────────────────────────────
+	// REAL AI RESPONSE STREAMING
+	// ─────────────────────────────────────────────
+	async function simulateAIResponse(): Promise<void> {
 		const thinking = createEl('div')
 		thinking.className = 'thinking-row'
 		thinking.innerHTML =
@@ -448,48 +441,90 @@ const renderPanel = (container: HTMLElement): void => {
 		msgsInner.appendChild(thinking)
 		scrollBottom()
 
+		controller = new AbortController()
 		isStreaming = true
 		sendIcon.style.display = 'none'
 		stopIcon.style.display = ''
 		sendBtn.classList.add('stop')
 		sendBtn.disabled = false
 
-		let aiIdx: number | null = null
-		let liveRow: HTMLDivElement | null = null
-		let liveContent: HTMLElement | null = null
+		messages.push({ role: 'assistant', text: '' })
+		let aiIdx = messages.length - 1
 
-      // --- INITIAL AI RESPONSE HTML ---
+		let liveRow: HTMLDivElement | null = null
+		let liveContent: HTMLDivElement | null = null
+
+		let lastHistoryWorkspace: string | undefined = undefined
+
+		const messagesForAI = messages.map((m: ChatMessage): AgentChatMessage => {
+			let ctx = `========= USER CONTEXT =========\n`
+
+			if (m.ctx) {
+				ctx += `FILES ATTACHED: ${m.ctx}\n`
+			}
+
+			if (m.workspaceUsed !== lastHistoryWorkspace && m.workspaceUsed) {
+				ctx += `ACTIVE WORKSPACE: ${m.workspaceUsed}\n`
+				lastHistoryWorkspace = m.workspaceUsed
+			}
+
+			return {
+				role: m.role,
+				content: ctx + m.text
+			}
+		})
+
+		const initializeLiveResponse = (): HTMLDivElement | null => {
 			thinking.remove()
-			messages.push({ role: 'ai', text: '' })
-			aiIdx = messages.length - 1
 			liveRow = createEl('div')
 			liveRow.className = 'msg-row assistant'
 			liveRow.innerHTML = `
-     <div class="msg-meta">
-       <div class="msg-avatar ai-av"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-       <span class="msg-name">Rutex AI Agent</span>
-     </div>
-     <div class="ai-content" id="live-ai-content"></div>`
+				<div class="msg-meta">
+					<div class="msg-avatar ai-av"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+					<span class="msg-name">Rutex AI Agent</span>
+				</div>
+				<div class="ai-content" id="live-ai-content"></div>
+			`
 			msgsInner.appendChild(liveRow)
-			liveContent =
-				liveRow.querySelector<HTMLElement>('#live-ai-content')
+			return liveRow.querySelector<HTMLDivElement>('#live-ai-content')
 		}
 
-		const sendChunk = (): void => {
-				aiText += chunks[chunkIndex]
-				if (aiIdx != null) {
-					messages[aiIdx].text = aiText
-				}
+		try {
+			for await (const chunk of sendChat(messagesForAI, controller.signal)) {
 
-				if (liveContent) {
-					liveContent.innerHTML =
-						renderMarkdown(aiText, esc) +
-						'<span class="stream-cursor"></span>'
-					attachCodeButtons(liveContent)
+				if (chunk.type === 'text') {
+					// --- INITIAL AI RESPONSE HTML ---
+					if (!liveContent) {
+						liveContent = initializeLiveResponse()
+					}
+
+					// --- STREAMING RESPONSE UPDATE ---
+					else {
+						messages[aiIdx].text += chunk.delta
+
+						liveContent.innerHTML = renderMarkdown(messages[aiIdx].text) + '<span class="stream-cursor"></span>'
+						attachCodeButtons(liveContent)
+						scrollBottom()
+					}
 				}
-				scrollBottom()
 			}
+		} catch (e: unknown) {
+			let errMsg = 'An error occurred while generating the response: '
+
+			if (e instanceof Error && e.name === 'AbortError') {
+				// clg('\nStream cancelled by user.')
+			} else if (e instanceof Error) {
+				errMsg += e.message
+				stopStream()
+			} else {
+				errMsg += String(e)
+				stopStream()
+			}
+
+			if (!liveContent) liveContent = initializeLiveResponse()
+			if (liveContent) liveContent.innerHTML = liveContent.innerHTML + `<div class="error">${esc(errMsg)}</div>`
 		}
+
 	}
 
 	function handleSend(): void {
@@ -506,13 +541,13 @@ const renderPanel = (container: HTMLElement): void => {
 		updateCount()
 		renderCtxBar()
 
-		messages.push({ role: 'user', text, ctx })
+		messages.push({ role: 'user', text, ctx, workspaceUsed: getWorkspaceFolders().join(' | ') })
 		render()
 
 		saveChatHistory(messages)
 		window.localStorage?.removeItem('draft-message')
 
-		simulateAIResponse(text, ctx)
+		simulateAIResponse()
 	}
 
 	function attachCodeButtons(root: ParentNode | null): void {

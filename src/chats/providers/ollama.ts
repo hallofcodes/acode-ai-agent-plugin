@@ -1,4 +1,4 @@
-import { Ollama } from 'ollama/browser'
+import { Ollama } from 'ollama'
 import { aiSettings } from '../settings'
 import { StreamChunk, ChatMessage } from '../types'
 
@@ -11,7 +11,7 @@ async function* streamOllama(
 	messages: ChatMessage[],
 	signal?: AbortSignal
 ): AsyncGenerator<StreamChunk> {
-	const config = {}
+	const config: Record<string, any> = {}
 
 	if (aiSettings.ollamaHost.length) config['host'] = aiSettings.ollamaHost
 	if (aiSettings.apiKeys.ollama.length)

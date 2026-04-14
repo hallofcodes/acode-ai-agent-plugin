@@ -21,6 +21,7 @@ import {
    newChatHistory,
 } from "./chats/history/chatHistory";
 import { sendChat } from "./chats/handleAgents";
+import { addLifetimeTokens, aiSettings, formatTokenNumber } from "./chats/settings";
 
 declare global {
    interface Window {
@@ -422,12 +423,15 @@ const renderPanel = (container: HTMLElement): void => {
 					${renderEditedFileLines(editedFiles, esc, "index.php")}
 				</div>
 				<div class="msg-actions">
-					<button class="act-btn copy-btn" title="Copy">
-						<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
-					</button>
-					<button class="act-btn regen-btn" title="Retry">
-						<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10"/></svg> retry
-					</button>
+					<div class="msg-action-group">
+						<button class="act-btn copy-btn" title="Copy">
+							<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
+						</button>
+						<button class="act-btn regen-btn" title="Retry">
+							<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10"/></svg> retry
+						</button>
+					</div>
+					<span class="msg-model-tag">${esc(msg.modelUsed || '')}</span>
 				</div>`;
 
          addFinishUp(row, idx, msg.text);
@@ -567,12 +571,15 @@ const renderPanel = (container: HTMLElement): void => {
 						const actionBtns = createEl("div");
 						actionBtns.className = "msg-actions";
 						actionBtns.innerHTML = `
-							<button class="act-btn copy-btn" title="Copy">
-								<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
-							</button>
-							<button class="act-btn regen-btn" title="Retry">
-								<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10"/></svg> retry
-							</button>
+                     <div class="msg-action-group">
+								<button class="act-btn copy-btn" title="Copy">
+									<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
+								</button>
+								<button class="act-btn regen-btn" title="Retry">
+									<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10"/></svg> retry
+								</button>
+                     </div>
+                     <span class="msg-model-tag">${esc(chunk.model)}</span>
 						`
 
 						liveRow.appendChild(actionBtns)
@@ -585,6 +592,10 @@ const renderPanel = (container: HTMLElement): void => {
 							saveDebounceTimer = undefined;
 						}
 
+						addLifetimeTokens(chunk.usage.totalTokens)
+						lifetimeTokensEl.textContent = formatTokenNumber(aiSettings.lifetimeTokensUsed)
+
+						messages[aiIdx].modelUsed = chunk.model;
 						void saveChatHistory(messages);
 					}
             }
@@ -631,6 +642,7 @@ const renderPanel = (container: HTMLElement): void => {
          workspaceUsed: getWorkspaceFolders().join(" | "),
 			activeFile: editorManager.activeFile?.uri
       });
+      autoScrollEnabled = true;
       render();
 
       void saveChatHistory(messages);
@@ -652,8 +664,9 @@ const renderPanel = (container: HTMLElement): void => {
          });
    }
 
-   function scrollBottom(): void {
-		if (!autoScrollEnabled) return;
+   function scrollBottom(force = false): void {
+		if (!force && !autoScrollEnabled) return;
+		autoScrollEnabled = true;
       msgsWrap.scrollTop = msgsWrap.scrollHeight;
    }
 
@@ -682,16 +695,16 @@ const renderPanel = (container: HTMLElement): void => {
    void retrieveChatHistory().then((history) => {
       messages = history;
       renderAll();
-      scrollBottom();
+      scrollBottom(true);
    });
    historyContainer(container, doc, (history) => {
       messages = history;
       renderAll();
-      scrollBottom();
+      scrollBottom(true);
       inputEl.focus();
    });
+
    settingsContainer(container, doc);
-   scrollBottom();
    resize();
    updateCount();
    renderCtxBar();

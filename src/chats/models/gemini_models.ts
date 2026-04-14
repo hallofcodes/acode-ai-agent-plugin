@@ -10,7 +10,7 @@ const geminiModels: ProviderModelMeta[] = [
 		notes: 'Flagship model with "Thinking" mode and 200k max output.'
 	},
 	{
-		id: 'gemini-3.1-flash-preview',
+		id: 'gemini-3.1-flash-lite-preview',
 		label: 'Gemini 3.1 Flash',
 		contextWindow: '1M tokens',
 		maxOutputTokens: '128K tokens',

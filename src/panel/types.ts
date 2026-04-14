@@ -4,6 +4,7 @@ export interface ChatMessage {
 	ctx?: string | null
 	modelUsed?: string
 	workspaceUsed?: string
+	activeFile?: string
 }
 
 export interface ContextFile {

@@ -94,7 +94,7 @@ export const aiSettings: AISettings = {
 		openai: 'gpt-5.3-codex', // gpt-4.1 | gpt-5.4 | o3 | o4-mini
 		gemini: 'gemini-3-flash-preview', // gemini-2.5-pro | gemini-3-flash-preview
 		deepseek: 'deepseek-chat', // deepseek-reasoner (thinking/CoT mode)
-		ollama: 'llama3.1', // any model pulled locally
+		ollama: 'gwen3.5', // any model pulled locally
 		openrouter: 'anthropic/claude-opus-4.1' // <provider>/<model> — 300+ available
 	},
 

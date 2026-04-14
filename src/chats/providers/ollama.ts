@@ -24,8 +24,6 @@ async function* streamOllama(
 		}
 	}
 
-	clg(`Connecting to Ollama with config:`, config)
-
 	let ollama: Ollama
 
 	if (aiSettings.ollamaHost.length) {
@@ -85,7 +83,7 @@ async function* streamOllama(
 			}
 		}
 	} catch (error: any) {
-		const activeHost = aiSettings.ollamaHost || 'http://127.0.0.1:11434 (default local host)'
+		const activeHost = aiSettings.ollamaHost
 		const reason = error instanceof Error ? error.message : 'unknown network error'
 		throw new Error(
 			`Failed to connect to Ollama at ${activeHost}. ${reason}`

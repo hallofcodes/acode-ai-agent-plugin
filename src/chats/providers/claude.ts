@@ -6,7 +6,7 @@ import { StreamChunk, ChatMessage } from '../types'
 // Claude
 // ─────────────────────────────────────────────
 
-async function* streamClaude(
+export default async function* (
 	model: string,
 	messages: ChatMessage[],
 	signal?: AbortSignal
@@ -32,7 +32,7 @@ async function* streamClaude(
 		) {
 			const delta = event.delta.text
 			fullText += delta
-			yield { type: 'text', delta }
+			yield { type: 'text', delta, model }
 		}
 	}
 
@@ -51,5 +51,3 @@ async function* streamClaude(
 		}
 	}
 }
-
-export default streamClaude

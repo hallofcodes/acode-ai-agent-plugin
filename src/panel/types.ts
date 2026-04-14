@@ -2,7 +2,7 @@ export interface ChatMessage {
 	role: 'user' | 'assistant'
 	text: string
 	ctx?: string | null
-	ctxName?: string | null
+	ctxName?: string[] | null
 	modelUsed?: string
 	workspaceUsed?: string
 	activeFile?: string

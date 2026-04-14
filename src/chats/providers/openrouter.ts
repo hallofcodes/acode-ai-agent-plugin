@@ -6,7 +6,7 @@ import { Usage, StreamChunk, ChatMessage } from '../types'
 // OpenRouter  (official @openrouter/sdk)
 // ─────────────────────────────────────────────
 
-async function* streamOpenRouter(
+export default async function* (
 	model: string,
 	messages: ChatMessage[],
 	signal?: AbortSignal
@@ -49,7 +49,7 @@ async function* streamOpenRouter(
 		const delta = chunk.choices[0]?.delta?.content ?? ''
 		if (delta) {
 			fullText += delta
-			yield { type: 'text', delta }
+			yield { type: 'text', model: resolvedModel, delta }
 		}
 
 		if (chunk.usage) {
@@ -69,5 +69,3 @@ async function* streamOpenRouter(
 		usage
 	}
 }
-
-export default streamOpenRouter

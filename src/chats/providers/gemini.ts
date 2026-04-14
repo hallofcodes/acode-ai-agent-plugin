@@ -6,7 +6,7 @@ import { Usage, StreamChunk, ChatMessage } from '../types'
 // Gemini
 // ─────────────────────────────────────────────
 
-async function* streamGemini(
+export default async function* (
 	model: string,
 	messages: ChatMessage[],
 	signal?: AbortSignal
@@ -37,7 +37,7 @@ async function* streamGemini(
 		const delta = chunk.text ?? ''
 		if (delta) {
 			fullText += delta
-			yield { type: 'text', delta }
+			yield { type: 'text', delta, model }
 		}
 
 		// Gemini sends usageMetadata on each chunk; the last one has the final totals
@@ -62,5 +62,3 @@ async function* streamGemini(
 
 	yield { type: 'done', text: fullText, provider: 'gemini', model, usage }
 }
-
-export default streamGemini

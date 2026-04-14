@@ -1,6 +1,6 @@
 import { ProviderModelMeta } from './types'
 
-const geminiModels: ProviderModelMeta[] = [
+export default [
 	{
 		id: 'gemini-3.1-pro-preview',
 		label: 'Gemini 3.1 Pro',
@@ -88,7 +88,5 @@ const geminiModels: ProviderModelMeta[] = [
 		maxOutputTokens: '64K tokens',
 		bestFor: ['Low-cost tasks', 'High-volume chat', 'Simple assistance'],
 		notes: 'Cheaper fast model for lightweight requests.'
-	},
-]
-
-export default geminiModels
+	}
+] as const satisfies ProviderModelMeta[]

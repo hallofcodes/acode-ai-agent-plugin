@@ -2,14 +2,7 @@ import { Provider } from '../chats/types'
 import { PLUGIN_ID } from '../configs/constants'
 import { aiSettings } from '../chats/settings'
 
-export interface PluginSettings {
-	claude: string
-	openai: string
-	gemini: string
-	ollama: string
-	deepseek: string
-	openrouter: string
-}
+export type PluginSettings = Record<Provider, string>
 
 type UpdateFn = (
 	v: Partial<Acode.ISettings>,

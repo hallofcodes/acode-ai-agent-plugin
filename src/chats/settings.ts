@@ -16,6 +16,11 @@ export interface AISettings {
 		[P in Provider]: string
 	}
 
+	// ── Provider Labels ───────────────────────
+	providers: {
+		[P in Provider]: string
+	}
+
 	// ── API keys ─────────────────────────────────
 	apiKeys: {
 		[P in Provider]: string
@@ -44,6 +49,7 @@ type PersistedAISettings = Partial<
 		AISettings,
 		| 'provider'
 		| 'models'
+		| 'providers'
 		| 'temperature'
 		| 'maxTokens'
 		| 'ollamaHost'
@@ -53,35 +59,9 @@ type PersistedAISettings = Partial<
 	>
 >
 
-const PROVIDERS: Provider[] = [
-	'claude',
-	'openai',
-	'gemini',
-	'deepseek',
-	'ollama',
-	'openrouter'
-]
-
 const toFiniteNumber = (value: unknown): number | null => {
 	if (typeof value !== 'number' || !Number.isFinite(value)) return null
 	return value
-}
-
-const toProvider = (value: unknown): Provider | null => {
-	if (typeof value !== 'string') return null
-	return PROVIDERS.includes(value as Provider) ? (value as Provider) : null
-}
-
-const normalizeModels = (models: unknown): AISettings['models'] | null => {
-	if (!models || typeof models !== 'object') return null
-	const next = { ...aiSettings.models }
-	for (const provider of PROVIDERS) {
-		const model = (models as Record<string, unknown>)[provider]
-		if (typeof model === 'string' && model.trim() !== '') {
-			next[provider] = model.trim()
-		}
-	}
-	return next
 }
 
 export const aiSettings: AISettings = {
@@ -94,6 +74,7 @@ export const aiSettings: AISettings = {
 		openai: 'gpt-5.3-codex', // gpt-4.1 | gpt-5.4 | o3 | o4-mini
 		gemini: 'gemini-3-flash-preview', // gemini-2.5-pro | gemini-3-flash-preview
 		deepseek: 'deepseek-chat', // deepseek-reasoner (thinking/CoT mode)
+		qwen: 'qwen3-coder-plus', // qwen3.5
 		ollama: 'qwen3.5', // any model pulled locally
 		openrouter: 'anthropic/claude-opus-4.1' // <provider>/<model> — 300+ available
 	},
@@ -104,8 +85,20 @@ export const aiSettings: AISettings = {
 		openai: '',
 		gemini: '',
 		deepseek: '',
+		qwen: '',
 		ollama: '',
 		openrouter: ''
+	},
+
+	// ── Provider Labels ─────────────────────────────────
+	providers: {
+		claude: 'Claude',
+		openai: 'OpenAI',
+		gemini: 'Gemini',
+		deepseek: 'DeepSeek',
+		qwen: 'Qwen',
+		ollama: 'Ollama',
+		openrouter: 'OpenRouter',
 	},
 
 	// ── System instruction ───────────────────────
@@ -147,11 +140,10 @@ export const loadAiSettingsFromLocalStorage = (): void => {
 
 	try {
 		const parsed = JSON.parse(raw) as PersistedAISettings
-		const provider = toProvider(parsed.provider)
-		if (provider) aiSettings.provider = provider
 
-		const models = normalizeModels(parsed.models)
-		if (models) aiSettings.models = models
+		if (typeof parsed.provider === 'string')
+			aiSettings.provider = parsed.provider as Provider
+		if (typeof parsed.models === 'string') aiSettings.models = parsed.models
 
 		const temperature = toFiniteNumber(parsed.temperature)
 		if (temperature !== null)

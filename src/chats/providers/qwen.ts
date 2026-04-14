@@ -3,9 +3,7 @@ import { aiSettings } from '../settings'
 import { StreamChunk, ChatMessage } from '../types'
 
 // ─────────────────────────────────────────────
-// DeepSeek  (OpenAI-compatible)
-// deepseek-chat      → standard
-// deepseek-reasoner  → thinking/CoT mode (reasoning_content in raw)
+// Qwen (OpenAI-compatible)
 // ─────────────────────────────────────────────
 
 export default async function* (
@@ -14,8 +12,8 @@ export default async function* (
 	signal?: AbortSignal
 ): AsyncGenerator<StreamChunk> {
 	const client = new OpenAI({
-		apiKey: aiSettings.apiKeys.deepseek,
-		baseURL: 'https://api.deepseek.com',
+		apiKey: aiSettings.apiKeys.qwen,
+		baseURL: 'https://qwen.aikit.club',
 		dangerouslyAllowBrowser: true
 	})
 
@@ -44,7 +42,7 @@ export default async function* (
 		const delta = chunk.choices[0]?.delta?.content ?? ''
 		if (delta) {
 			fullText += delta
-			yield { type: 'text', delta, model }
+			yield { type: 'text', model: resolvedModel, delta }
 		}
 	}
 

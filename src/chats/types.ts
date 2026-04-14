@@ -14,6 +14,7 @@ export type Provider =
 	| 'deepseek'
 	| 'ollama'
 	| 'openrouter'
+	| 'qwen'
 
 export interface Usage {
 	inputTokens: number
@@ -28,7 +29,7 @@ export interface Usage {
  * - { type: "done" }  — stream finished, contains full text + usage stats
  */
 export type StreamChunk =
-	| { type: 'text'; delta: string }
+	| { type: 'text'; delta: string; model?: string }
 	| {
 			type: 'done'
 			text: string

@@ -13,7 +13,8 @@ const DROPDOWN_PROVIDERS = [
 	'deepseek',
 	'claude',
 	'gemini',
-	'openrouter'
+	'openrouter',
+	'qwen'
 ] as const satisfies readonly Provider[]
 
 type DropdownProvider = (typeof DROPDOWN_PROVIDERS)[number]
@@ -77,6 +78,10 @@ export const settingsContainer = (container: HTMLElement, doc: Document) => {
 		container,
 		'#setting-model-gemini-btn'
 	)
+	const modelQwenTrigger = getElement<HTMLButtonElement>(
+		container,
+		'#setting-model-qwen-btn'
+	)
 	const modelOllamaInput = getElement<HTMLInputElement>(
 		container,
 		'#setting-model-ollama'
@@ -101,6 +106,10 @@ export const settingsContainer = (container: HTMLElement, doc: Document) => {
 		container,
 		'#setting-model-info-gemini'
 	)
+	const modelInfoQwen = getElement<HTMLElement>(
+		container,
+		'#setting-model-info-qwen'
+	)
 	const modelInfoOpenRouter = getElement<HTMLElement>(
 		container,
 		'#setting-model-info-openrouter'
@@ -123,6 +132,7 @@ export const settingsContainer = (container: HTMLElement, doc: Document) => {
 		deepseek: modelDeepSeekTrigger,
 		claude: modelClaudeTrigger,
 		gemini: modelGeminiTrigger,
+		qwen: modelQwenTrigger,
 		openrouter: modelOpenRouterTrigger
 	}
 
@@ -131,6 +141,7 @@ export const settingsContainer = (container: HTMLElement, doc: Document) => {
 		deepseek: modelInfoDeepSeek,
 		claude: modelInfoClaude,
 		gemini: modelInfoGemini,
+		qwen: modelInfoQwen,
 		openrouter: modelInfoOpenRouter
 	}
 
@@ -225,6 +236,10 @@ ${
 			'gemini',
 			aiSettings.models.gemini
 		)
+		modelQwenTrigger.textContent = getModelLabel(
+			'qwen',
+			aiSettings.models.qwen
+		)
 		modelOllamaInput.value = aiSettings.models.ollama
 		modelOpenRouterTrigger.textContent = getModelLabel(
 			'openrouter',
@@ -234,6 +249,7 @@ ${
 		renderModelInfo('deepseek')
 		renderModelInfo('claude')
 		renderModelInfo('gemini')
+		renderModelInfo('qwen')
 		renderModelInfo('openrouter')
 		ollamaHostInput.value = aiSettings.ollamaHost
 		openRouterSiteUrlInput.value = aiSettings.openRouterSiteUrl

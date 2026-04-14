@@ -59,9 +59,6 @@ export async function* sendChat(
 		throw new Error()
 	}
 
-	// Now StreamModel is accessible here
-	clg('Provider:', provider, 'Model:', model, 'API Key:', apiKey)
-
 	yield* StreamModel(model, messages, signal)
 }
 

@@ -8,7 +8,7 @@ import { Usage, StreamChunk, ChatMessage } from '../types'
 // For coding agent tasks: gpt-5.3-codex | gpt-5.2-codex
 // ─────────────────────────────────────────────
 
-async function* streamOpenAI(
+export default async function* (
 	model: string,
 	messages: ChatMessage[],
 	signal?: AbortSignal
@@ -45,7 +45,7 @@ async function* streamOpenAI(
 		const delta = chunk.choices[0]?.delta?.content ?? ''
 		if (delta) {
 			fullText += delta
-			yield { type: 'text', delta }
+			yield { type: 'text', model: resolvedModel, delta }
 		}
 
 		// OpenAI sends usage in the final chunk when stream_options.include_usage is set
@@ -66,5 +66,3 @@ async function* streamOpenAI(
 		usage
 	}
 }
-
-export default streamOpenAI

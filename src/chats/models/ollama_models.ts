@@ -1,6 +1,6 @@
 import { ProviderModelMeta } from './types'
 
-const ollamaModels: ProviderModelMeta[] = [
+export default [
 	{
 		id: 'llama3.1',
 		label: 'Llama 3.1',
@@ -9,6 +9,4 @@ const ollamaModels: ProviderModelMeta[] = [
 		bestFor: ['Offline/local inference', 'Privacy-first workflows'],
 		notes: 'Local model info depends on what is installed in Ollama.'
 	}
-]
-
-export default ollamaModels
+] as const satisfies ProviderModelMeta[]

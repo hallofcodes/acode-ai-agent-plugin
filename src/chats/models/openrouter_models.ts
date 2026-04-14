@@ -1,6 +1,6 @@
 import { ProviderModelMeta } from './types'
 
-const openRouterModels: ProviderModelMeta[] = [
+export default [
 	// ─── Anthropic ─────────────────────────────────────────────────────────────────
 	{
 		id: 'anthropic/claude-opus-4.1',
@@ -4338,6 +4338,4 @@ const openRouterModels: ProviderModelMeta[] = [
 		bestFor: ['Trying free models', 'Prototyping', 'General tasks'],
 		notes: 'Automatically routes to the best available free model for your request. Good starting point.'
 	}
-]
-
-export default openRouterModels
+] as const satisfies ProviderModelMeta[]

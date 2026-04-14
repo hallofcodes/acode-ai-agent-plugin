@@ -1,6 +1,6 @@
 import { ProviderModelMeta } from './types'
 
-const claudeModels: ProviderModelMeta[] = [
+export default [
 	{
 		id: 'claude-opus-4-6',
 		label: 'Claude Opus 4.6',
@@ -61,6 +61,4 @@ const claudeModels: ProviderModelMeta[] = [
 		bestFor: ['Fast responses', 'Low-latency tasks', 'Lightweight chats'],
 		notes: 'Best speed/cost profile in Claude family.'
 	}
-]
-
-export default claudeModels
+] as const satisfies ProviderModelMeta[]

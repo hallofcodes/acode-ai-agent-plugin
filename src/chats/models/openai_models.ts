@@ -1,6 +1,6 @@
 import { ProviderModelMeta } from './types'
 
-const openaiModels: ProviderModelMeta[] = [
+export default [
 	{
 		id: 'gpt-5.3-codex',
 		label: 'GPT-5.3 Codex',
@@ -85,6 +85,4 @@ const openaiModels: ProviderModelMeta[] = [
 		bestFor: ['Fast reasoning', 'Lower-cost automation', 'Structured tasks'],
 		notes: 'Reasoning optimized with lower latency.'
 	}
-]
-
-export default openaiModels
+] as const satisfies ProviderModelMeta[]

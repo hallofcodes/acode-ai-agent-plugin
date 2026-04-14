@@ -16,7 +16,17 @@ import { Provider } from "./chats/types";
 import { deleteAllChatHistory } from "./chats/history/chatHistory";
 
 function clg(...messages: unknown[]) {
-   alert(messages.join(" "));
+	let newMsg = ''
+
+	messages.forEach(msg => {
+		if (typeof msg === 'object') {
+			newMsg += JSON.stringify(msg, null, 2) + ' '
+		} else {
+			newMsg += String(msg) + ' '
+		}
+	});
+
+	alert(newMsg.trim())
 }
 window.clg = clg;
 

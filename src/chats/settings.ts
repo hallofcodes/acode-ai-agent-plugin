@@ -117,7 +117,7 @@ export const aiSettings: AISettings = {
 	maxTokens: 2048,
 
 	// ── Ollama-only ───────────────────────────────
-	ollamaHost: '',
+	ollamaHost: 'http://127.0.0.1:11434',
 
 	// ── OpenRouter-only (optional attribution) ────
 	openRouterSiteUrl: '',

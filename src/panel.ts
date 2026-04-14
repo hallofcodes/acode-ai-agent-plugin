@@ -705,6 +705,7 @@ const renderPanel = (container: HTMLElement): void => {
    });
 
    settingsContainer(container, doc);
+	scrollBottom(true);
    resize();
    updateCount();
    renderCtxBar();

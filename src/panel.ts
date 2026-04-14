@@ -31,7 +31,6 @@ declare global {
 const renderPanel = (container: HTMLElement): void => {
    const getWorkspaceFolders = () =>
       window.addedFolder?.map((folder) => folder.url);
-   //clg(workspaceFolders.join(' | '))
 
    const getActiveFiles = () => {
       const workspaceFolders = getWorkspaceFolders();
@@ -65,8 +64,6 @@ const renderPanel = (container: HTMLElement): void => {
          })
          .filter((item) => item != null);
    };
-
-   //activeFiles.forEach(file => clg('Preview Name:', file.previewName))
 
    container.style.padding = "0";
    container.innerHTML = panel;
@@ -339,7 +336,7 @@ const renderPanel = (container: HTMLElement): void => {
 
       regenBtn?.addEventListener("click", () => {
          if (idx > 0) {
-            messages.splice(idx - 1);
+            messages.splice(idx);
             renderAll();
             simulateAIResponse();
          }
@@ -359,9 +356,9 @@ const renderPanel = (container: HTMLElement): void => {
 				</div>
 				<div class="user-bubble">
 					${
-                  msg.ctx
+                  msg.ctxName
                      ? `<div class="user-ctx-chip"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${esc(
-                          msg.ctx,
+                          msg.ctxName,
                        )}</div>`
                      : ""
                }
@@ -384,7 +381,7 @@ const renderPanel = (container: HTMLElement): void => {
          editBtn?.addEventListener("click", () => {
             if (idx > 0) {
                inputEl.value = msg.text;
-               messages.splice(idx - 2);
+               messages.splice(idx - 1);
                renderAll();
                inputEl.focus();
             }
@@ -459,9 +456,7 @@ const renderPanel = (container: HTMLElement): void => {
       sendBtn.classList.add("stop");
       sendBtn.disabled = false;
 
-      messages.push({ role: "assistant", text: "" });
-      let aiIdx = messages.length - 1;
-
+      let aiIdx: number|null = null
       let liveRow: HTMLDivElement = createEl("div");
       let liveContent: HTMLDivElement | null = null;
       let saveDebounceTimer: NodeJS.Timeout | undefined;
@@ -472,11 +467,15 @@ const renderPanel = (container: HTMLElement): void => {
       // --- Prepare messages with user context for AI ---
       // --- Filter away user messages that the next message isn't from AI, to avoid sending irrelevant messages in the history ---
       const messagesForAI = messages
-         .filter(
-            (m, index, arr) =>
-               (m.role === "assistant" && arr[index - 1]?.role === "user") ||
-               (m.role === "user" && arr[index + 1]?.role === "assistant"),
-         )
+         .filter((m, index, arr) => {
+				if (m.role === "assistant") return true;
+				if (m.role === "user") {
+					const isLastMessage = index === arr.length - 1;
+					const hasAssistantReply = arr[index + 1]?.role === "assistant";
+					return isLastMessage || hasAssistantReply;
+				}
+				return false;
+			})
          .map((m: ChatMessage): AgentChatMessage => {
             let ctx = `========= USER CONTEXT =========\n`;
 				let hasContext = false
@@ -499,9 +498,9 @@ const renderPanel = (container: HTMLElement): void => {
 				}
 
 				if (!hasContext) ctx = ''
-				else ctx += "\n\n========= USER PROMPT =========\n`;
+				else ctx += "\n\n========= USER PROMPT =========\n"
 
-            clg(ctx + m.text);
+            clg('Role', m.role, '\nUser Context', ctx + m.text);
 
             return {
                role: m.role,
@@ -523,21 +522,22 @@ const renderPanel = (container: HTMLElement): void => {
          return liveRow.querySelector<HTMLDivElement>("#live-ai-content");
       };
 
+		
       try {
-         for await (const chunk of sendChat(messagesForAI, controller.signal)) {
-            if (chunk.type === "text") {
-               // --- INITIAL AI RESPONSE HTML ---
-               if (!liveContent) {
-                  liveContent = initializeLiveResponse();
+			for await (const chunk of sendChat(messagesForAI, controller.signal)) {
+				if (chunk.type === "text") {
+					// --- INITIAL AI RESPONSE HTML ---
+               if (!liveContent || aiIdx === null) {
+						liveContent = initializeLiveResponse();
+						messages.push({ role: "assistant", text: "" });
+						aiIdx = messages.length - 1;
                }
 
                // --- STREAMING RESPONSE UPDATE ---
-               else {
+               if (liveContent && aiIdx !== null) {
                   messages[aiIdx].text += chunk.delta;
 
-                  liveContent.innerHTML =
-                     renderMarkdown(messages[aiIdx].text) +
-                     '<span class="stream-cursor"></span>';
+                  liveContent.innerHTML = renderMarkdown(messages[aiIdx].text) + '<span class="stream-cursor"></span>';
                   attachCodeButtons(liveContent);
                   scrollBottom();
 
@@ -551,17 +551,19 @@ const renderPanel = (container: HTMLElement): void => {
             } else if (chunk.type === "done") {
                stopStream(false);
 
-					if (liveContent) {
-						liveRow.append(`
-							<div class="msg-actions">
-								<button class="act-btn copy-btn" title="Copy">
-									<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
-								</button>
-								<button class="act-btn regen-btn" title="Retry">
-									<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10"/></svg> retry
-								</button>
-							</div>
-						`)
+					if (liveContent && aiIdx !== null) {
+						const actionBtns = createEl("div");
+						actionBtns.className = "msg-actions";
+						actionBtns.innerHTML = `
+							<button class="act-btn copy-btn" title="Copy">
+								<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> copy
+							</button>
+							<button class="act-btn regen-btn" title="Retry">
+								<svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.5 15a9 9 0 1 1-2.7-6.7L23 10"/></svg> retry
+							</button>
+						`
+
+						liveRow.appendChild(actionBtns)
 
 						addFinishUp(liveRow, aiIdx, messages[aiIdx].text);
 						scrollBottom();
@@ -594,8 +596,13 @@ const renderPanel = (container: HTMLElement): void => {
       const text = inputEl.value;
       if (!text.trim()) return;
 
+		const ctxName: string[] = []
+
       const ctx = ctxFiles.length
-         ? ctxFiles.map((file) => file.uri).join(" | ")
+         ? ctxFiles.map(file => {
+					ctxName.push(file.previewUri)
+					return file.uri
+				}).join(" | ")
          : null;
 
       ctxFiles = [];
@@ -608,7 +615,9 @@ const renderPanel = (container: HTMLElement): void => {
          role: "user",
          text,
          ctx,
+         ctxName: ctxName.length ? ctxName.join(" | ") : null,
          workspaceUsed: getWorkspaceFolders().join(" | "),
+			activeFile: editorManager.activeFile?.uri
       });
       render();
 

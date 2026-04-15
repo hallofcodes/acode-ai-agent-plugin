@@ -518,7 +518,7 @@ const renderPanel = (container: HTMLElement): () => void => {
 				if (!hasContext) ctx = ''
 				else ctx += '\n\n========= USER PROMPT =========\n'
 
-				clg('Role:', m.role, 'Context:', ctx, 'Text:', m.text)
+				// clg('Role:', m.role, 'Context:', ctx, 'Text:', m.text)
 
 				return {
 					role: m.role,
@@ -706,7 +706,6 @@ const renderPanel = (container: HTMLElement): () => void => {
 
 	function scrollBottom(): void {
 		if (userIsScrolling) return
-		alert('scrolling')
 		msgsWrap.scrollTop = msgsWrap.scrollHeight
 	}
 

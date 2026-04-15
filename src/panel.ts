@@ -10,7 +10,8 @@ import {
 	decodeBase64Safe,
 	escapeHtml,
 	getElement,
-	copyText
+	copyText,
+	stripTrailingDetailsBlock
 } from './panel/utils'
 import { settingsContainer } from './panel/settingsContainer'
 import { historyContainer } from './panel/historyContainer'
@@ -484,7 +485,7 @@ const renderPanel = (container: HTMLElement): () => void => {
 
 		// --- Prepare messages with user context for AI ---
 		// --- Filter away user messages that the next message isn't from AI, to avoid sending irrelevant messages in the history ---
-		const messagesForAI = messages
+		const messagesForAI = messages.slice(-20)
 			.filter((m, index, arr) => {
 				if (m.role === 'assistant') return true
 				if (m.role === 'user') {
@@ -495,7 +496,7 @@ const renderPanel = (container: HTMLElement): () => void => {
 				return false
 			})
 			.map((m: ChatMessage): AgentChatMessage => {
-				let ctx = `========= USER CONTEXT =========\n`
+				let ctx = `──────── USER CONTEXT ────────\n`
 				let hasContext = false
 
 				if (m.ctx) {
@@ -516,7 +517,7 @@ const renderPanel = (container: HTMLElement): () => void => {
 				}
 
 				if (!hasContext) ctx = ''
-				else ctx += '\n\n========= USER PROMPT =========\n'
+				else ctx += '\n\n──────── USER PROMPT ────────\n'
 
 				// clg('Role:', m.role, 'Context:', ctx, 'Text:', m.text)
 
@@ -686,22 +687,6 @@ const renderPanel = (container: HTMLElement): () => void => {
 					copyText(decodeBase64Safe(button.dataset.enc || ''), button)
 				})
 			})
-	}
-
-	const stripTrailingDetailsBlock = (text: string): string => {
-		const trimmedEnd = text.replace(/\s+$/g, '')
-		const closeTag = '</details>'
-		const lower = trimmedEnd.toLowerCase()
-		const closeIndex = lower.lastIndexOf(closeTag)
-
-		if (closeIndex < 0 || closeIndex + closeTag.length !== trimmedEnd.length) {
-			return text
-		}
-
-		const openIndex = lower.lastIndexOf('<details', closeIndex)
-		if (openIndex < 0) return text
-
-		return trimmedEnd.slice(0, openIndex).trimEnd()
 	}
 
 	function scrollBottom(): void {

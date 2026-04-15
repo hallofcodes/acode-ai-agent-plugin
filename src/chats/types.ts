@@ -3,8 +3,10 @@
 // ─────────────────────────────────────────────
 
 export interface ChatMessage {
-	role: 'user' | 'assistant'
+	role: 'user' | 'assistant' | 'system' | 'tool'
 	content: string
+	tool_calls?: any[]
+	tool_name?: string
 }
 
 export type Provider =

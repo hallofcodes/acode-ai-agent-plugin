@@ -11,9 +11,9 @@ export default async function* (
 	signal?: AbortSignal
 ): AsyncGenerator<StreamChunk> {
 	const formattedHistory = messages
-		.map((message, index) => {
+		.map((message) => {
 			const role = message.role === 'assistant' ? 'ASSISTANT' : 'USER'
-			return `${index + 1}. ${role}:\n${message.content}`
+			return `${role}:\n${message.content}`
 		})
 		.join('\n\n')
 
@@ -21,13 +21,9 @@ export default async function* (
 		'─────── SYSTEM INSTRUCTIONS ──────────────────────────────────────',
 		aiSettings.systemInstruction,
 		'',
-		'─────── CHAT HISTORY ─────────────────────────────────────────────',
-		formattedHistory || '(no previous messages)',
-		'',
-		'Follow the chat history exactly. Respond to the latest USER message in context.'
+		'─────── CONVERSATIONS ─────────────────────────────────────────────',
+		formattedHistory
 	].join('\n')
-
-	alert(`Combined prompt sent to Qwen:\n\n${combinedPrompt}`)
 
 	const response = await fetch('https://qwen.aikit.club/v1/chat/completions', {
 		method: 'POST',

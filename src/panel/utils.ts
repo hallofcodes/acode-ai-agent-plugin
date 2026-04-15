@@ -62,3 +62,19 @@ export function copyText(
 		fallbackCopy()
 	}
 }
+
+export const stripTrailingDetailsBlock = (text: string): string => {
+	const trimmedEnd = text.replace(/\s+$/g, '')
+	const closeTag = '</details>'
+	const lower = trimmedEnd.toLowerCase()
+	const closeIndex = lower.lastIndexOf(closeTag)
+
+	if (closeIndex < 0 || closeIndex + closeTag.length !== trimmedEnd.length) {
+		return text
+	}
+
+	const openIndex = lower.lastIndexOf('<details', closeIndex)
+	if (openIndex < 0) return text
+
+	return trimmedEnd.slice(0, openIndex).trimEnd()
+}

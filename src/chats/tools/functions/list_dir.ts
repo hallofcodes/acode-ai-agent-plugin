@@ -20,8 +20,16 @@ export default async function ({ path }: ListFilesInfo) {
 			return entry.url
 		}).join(' | ')
 
+		let relativePath = path
+
+		for (const folder of window.addedFolder || []) {
+			if (path.startsWith(folder.url)) {
+				relativePath = `[${folder.title}] /${path.slice(folder.url.length)}`
+			}
+		}
+
 		const toolCalling = JSON.stringify({
-			header: `LIST DIR: ${path}`,
+			header: `VIEWED: ${relativePath}`,
 		})
 
 		const toSave = `<tool_calling>${toolCalling}</tool_calling>`

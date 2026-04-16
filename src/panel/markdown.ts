@@ -32,15 +32,14 @@ hljs.registerLanguage('html', xml as any)
 hljs.registerLanguage('xml', xml as any)
 
 const escapeHtml2 = (value: string): string => {
-  const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '`': '&#96;'
-  }
-  return value.replace(/[&<>"'`]/g, char => map[char])
+	const map: Record<string, string> = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#39;'
+	}
+	return value.replace(/[&<>"']/g, char => map[char])
 }
 
 const normalizeLanguage = (lang: string): string => {
@@ -56,6 +55,7 @@ const normalizeLanguage = (lang: string): string => {
 
 const renderInlineMarkdown = (text: string): string => {
 	let h = escapeHtml2(text)
+	h = h.replace(/``([^`\n]+)``/g, '<code>$1</code>')
 	h = h.replace(/`([^`\n]+)`/g, '<code>$1</code>')
 	h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
 	h = h.replace(/\*(.+?)\*/g, '<em>$1</em>')

@@ -46,7 +46,7 @@ function convertToolCallsToHTML(command: Record<string, any>): string {
    if (command.header) {
       return `<div class="code-block">
                <div class="code-header">
-                  <span class="code-lang">${escapeHtml(command.header)}</span>
+                  <span class="code-lang edited">${escapeHtml(command.header)}</span>
                </div>
              </div>`;
    }

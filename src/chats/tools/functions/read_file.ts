@@ -1,4 +1,5 @@
 import { ReadFileInfo, ToolsReturnType } from './types'
+import { getRelativePath } from './utils'
 
 export default async function* ({
 	path,
@@ -7,21 +8,14 @@ export default async function* ({
 }: ReadFileInfo): AsyncGenerator<ToolsReturnType> {
 	try {
 		// --- SEND SIGNAL TO PANEL THAT FILE IS BEING READ ---
-		let relativePath = path
-
-		for (const folder of window.addedFolder || []) {
-			if (path.startsWith(folder.url)) {
-				relativePath = `[${folder.title}] /${path.slice(folder.url.length)}`
-			}
-		}
+		const relativePath = getRelativePath(path)
 
 		const toolCalling = JSON.stringify({
 			header: `READ: ${relativePath}:${start_line}-${end_line}`
 		})
+		const toSave = `<tool_calling_used>${toolCalling}</tool_calling_used>`
 
-		const toSave = `<tool_calling>${toolCalling}</tool_calling>`
-
-		yield { type: 'toSave', toSave }
+		yield { toSave }
 
 		// --- START FILE READ ---
 		const fs = acode.require('fs')
@@ -41,14 +35,8 @@ export default async function* ({
 			.map((line, index) => `${start_line + index}: ${line}`)
 			.join('\n')
 
-		yield { type: 'result', result }
+		yield { result }
 	} catch (error: any) {
-		yield {
-			type: 'result',
-			result:
-				error instanceof Error
-					? error.message
-					: 'Unknown error occurred while reading file.'
-		}
+		throw error
 	}
 }

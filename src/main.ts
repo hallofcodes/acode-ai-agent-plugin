@@ -11,8 +11,8 @@ import {
 	CHAT_HISTORY_PREFIX
 } from './configs/constants'
 import { aiSettings, loadAiSettingsFromLocalStorage } from './chats/settings'
-import { Provider } from './chats/types'
 import { deleteAllChatHistory } from './chats/history/chatHistory'
+import { Provider } from './chats/types'
 
 function clg(...messages: unknown[]) {
 	let newMsg = ''
@@ -39,12 +39,12 @@ class MainPlugin {
 
 	async destroy() {
 		removeIcon()
-		await deleteAllChatHistory()
+		/*await deleteAllChatHistory()
 
 		localStorage.removeItem('draft-message')
 		localStorage.removeItem(AI_SETTINGS_STORAGE_KEY)
 		localStorage.removeItem(LAST_ACTIVE_CHAT_HISTORY_KEY)
-		localStorage.removeItem(CHAT_HISTORY_PREFIX)
+		localStorage.removeItem(CHAT_HISTORY_PREFIX)*/
 	}
 }
 

@@ -1,10 +1,6 @@
 import panel from './panel.html'
 import { ChatMessage as AgentChatMessage } from './chats/types'
-import {
-	renderMarkdown,
-	renderEditedFileLines,
-	EditedFileLines
-} from './panel/markdown'
+import { renderMarkdown, renderEditedFileLines } from './panel/markdown'
 import type { AIPanelAPI, ChatMessage, ContextFile } from './panel/types'
 import {
 	decodeBase64Safe,
@@ -30,6 +26,7 @@ import {
 } from './chats/settings'
 import { processSingleToolCallTag } from './panel/commandParser'
 import { getWorkspaceFolders, getActiveFiles } from './helpers/workspace'
+import { OldEditedFileLines } from './chats/tools/functions/types'
 
 declare global {
 	interface Window {
@@ -140,48 +137,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		}, 500)
 	}
 
-	let skipNextBeforeInputEnter = false
-	const triggerSendAction = (): void => {
-		if (isStreaming) {
-			stopStream()
-		} else {
-			handleSend()
-		}
-	}
-
-	const maybeSendFromEnter = (event: KeyboardEvent): void => {
-		if (event.key === 'Enter' && event.shiftKey) {
-			event.preventDefault()
-			skipNextBeforeInputEnter = true
-			setTimeout(() => {
-				skipNextBeforeInputEnter = false
-			}, 0)
-			triggerSendAction()
-		}
-	}
-
 	inputEl.addEventListener('input', syncInputState)
-	inputEl.addEventListener('keydown', maybeSendFromEnter)
-	inputEl.addEventListener('beforeinput', event => {
-		const beforeInputEvent = event as InputEvent & {
-			getModifierState?: (keyArg: string) => boolean
-		}
-		const isShiftPressed = beforeInputEvent.getModifierState
-			? beforeInputEvent.getModifierState('Shift')
-			: false
-		if (
-			event.inputType === 'insertLineBreak' &&
-			isShiftPressed &&
-			!event.isComposing
-		) {
-			event.preventDefault()
-			if (skipNextBeforeInputEnter) {
-				skipNextBeforeInputEnter = false
-				return
-			}
-			triggerSendAction()
-		}
-	})
 
 	sendBtn.onclick = () => (isStreaming ? stopStream() : handleSend())
 
@@ -190,10 +146,18 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		newChatHistory()
 		renderAll()
 	}
-	clearBtn.onclick = () => {
-		messages = []
-		renderAll()
-		void deleteChatHistory()
+	clearBtn.onclick = async () => {
+		const confirm = acode.require('confirm')
+		const res = await confirm(
+			'Are you sure?',
+			'This will delete this message history forever!'
+		)
+
+		if (res) {
+			messages = []
+			renderAll()
+			void deleteChatHistory()
+		}
 	}
 	ctxAddBtn.onclick = event =>
 		openContextMenu(event.currentTarget as HTMLElement)
@@ -352,7 +316,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 								)}</div>`
 						) ?? ''
 					}
-					${escapeHtml(msg.text)}
+					${escapeHtml(msg.text, true)}
 				</div>
 				<div class="msg-actions">
 					<button class="act-btn copy-btn" title="Copy">
@@ -373,21 +337,9 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 				messages.splice(idx)
 				renderAll()
 				inputEl.focus()
+				syncInputState()
 			})
 		} else {
-			const editedFiles: EditedFileLines = [
-				{ line: 1, text: '<html>', isAdded: false },
-				{ line: 1, text: '<?php', isAdded: true },
-				{ line: 2, text: '<Hello>', isAdded: false },
-				{ line: 2, text: 'echo "Hello";', isAdded: true },
-				{ line: 3, text: '<div class="msg-actions">', isAdded: false },
-				{
-					line: 4,
-					text: '<span class="msg-name">Rutex AI Agent</span>',
-					isAdded: false
-				}
-			]
-
 			row.innerHTML = `
 				<div class="msg-meta">
 					<div class="msg-avatar ai-av"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
@@ -395,7 +347,6 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 				</div>
 				<div class="ai-content">
 					${renderMarkdown(msg.text)}
-					${renderEditedFileLines(editedFiles, 'index.php')}
 				</div>
 				<div class="msg-actions">
 					<div class="msg-action-group">

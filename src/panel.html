@@ -813,7 +813,18 @@
 		color: var(--text-muted);
 		white-space: pre;
 		tab-size: 2;
+		-moz-tab-size: 2;
+		-webkit-tab-size: 2;
+		text-indent: 0;
 		-webkit-overflow-scrolling: touch;
+		word-wrap: normal;
+		word-break: normal;
+	}
+	.code-body * {
+		white-space: pre;
+		tab-size: 2;
+		-moz-tab-size: 2;
+		-webkit-tab-size: 2;
 	}
 	.code-body::-webkit-scrollbar {
 		width: 2px;
@@ -825,7 +836,9 @@
 	}
 	.edited-lines-body {
 		padding: 0;
-		tab-size: 0;
+		tab-size: 2;
+		-moz-tab-size: 2;
+		-webkit-tab-size: 2;
 		white-space: normal;
 	}
 	.edited-line {
@@ -833,8 +846,8 @@
 		grid-template-columns: 30px 10px minmax(0, 1fr);
 		gap: 4px;
 		align-items: start;
-		margin-left: -20px;
-		padding: 4px 6px 4px 4px;
+		margin-left: -5px;
+		padding: 1.5px 6px 1.5px 4px;
 	}
 	.edited-line-number,
 	.edited-line-prefix,

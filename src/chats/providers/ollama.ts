@@ -29,7 +29,12 @@ export default async function* (
 			stream: true,
 			messages: [
 				{ role: 'system', content: aiSettings.systemInstruction },
-				...messages.map(m => ({ role: m.role, content: m.content }))
+				...messages.map(m => ({
+					role: m.role,
+					content: m.content,
+					tool_calls: m.tool_calls,
+					tool_name: m.tool_name
+				}))
 			],
 			options: {
 				temperature: aiSettings.temperature,
@@ -37,8 +42,6 @@ export default async function* (
 			},
 			tools
 		})
-
-	
 
 		let response: Response
 		try {
@@ -67,7 +70,8 @@ export default async function* (
 		if (!reader) throw new Error('No response body from Ollama')
 
 		const decoder = new TextDecoder()
-		let toolCalls: any[] = []
+		const toolCalls: any[] = []
+		const seenToolCallIds = new Set()
 
 		try {
 			while (signal?.aborted === false) {
@@ -93,7 +97,14 @@ export default async function* (
 						}
 
 						if (chunk.message?.tool_calls?.length) {
-							toolCalls.push(...chunk.message.tool_calls)
+							for (const tc of chunk.message.tool_calls) {
+								const id = tc.id ?? JSON.stringify(tc)
+
+								if (!seenToolCallIds.has(id)) {
+									seenToolCallIds.add(id)
+									toolCalls.push(tc)
+								}
+							}
 						}
 					} catch {
 						// incomplete JSON line, skip
@@ -119,6 +130,8 @@ export default async function* (
 		}
 
 		for (const call of toolCalls) {
+			if (!call.function.name) continue
+
 			try {
 				const toolFunction: ToolsFunction = (
 					await require(`../tools/functions/${call.function.name}`)
@@ -127,30 +140,31 @@ export default async function* (
 				const chunkedResult = toolFunction(call.function.arguments)
 
 				for await (const chunk of chunkedResult) {
-					switch (chunk.type) {
-						case 'toSave':
-							yield {
-								type: 'tool',
-								delta: chunk.toSave
-							}
+					if (chunk.toSave) {
+						yield {
+							type: 'tool',
+							delta: chunk.toSave
+						}
+					}
 
-							break
+					if (chunk.result) {
+						messages.push({
+							role: 'tool',
+							tool_name: call.function.name,
+							content: chunk.result
+						})
 
-						case 'result':
-							messages.push({
-								role: 'tool',
-								tool_name: call.function.name,
-								content: chunk.result
-							})
-
-							break
+						break
 					}
 				}
-			} catch (e: unknown) {
+			} catch (e: any) {
+				clg(e instanceof Error ? e.message : 'Unknown error')
 				messages.push({
 					role: 'tool',
 					tool_name: call.function.name,
-					content: e instanceof Error ? e.message : 'Unknown error'
+					content:
+						'[ERROR] ' +
+						(e instanceof Error ? e.message : 'Unknown error')
 				})
 			}
 		}

@@ -2,11 +2,17 @@ export const doc: { document: Document } = {
 	document: document
 }
 
-export const escapeHtml = (value: string): string => {
+export const escapeHtml = (
+	value: string,
+	includeNL: boolean = false
+): string => {
 	const pre = doc.document.createElement('pre')
 	pre.textContent = value
-	return pre.innerHTML
-	//.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>')
+	let content = pre.innerHTML
+
+	if (includeNL)
+		content = content.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>')
+	return content
 }
 
 export const decodeBase64Safe = (value: string): string => {
@@ -52,7 +58,9 @@ export function copyText(
 	}
 
 	const fallbackCopy = (): void => {
-		const textarea = Object.assign(doc.createElement('textarea'), { value: text })
+		const textarea = Object.assign(doc.createElement('textarea'), {
+			value: text
+		})
 		textarea.style.cssText = 'position:fixed;opacity:0'
 		doc.body.appendChild(textarea)
 		textarea.select()

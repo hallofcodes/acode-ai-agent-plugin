@@ -1,4 +1,3 @@
-
 import hljs from 'highlight.js/lib/core'
 import bash from 'highlight.js/lib/languages/bash'
 import css from 'highlight.js/lib/languages/css'
@@ -11,8 +10,9 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import xml from 'highlight.js/lib/languages/xml'
 import { escapeHtml } from './utils'
 import { processSingleToolCallTag } from './commandParser'
+import { OldEditedFileLines } from '../chats/tools/functions/types'
 
-const TOOL_TAG_REGEX = /<tool_calling>[\s\S]*?<\/tool_calling>/gi
+const TOOL_TAG_REGEX = /<tool_calling_used>[\s\S]*?<\/tool_calling_used>/gi
 
 hljs.registerLanguage('bash', bash as any)
 hljs.registerLanguage('sh', bash as any)
@@ -202,26 +202,21 @@ export const renderMarkdown = (raw: string): string => {
 	return parts.join('')
 }
 
-export type EditedFileLines = Array<{
-	line: number
-	text: string
-	isAdded: boolean
-}>
-
 export const renderEditedFileLines = (
-	lines: EditedFileLines,
-	editedFilePath = ''
+	lines: OldEditedFileLines[],
+	editedFilePath: string
 ): string => {
-	const byLine = [...lines].sort((a, b) => a.line - b.line)
+	lines.sort((a, b) => a.line - b.line)
 
-	const groups = new Map<number, EditedFileLines>()
-	for (const entry of byLine) {
+	const groups = new Map<number, OldEditedFileLines[]>()
+
+	for (const entry of lines) {
 		if (!groups.has(entry.line)) groups.set(entry.line, [])
 		groups.get(entry.line)!.push(entry)
 	}
 
 	const uniqueLines = [...groups.keys()].sort((a, b) => a - b)
-	const entries: EditedFileLines = []
+	const entries: OldEditedFileLines[] = []
 
 	for (let i = 0; i < uniqueLines.length; ) {
 		const start = i
@@ -253,6 +248,24 @@ export const renderEditedFileLines = (
 		i++
 	}
 
+	const filePaths = editedFilePath.split('.')
+	const fileExt = filePaths[filePaths.length - 1] ?? 'code'
+	const language = normalizeLanguage(fileExt)
+	const getLanguage = hljs.getLanguage(language)
+
+	const highlight = (code: string) => {
+		let highlighted = ''
+		try {
+			highlighted = getLanguage
+				? hljs.highlight(code, { language }).value
+				: hljs.highlightAuto(code).value
+		} catch {
+			highlighted = escapeHtml2(code)
+		}
+		
+		return highlighted
+	}
+
 	const rows = entries
 		.map(entry =>
 			[
@@ -261,9 +274,7 @@ export const renderEditedFileLines = (
 				`<span class="edited-line-prefix">${
 					entry.isAdded ? '+' : '-'
 				}</span>`,
-				`<span class="edited-line-text">${
-					hljs.highlightAuto(entry.text).value
-				}</span>`,
+				`<span class="edited-line-text">${highlight(entry.text)}</span>`,
 				'</div>'
 			].join('')
 		)
@@ -272,7 +283,7 @@ export const renderEditedFileLines = (
 	return [
 		'<div class="code-block edited-lines-block">',
 		`<div class="code-header edited-h"><span class="code-lang edited">EDITED: ${escapeHtml(
-			editedFilePath || 'edited lines'
+			editedFilePath
 		)}</span></div>`,
 		`<div class="code-body edited-lines-body">${rows}</div>`,
 		'</div>'

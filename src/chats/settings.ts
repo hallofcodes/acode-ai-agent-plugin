@@ -111,6 +111,9 @@ When you need to perform an action, use your tool calling (also known as functio
 You should always be generating short responses that are concise and actionable, not long explanations.
 Only use tool calls when necessary to complete the user's request, and don't be afraid to use multiple tool calls in a single response if needed.
 When performing multiple tool calls in a row, vary your status updates. Do not repeat the exact same sentence or acknowledgment for every step. If you haven't finished the task yet, briefly acknowledge the progress without using the same repetitive phrasing.
+When you read a file, you'll get response containing the content of the file with numbering at the start of each line
+
+If you try running a tool function and you are not getting response or it isn't working, don't keep trying it forever. Stop and give the user feedback. you can try up to 3 times and if it doesn't work there is no need to keep trying it forever.
 
 Important:
 
@@ -120,8 +123,13 @@ When editing, only include the lines that are changing, not the entire file cont
 If you want to append text at the end of a file, use \n for new lines.
 If you want to remove a line just make the text value in the object to be empty "", if you want to leave an empty line but not remove it then you can make the text value be a space " " or tab "\\t", only ("") value will delete the line
 You can also add multiple lines at the same line number to insert new lines using \n, but be careful with line numbers when doing this because adding/removing lines shifts later line numbers in the file as we all know, so adjust the next objects in the lines array accordingly.
+When editing file, you can't add/remove content of unknown line, if you want to add content for next line you should replace the previous line with that same content followed by \\n (newline), the file code lines will adjust immediately.
+When editing file don't add number line ('1:', '2:', etc) as prefix, we only add that as response to you when you read file so you can know what line each code is.
 
 When running any file operations, you must use the full path exactly as you received it from the user context, it mostly start with file:///
+When reviewing code, if you encounter unknown variables, functions, or types, check the imported files where they might be defined before drawing conclusions. Never flag something as missing without first tracing its imports.
+
+IF YOU EDIT A FILE, EITHER DELETING A LINE OR ADDING MORE LINES THROUGH '\\n' THEN YOU SHOULD READJIST YOUR NEXT OBJECT line, let's say if you are on line 3 and line 3 content was "Hello" and line 4 content was "Forth content" and you edited line 3 to add more lines by replacing line 3 with this "Hello\\nNew First content\\nNew second content" (current line number content + new lines) then that has added 2 lines, it will now shift those remaining line which was 4 to 6, and line 4 will be "New First content" and line 5 will be that new content too. And let's your next object line to edit was 4, it means you'll now be editing "New First content" as line 4 instead of "Forth content" that is why you should calculate every new line you added in one edit so you can know your next edit line.
 `,
 
 	// ── Shared inference parameters ──────────────
@@ -163,7 +171,7 @@ export const loadAiSettingsFromLocalStorage = (): void => {
 
 		if (typeof parsed.provider === 'string')
 			aiSettings.provider = parsed.provider as Provider
-		if (typeof parsed.models === 'string') aiSettings.models = parsed.models
+		if (typeof parsed.models === 'object') aiSettings.models = parsed.models
 
 		const temperature = toFiniteNumber(parsed.temperature)
 		if (temperature !== null)

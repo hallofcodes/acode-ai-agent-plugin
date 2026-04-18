@@ -1,3 +1,4 @@
+import { getCurrentChatID, saveEditedFileHistory } from '../../history/chatHistory'
 import {
 	EditFileInfo,
 	EditFileLines,
@@ -121,11 +122,13 @@ export default async function* ({
 
 		// --- SEND SIGNAL TO PANEL THAT FILE IS BEING READ ---
 		const relativePath = getRelativePath(path)
+		const id = await saveEditedFileHistory(newLines, path, getCurrentChatID())
 
 		const toolCalling = JSON.stringify({
 			path: relativePath,
-			body: newLines
+			editedFileHistoryId: id
 		})
+
 		const toSave = `<tool_calling_used>${toolCalling}</tool_calling_used>`
 
 		yield {

@@ -1,37 +1,68 @@
 import { ChatMessage } from '../../panel/types'
 import {
-	CHAT_HISTORY_PREFIX,
-	LAST_ACTIVE_CHAT_HISTORY_KEY
+	CHAT_HISTORY_KEYS,
+	CHAT_HISTORY_STORE,
+	EDITED_FILE_HISTORY_STORE,
+	LAST_ACTIVE_CHAT_HISTORY_KEY,
+	RUTEX_DB_NAME,
+	RUTEX_DB_VERSION
 } from '../../configs/constants'
+import { OldEditedFileLines } from '../tools/functions/types'
 
 let currentChatID: string = ''
 
-const CHAT_HISTORY_DB_NAME = 'rutex_ai_agent_chat_history'
-const CHAT_HISTORY_DB_VERSION = 1
-const CHAT_HISTORY_STORE = 'chat_histories'
-let chatHistoryDBPromise: Promise<IDBDatabase> | null = null
+let rutexDB: Promise<IDBDatabase> | null = null
 
 type ChatHistoryRecord = {
 	id: string
 	messages: ChatMessage[]
 }
 
+type EditedFileHistoryRecord = {
+	id: string
+	content: OldEditedFileLines[]
+	filePath: string
+	createdAt: number
+	chatHistoryId: string
+}
+
 // --- CHECKING hasLocalStorage() IS USELESS SINCE localStorage IS ALWAYS AVAILABLE IN ACODE ---
 
 export type HistoryList = Record<string, string>
 
-const supportsIndexedDB = (): boolean => typeof indexedDB !== 'undefined'
+const initializeRutexDB = (): Promise<IDBDatabase> => {
+	if (rutexDB) return rutexDB
 
-const initializeChatHistoryDB = (): Promise<IDBDatabase> => {
-	if (chatHistoryDBPromise) return chatHistoryDBPromise
-
-	chatHistoryDBPromise = new Promise((resolve, reject) => {
-		const request = indexedDB.open(CHAT_HISTORY_DB_NAME, CHAT_HISTORY_DB_VERSION)
+	rutexDB = new Promise((resolve, reject) => {
+		const request = indexedDB.open(RUTEX_DB_NAME, RUTEX_DB_VERSION)
 
 		request.onupgradeneeded = () => {
 			const db = request.result
+
 			if (!db.objectStoreNames.contains(CHAT_HISTORY_STORE)) {
 				db.createObjectStore(CHAT_HISTORY_STORE, { keyPath: 'id' })
+			}
+
+			let store: IDBObjectStore
+
+			if (!db.objectStoreNames.contains(EDITED_FILE_HISTORY_STORE)) {
+				store = db.createObjectStore(EDITED_FILE_HISTORY_STORE, { keyPath: 'id' })
+			} else {
+				store = request.transaction!.objectStore(EDITED_FILE_HISTORY_STORE)
+			}
+
+			if (!store.indexNames.contains('filePath')) {
+				store.createIndex('filePath', 'filePath', { unique: false })
+			}
+
+			if (!store.indexNames.contains('chatHistoryId')) {
+				store.createIndex('chatHistoryId', 'chatHistoryId', { unique: false })
+			}
+
+			if (!store.indexNames.contains('chat_file')) {
+				store.createIndex('chat_file', ['chatHistoryId', 'filePath'], {
+					unique: false
+				})
 			}
 		}
 
@@ -39,29 +70,32 @@ const initializeChatHistoryDB = (): Promise<IDBDatabase> => {
 			const db = request.result
 			db.onversionchange = () => {
 				db.close()
-				chatHistoryDBPromise = null
+				rutexDB = null
 			}
 			resolve(db)
 		}
 
 		request.onerror = () => {
-			chatHistoryDBPromise = null
+			rutexDB = null
 			reject(request.error)
 		}
 	})
 
-	return chatHistoryDBPromise
+	return rutexDB
 }
+
+
 
 const withStore = async <T>(
 	mode: IDBTransactionMode,
+	storeName: 'chat_histories' | 'edited_histories',
 	handler: (store: IDBObjectStore) => IDBRequest<T>
 ): Promise<T> => {
-	const db = await initializeChatHistoryDB()
+	const db = await initializeRutexDB()
 
 	return new Promise((resolve, reject) => {
-		const tx = db.transaction(CHAT_HISTORY_STORE, mode)
-		const store = tx.objectStore(CHAT_HISTORY_STORE)
+		const tx = db.transaction(storeName, mode)
+		const store = tx.objectStore(storeName)
 		const request = handler(store)
 
 		request.onsuccess = () => resolve(request.result)
@@ -71,20 +105,11 @@ const withStore = async <T>(
 	})
 }
 
-const getLocalStorageChat = (chatID: string): ChatMessage[] => {
-	try {
-		return JSON.parse(
-			localStorage.getItem(CHAT_HISTORY_PREFIX + chatID) || '[]'
-		) as ChatMessage[]
-	} catch {
-		return []
-	}
-}
 
 export const getHistoryList = (): HistoryList => {
 	try {
 		return JSON.parse(
-			localStorage.getItem(CHAT_HISTORY_PREFIX) || '{}'
+			localStorage.getItem(CHAT_HISTORY_KEYS) || '{}'
 		) as HistoryList
 	} catch {
 		return {} as HistoryList
@@ -94,12 +119,15 @@ export const getHistoryList = (): HistoryList => {
 export function editChatHistoryList(historyList: (lists: HistoryList) => void) {
 	const history = getHistoryList()
 	historyList(history)
-	localStorage.setItem(CHAT_HISTORY_PREFIX, JSON.stringify(history))
+	localStorage.setItem(CHAT_HISTORY_KEYS, JSON.stringify(history))
 }
 
 export const newChatHistory = () => {
 	currentChatID = ''
+	localStorage.removeItem(LAST_ACTIVE_CHAT_HISTORY_KEY)
 }
+
+export const getCurrentChatID = () => currentChatID
 
 export const saveChatHistory = async (messages: ChatMessage[]) => {
 	if (currentChatID === '') {
@@ -110,19 +138,11 @@ export const saveChatHistory = async (messages: ChatMessage[]) => {
 		editChatHistoryList(lists => (lists[currentChatID] = chatName))
 	}
 
-	if (supportsIndexedDB()) {
-		await withStore('readwrite', store =>
+	try {
+		await withStore('readwrite', CHAT_HISTORY_STORE, store =>
 			store.put({ id: currentChatID, messages } as ChatHistoryRecord)
 		)
-		return
-	}
-
-	else {
-		localStorage.setItem(
-			CHAT_HISTORY_PREFIX + currentChatID,
-			JSON.stringify(messages)
-		)
-	}
+	} catch { }
 }
 
 export const retrieveChatHistory = async (chatID: string | null = null): Promise<ChatMessage[]> => {
@@ -135,18 +155,14 @@ export const retrieveChatHistory = async (chatID: string | null = null): Promise
 
 	if (currentChatID === '') return []
 
-	if (supportsIndexedDB()) {
-		try {
-			const record = await withStore('readonly', store =>
-				store.get(currentChatID)
-			)
-			return (record as ChatHistoryRecord | undefined)?.messages || []
-		} catch {
-			return [] as ChatMessage[]
-		}
+	try {
+		const record = await withStore('readonly', CHAT_HISTORY_STORE, store =>
+			store.get(currentChatID)
+		)
+		return (record as ChatHistoryRecord | undefined)?.messages || []
+	} catch {
+		return [] as ChatMessage[]
 	}
-
-	return getLocalStorageChat(currentChatID)
 }
 
 export const deleteChatHistory = async (chatID: string | null = null) => {
@@ -155,40 +171,116 @@ export const deleteChatHistory = async (chatID: string | null = null) => {
 
 	if (chatID === currentChatID) currentChatID = ''
 
-	if (supportsIndexedDB()) {
-		try {
-			await withStore('readwrite', store => store.delete(chatID))
-		} catch {
-			// Ignore IndexedDB deletion errors and continue with fallback cleanup.
-		}
-	} else {
-		localStorage.removeItem(CHAT_HISTORY_PREFIX + chatID)
-	}
-
-	editChatHistoryList(lists => delete lists[chatID])
+	try {
+		await deleteEditedFileHistory({ chatHistoryId: chatID })
+		await withStore('readwrite', CHAT_HISTORY_STORE, store => store.delete(chatID))
+		editChatHistoryList(lists => delete lists[chatID])
+	} catch { }
 }
 
 export const deleteAllChatHistory = async () => {
-	if (supportsIndexedDB()) {
-		try {
-			await withStore('readwrite', store => store.clear())
-		} catch {
-			// no-op fallback: localStorage cleanup below handles legacy entries.
-		}
-	}
+	try {
+		await withStore('readwrite', CHAT_HISTORY_STORE, store => store.clear())
+		await deleteEditedFileHistory(null)
 
-	else {
+		// --- Clear the history list and reset current chat ID ---
 		editChatHistoryList(lists => {
-			for (const chatID in lists) {
-				localStorage.removeItem(CHAT_HISTORY_PREFIX + chatID)
-			}
+			lists = {}
 		})
+
+		currentChatID = ''
+	} catch { }
+}
+
+
+
+// --- IMPLEMENTATION FOR EDITED FILE HISTORY ---
+
+export const saveEditedFileHistory = async (content: OldEditedFileLines[], filePath: string, chatHistoryId: string): Promise<string> => {
+	const id = crypto.randomUUID()
+
+	try {
+		await withStore('readwrite', EDITED_FILE_HISTORY_STORE, store =>
+			store.put({ id, content, filePath, chatHistoryId, createdAt: Date.now() } as EditedFileHistoryRecord)
+		)
+	} catch { }
+
+	return id
+}
+
+export const retrieveEditedFileHistory = async (filter: { ids: string[] } | { filePath: string }): Promise<EditedFileHistoryRecord[]> => {
+	try {
+		if ('ids' in filter) {
+			const results = await Promise.all(
+				filter.ids.map(id =>
+					withStore('readonly', EDITED_FILE_HISTORY_STORE, store =>
+						store.get(id)
+					)
+				)
+			)
+
+			return results as EditedFileHistoryRecord[]
+		}
+		
+		if ('filePath' in filter) {
+			const results = await withStore('readonly', EDITED_FILE_HISTORY_STORE, store => {
+				const index = store.index('filePath')
+				return index.getAll(filter.filePath)
+			})
+
+			return results as EditedFileHistoryRecord[]
+		}
+
+	} catch {
+		return []
 	}
+}
 
-	// --- Clear the history list and reset current chat ID ---
-	editChatHistoryList(lists => {
-		lists = {}
-	})
+export type DeleteEditedFileHistoryFilter =
+	{ chatHistoryId: string } |
+	{ id: string } |
+	null
 
-	currentChatID = ''
+/**
+ * Delete edited file history records. If `deleteBy` is not provided, it will delete all edited file history. If `deleteBy` contains `chatHistoryId`, it will delete all edited file history related to that chat history. If `deleteBy` contains `id`, it will delete the specific edited file history record with that id.
+ * @param deleteBy - The criteria to delete edited file history records.
+ * @returns A promise that resolves when the deletion is complete.
+ */
+export const deleteEditedFileHistory = async (deleteBy: DeleteEditedFileHistoryFilter = null): Promise<void> => {
+	try {
+
+		// delete everything
+		if (!deleteBy) {
+			await withStore('readwrite', EDITED_FILE_HISTORY_STORE, store =>
+				store.clear()
+			)
+			return
+		}
+
+		// delete by chatHistoryId (requires index)
+		if ('chatHistoryId' in deleteBy) {
+			await withStore('readwrite', EDITED_FILE_HISTORY_STORE, store => {
+				const index = store.index('chatHistoryId')
+				const request = index.openCursor(deleteBy.chatHistoryId)
+
+				request.onsuccess = () => {
+					const cursor = request.result
+					if (cursor) {
+						cursor.delete()
+						cursor.continue()
+					}
+				}
+
+				return request
+			})
+			return
+		}
+
+		// --- Delete by id ---
+		if ('id' in deleteBy) {
+			await withStore('readwrite', EDITED_FILE_HISTORY_STORE, store =>
+				store.delete(deleteBy.id)
+			)
+		}
+	} catch { }
 }

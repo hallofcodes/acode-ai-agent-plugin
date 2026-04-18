@@ -150,7 +150,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		const confirm = acode.require('confirm')
 		const res = await confirm(
 			'Are you sure?',
-			'This will delete this message history forever!'
+			'This will delete this message history forever! And all the edited file history records will be cleared.'
 		)
 
 		if (res) {

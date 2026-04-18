@@ -14,7 +14,7 @@ export async function processSingleToolCallTag(tagText: string): Promise<{ html:
 	const payload = (match[1] || '').trim()
 	try {
 		const parsedCommand = JSON.parse(payload)
-		return (await convertToolCallsToHTML(parsedCommand as DisplayToolsCallUsed))
+		return convertToolCallsToHTML(parsedCommand as DisplayToolsCallUsed)
 	} catch {
 		return { html: escapeHtml(tagText) }
 	}

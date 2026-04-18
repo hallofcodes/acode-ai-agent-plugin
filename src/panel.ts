@@ -279,7 +279,11 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		scrollBottom()
 	}
 
-	async function addFinishUp(row: HTMLDivElement, idx: number, text: string): Promise<void> {
+	async function addFinishUp(
+		row: HTMLDivElement,
+		idx: number,
+		text: string
+	): Promise<void> {
 		const aiContent = row.querySelector<HTMLElement>('.ai-content')
 		const copyBtn = row.querySelector<HTMLButtonElement>('.copy-btn')
 		const regenBtn = row.querySelector<HTMLButtonElement>('.regen-btn')
@@ -290,14 +294,17 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 			copyText(text, copyBtn, doc.document)
 		)
 
-		regenBtn?.addEventListener('click', () => {
+		regenBtn?.addEventListener('click', async () => {
 			if (text !== '') messages.splice(idx)
-			renderAll()
+			await renderAll()
 			simulateAIResponse()
 		})
 	}
 
-	async function buildRow(msg: ChatMessage, idx: number): Promise<HTMLDivElement> {
+	async function buildRow(
+		msg: ChatMessage,
+		idx: number
+	): Promise<HTMLDivElement> {
 		const row = createEl('div')
 		row.className = `msg-row ${msg.role}`
 		row.dataset.idx = String(idx)
@@ -333,10 +340,10 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 			const editBtn = row.querySelector<HTMLButtonElement>('.edit-btn')
 
 			copyBtn?.addEventListener('click', () => copyText(msg.text, copyBtn))
-			editBtn?.addEventListener('click', () => {
+			editBtn?.addEventListener('click', async () => {
 				inputEl.value = msg.text
 				messages.splice(idx)
-				renderAll()
+				await renderAll()
 				inputEl.focus()
 				syncInputState()
 			})
@@ -489,11 +496,18 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 						completeMessage += chunk.delta
 
 						if (chunk.type === 'tool') {
-							const { html, editMsgHistoryId } = await processSingleToolCallTag(chunk.delta)
-							message.editedFileHistoryIds = [...(message.editedFileHistoryIds || []), editMsgHistoryId]
+							const dd = await processSingleToolCallTag(chunk.delta)
+
+							if (dd.editedFileHistoryId) {
+								message.editedFileHistoryIds = [
+									...(message.editedFileHistoryIds || []),
+									dd.editedFileHistoryId
+								]
+							}
 
 							liveContent.querySelector('.stream-cursor')?.remove()
-							liveContent.innerHTML += html + '<span class="stream-cursor"></span>'
+							liveContent.innerHTML +=
+								dd.html + '<span class="stream-cursor"></span>'
 						} else
 							liveContent.innerHTML =
 								(await renderMarkdown(message.text)) +
@@ -519,7 +533,8 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 							)
 							messages[aiIdx].text = cleanedMessage
 							completeMessage = cleanedMessage
-							liveContent.innerHTML = await renderMarkdown(cleanedMessage)
+							liveContent.innerHTML =
+								await renderMarkdown(cleanedMessage)
 						}
 
 						if (saveDebounceTimer) {
@@ -577,7 +592,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		}
 	}
 
-	function handleSend(): void {
+	async function handleSend(): Promise<void> {
 		const text = inputEl.value
 		if (!text.trim()) return
 
@@ -606,7 +621,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 			workspaceUsed: getWorkspaceFolders().join(' | '),
 			activeFile: editorManager.activeFile?.uri
 		})
-		render()
+		await render()
 
 		void saveChatHistory(messages)
 		window.localStorage?.removeItem('draft-message')
@@ -654,14 +669,14 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 	const draftMessage = window.localStorage?.getItem('draft-message')
 	if (draftMessage) inputEl.value = draftMessage
 
-	void retrieveChatHistory().then(history => {
+	void retrieveChatHistory().then(async history => {
 		messages = history
-		renderAll()
+		await renderAll()
 		scrollBottom()
 	})
-	historyContainer(container, doc.document, history => {
+	historyContainer(container, doc.document, async history => {
 		messages = history
-		renderAll()
+		await renderAll()
 		scrollBottom()
 		inputEl.focus()
 	})

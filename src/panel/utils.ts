@@ -47,7 +47,7 @@ export function copyText(
 ): void {
 	const textToCopy = text.replace(
 		/<tool_calling_used>[\s\S]*?<\/tool_calling_used>/gi,
-		''
+		'\n'
 	)
 
 	const done = (): void => {

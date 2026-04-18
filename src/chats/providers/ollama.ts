@@ -139,19 +139,20 @@ export default async function* (
 
 				const chunkedResult = toolFunction(call.function.arguments)
 
-				for await (const chunk of chunkedResult) {
-					if (chunk.toSave) {
+				for await (const toolChunk of chunkedResult) {
+					if (toolChunk.toSave) {
 						yield {
 							type: 'tool',
-							delta: chunk.toSave
+							delta: toolChunk.toSave,
+							model: chunk?.model ?? model
 						}
 					}
 
-					if (chunk.result) {
+					if (toolChunk.result) {
 						messages.push({
 							role: 'tool',
 							tool_name: call.function.name,
-							content: chunk.result || '[NO RESULT]'
+							content: toolChunk.result || '[NO RESULT]'
 						})
 
 						break

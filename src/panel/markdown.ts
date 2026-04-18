@@ -145,7 +145,7 @@ const renderMarkdownBlockWithToolCalls = async (block: string): Promise<string> 
 		if (before) out += renderMarkdownBlock(before)
 
 		// Keep tool payload unescaped and replace tag with generated HTML.
-		out += await processSingleToolCallTag(fullMatch)
+		out += (await processSingleToolCallTag(fullMatch)).html
 		lastIndex = end
 	}
 

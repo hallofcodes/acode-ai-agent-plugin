@@ -25,13 +25,13 @@ export default async function* (
 	const contents: any[] = turnMessages
 		.filter(m => m.role === 'user' || m.role === 'assistant')
 		.map(m => {
-		if (m.role === 'assistant') {
-			// Keep historical assistant turns as text-only. Function call parts from
-			// prior turns can carry thought signatures that are not available here.
-			return { role: 'model', parts: [{ text: m.content || '' }] }
-		}
+			if (m.role === 'assistant') {
+				// Keep historical assistant turns as text-only. Function call parts from
+				// prior turns can carry thought signatures that are not available here.
+				return { role: 'model', parts: [{ text: m.content || '' }] }
+			}
 
-		return { role: 'user', parts: [{ text: m.content }] }
+			return { role: 'user', parts: [{ text: m.content }] }
 		})
 
 	const functionDeclarations = ollamaTools.map(tool => ({
@@ -48,6 +48,7 @@ export default async function* (
 	}
 
 	let fullText = ''
+	let chunk: any = null
 	let usage: Usage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 }
 
 	while (true) {
@@ -64,7 +65,7 @@ export default async function* (
 		let turnText = ''
 		let lastModelContent: any = null
 
-		for await (const chunk of stream) {
+		for await (chunk of stream) {
 			if (signal?.aborted) break
 
 			const candidateContent = (chunk as any)?.candidates?.[0]?.content
@@ -75,7 +76,9 @@ export default async function* (
 			const functionCalls = (chunk as any).functionCalls as any[] | undefined
 			if (functionCalls?.length) {
 				for (const call of functionCalls) {
-					const id = call?.id ?? `${call?.name}:${JSON.stringify(call?.args ?? {})}`
+					const id =
+						call?.id ??
+						`${call?.name}:${JSON.stringify(call?.args ?? {})}`
 					if (seenToolCallIds.has(id)) continue
 					seenToolCallIds.add(id)
 					toolCalls.push(call)
@@ -155,7 +158,11 @@ export default async function* (
 
 				for await (const toolChunk of chunkedResult) {
 					if (toolChunk.toSave) {
-						yield { type: 'tool', delta: toolChunk.toSave, model }
+						yield {
+							type: 'tool',
+							delta: toolChunk.toSave,
+							model: chunk.modelVersion || model
+						}
 					}
 
 					if (toolChunk.result) {
@@ -176,7 +183,8 @@ export default async function* (
 					content: resultContent || '[NO RESULT]'
 				})
 			} catch (e: any) {
-				const errorMessage = e instanceof Error ? e.message : 'Unknown error'
+				const errorMessage =
+					e instanceof Error ? e.message : 'Unknown error'
 				clg(errorMessage)
 
 				functionResponses.push({
@@ -195,9 +203,17 @@ export default async function* (
 
 		contents.push({
 			role: 'user',
-			parts: functionResponses.map(functionResponse => ({ functionResponse }))
+			parts: functionResponses.map(functionResponse => ({
+				functionResponse
+			}))
 		})
 	}
 
-	yield { type: 'done', text: fullText, provider: 'gemini', model, usage }
+	yield {
+		type: 'done',
+		text: fullText,
+		provider: 'gemini',
+		model: chunk.modelVersion || model,
+		usage
+	}
 }

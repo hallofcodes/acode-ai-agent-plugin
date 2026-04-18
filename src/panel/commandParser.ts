@@ -1,9 +1,11 @@
 import { escapeHtml } from './utils'
 import { renderEditedFileLines } from './markdown'
+import { DisplayToolsCallUsed } from '../chats/tools/functions/types'
+import { retrieveEditedFileHistory } from '../chats/history/chatHistory'
 
 const TOOL_TAG_REGEX = /<tool_calling_used>([\s\S]*?)<\/tool_calling_used>/gi
 
-export function processSingleToolCallTag(tagText: string): string {
+export async function processSingleToolCallTag(tagText: string): Promise<string> {
 	const match = /<tool_calling_used>([\s\S]*?)<\/tool_calling_used>/i.exec(
 		tagText
 	)
@@ -12,13 +14,13 @@ export function processSingleToolCallTag(tagText: string): string {
 	const payload = (match[1] || '').trim()
 	try {
 		const parsedCommand = JSON.parse(payload)
-		return convertToolCallsToHTML(parsedCommand)
+		return await convertToolCallsToHTML(parsedCommand as DisplayToolsCallUsed)
 	} catch {
 		return escapeHtml(tagText)
 	}
 }
 
-export function processToolCallsInText(text: string): string {
+export async function processToolCallsInText(text: string): Promise<string> {
 	const matches = [...text.matchAll(TOOL_TAG_REGEX)]
 	if (!matches.length) return text
 
@@ -34,7 +36,7 @@ export function processToolCallsInText(text: string): string {
 		out += text.slice(lastIndex, start)
 
 		// Replace this tag with command result
-		const result = processSingleToolCallTag(fullMatch)
+		const result = await processSingleToolCallTag(fullMatch)
 		out += result
 
 		lastIndex = end
@@ -45,8 +47,8 @@ export function processToolCallsInText(text: string): string {
 	return out
 }
 
-function convertToolCallsToHTML(command: Record<string, any>): string {
-	if (command.header) {
+async function convertToolCallsToHTML(command: DisplayToolsCallUsed): Promise<string> {
+	if ('header' in command) {
 		return `<div class="code-block">
                <div class="code-header">
                   <span class="code-lang edited">${escapeHtml(
@@ -56,8 +58,12 @@ function convertToolCallsToHTML(command: Record<string, any>): string {
              </div>`
 	}
 
-	if (command.path && command.body) {
-		return renderEditedFileLines(command.body, command.path)
+	if ('path' in command && command.editedFileHistoryId) {
+		const result = await retrieveEditedFileHistory({ ids: [command.editedFileHistoryId] })
+
+		if (!result.length) return ''
+
+		return renderEditedFileLines(result[0].content, command.path)
 	}
 
 	return ''

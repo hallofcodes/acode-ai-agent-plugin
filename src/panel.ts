@@ -257,28 +257,29 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		ctxMenuOpen = true
 	}
 
-	function renderAll(): void {
+	async function renderAll(): Promise<void> {
 		msgsInner
 			.querySelectorAll('.msg-row, .thinking-row')
 			.forEach(node => node.remove())
 
 		emptyState.style.display = messages.length === 0 ? 'flex' : 'none'
 
-		messages.forEach((message, index) =>
-			msgsInner.appendChild(buildRow(message, index))
-		)
+		for (let i = 0; i < messages.length; i++) {
+			const row = await buildRow(messages[i], i)
+			msgsInner.appendChild(row)
+		}
 		scrollBottom()
 	}
 
-	function render(): void {
+	async function render(): Promise<void> {
 		if (emptyState.style.display !== 'none') emptyState.style.display = 'none'
 
 		const msgIndex = messages.length - 1
-		msgsInner.appendChild(buildRow(messages[msgIndex], msgIndex))
+		msgsInner.appendChild(await buildRow(messages[msgIndex], msgIndex))
 		scrollBottom()
 	}
 
-	function addFinishUp(row: HTMLDivElement, idx: number, text: string): void {
+	async function addFinishUp(row: HTMLDivElement, idx: number, text: string): Promise<void> {
 		const aiContent = row.querySelector<HTMLElement>('.ai-content')
 		const copyBtn = row.querySelector<HTMLButtonElement>('.copy-btn')
 		const regenBtn = row.querySelector<HTMLButtonElement>('.regen-btn')
@@ -296,7 +297,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		})
 	}
 
-	function buildRow(msg: ChatMessage, idx: number): HTMLDivElement {
+	async function buildRow(msg: ChatMessage, idx: number): Promise<HTMLDivElement> {
 		const row = createEl('div')
 		row.className = `msg-row ${msg.role}`
 		row.dataset.idx = String(idx)
@@ -346,7 +347,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 					<span class="msg-name">Rutex AI Agent</span>
 				</div>
 				<div class="ai-content">
-					${renderMarkdown(msg.text)}
+					${await renderMarkdown(msg.text)}
 				</div>
 				<div class="msg-actions">
 					<div class="msg-action-group">
@@ -488,11 +489,11 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 						if (chunk.type === 'tool') {
 							liveContent.querySelector('.stream-cursor')?.remove()
 							liveContent.innerHTML +=
-								processSingleToolCallTag(chunk.delta) +
+								(await processSingleToolCallTag(chunk.delta)) +
 								'<span class="stream-cursor"></span>'
 						} else
 							liveContent.innerHTML =
-								renderMarkdown(messages[aiIdx].text) +
+								(await renderMarkdown(messages[aiIdx].text)) +
 								'<span class="stream-cursor"></span>'
 
 						attachCodeButtons(liveContent)
@@ -515,7 +516,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 							)
 							messages[aiIdx].text = cleanedMessage
 							completeMessage = cleanedMessage
-							liveContent.innerHTML = renderMarkdown(cleanedMessage)
+							liveContent.innerHTML = await renderMarkdown(cleanedMessage)
 						}
 
 						if (saveDebounceTimer) {

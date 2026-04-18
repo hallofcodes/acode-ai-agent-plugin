@@ -1,5 +1,6 @@
 import { getCurrentChatID, saveEditedFileHistory } from '../../history/chatHistory'
 import {
+	DisplayToolsCallUsed,
 	EditFileInfo,
 	EditFileLines,
 	OldEditedFileLines,
@@ -127,7 +128,7 @@ export default async function* ({
 		const toolCalling = JSON.stringify({
 			path: relativePath,
 			editedFileHistoryId: id
-		})
+		} as DisplayToolsCallUsed)
 
 		const toSave = `<tool_calling_used>${toolCalling}</tool_calling_used>`
 

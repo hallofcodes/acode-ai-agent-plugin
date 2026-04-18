@@ -52,3 +52,6 @@ export type ToolsReturnType = {
 export type ToolsFunction = (
 	args: ReadFileInfo | ListDirInfo | RenameFileInfo | MoveFileInfo | EditFileInfo | CreateFileInfo | CreateDirInfo
 ) => AsyncGenerator<ToolsReturnType>
+
+
+export type DisplayToolsCallUsed = { header: string } | { path: string; editedFileHistoryId: string; }

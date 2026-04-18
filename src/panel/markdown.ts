@@ -129,7 +129,7 @@ const renderMarkdownBlock = (block: string): string => {
 	return output.join('')
 }
 
-const renderMarkdownBlockWithToolCalls = (block: string): string => {
+const renderMarkdownBlockWithToolCalls = async (block: string): Promise<string> => {
 	const matches = [...block.matchAll(TOOL_TAG_REGEX)]
 	if (!matches.length) return renderMarkdownBlock(block)
 
@@ -145,7 +145,7 @@ const renderMarkdownBlockWithToolCalls = (block: string): string => {
 		if (before) out += renderMarkdownBlock(before)
 
 		// Keep tool payload unescaped and replace tag with generated HTML.
-		out += processSingleToolCallTag(fullMatch)
+		out += await processSingleToolCallTag(fullMatch)
 		lastIndex = end
 	}
 
@@ -155,7 +155,7 @@ const renderMarkdownBlockWithToolCalls = (block: string): string => {
 	return out
 }
 
-export const renderMarkdown = (raw: string): string => {
+export const renderMarkdown = async (raw: string): Promise<string> => {
 	const parts: string[] = []
 	const fenceRegex = /```(\w*)\n([\s\S]*?)```/g
 	let lastIndex = 0
@@ -164,7 +164,7 @@ export const renderMarkdown = (raw: string): string => {
 	while ((match = fenceRegex.exec(raw)) !== null) {
 		const before = raw.slice(lastIndex, match.index)
 		if (before.trim()) {
-			parts.push(renderMarkdownBlockWithToolCalls(before))
+			parts.push(await renderMarkdownBlockWithToolCalls(before))
 		}
 
 		const language = normalizeLanguage(match[1] || 'code')
@@ -196,7 +196,7 @@ export const renderMarkdown = (raw: string): string => {
 
 	const tail = raw.slice(lastIndex)
 	if (tail.trim()) {
-		parts.push(renderMarkdownBlockWithToolCalls(tail))
+		parts.push(await renderMarkdownBlockWithToolCalls(tail))
 	}
 
 	return parts.join('')

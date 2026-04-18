@@ -221,15 +221,13 @@ export const retrieveEditedFileHistory = async (filter: { ids: string[] } | { fi
 
 			return results as EditedFileHistoryRecord[]
 		}
-		
-		if ('filePath' in filter) {
-			const results = await withStore('readonly', EDITED_FILE_HISTORY_STORE, store => {
-				const index = store.index('filePath')
-				return index.getAll(filter.filePath)
-			})
 
-			return results as EditedFileHistoryRecord[]
-		}
+		const results = await withStore('readonly', EDITED_FILE_HISTORY_STORE, store => {
+			const index = store.index('filePath')
+			return index.getAll(filter.filePath)
+		})
+
+		return results as EditedFileHistoryRecord[]
 
 	} catch {
 		return []

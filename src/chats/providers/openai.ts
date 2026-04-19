@@ -1,5 +1,7 @@
 import OpenAI from 'openai'
 import { aiSettings } from '../settings'
+import { ToolsFunction } from '../tools/functions/types'
+import { tools as ollamaTools } from '../tools/ollama_tools'
 import { Usage, StreamChunk, ChatMessage } from '../types'
 
 // ─────────────────────────────────────────────
@@ -18,42 +20,111 @@ export default async function* (
 		dangerouslyAllowBrowser: true
 	})
 
-	const stream = await client.chat.completions.create(
-		{
-			model,
-			temperature: aiSettings.temperature,
-			max_tokens: aiSettings.maxTokens,
-			stream: true,
-			stream_options: { include_usage: true }, // ask OpenAI to send usage at the end
-			messages: [
-				{ role: 'system', content: aiSettings.systemInstruction },
-				...messages.map(m => ({ role: m.role, content: m.content }) as any)
-			]
-		},
-		{ signal }
-	)
+	// Keep incoming history plain; tool state is built only inside this loop.
+	const turnMessages: any[] = messages.map(m => ({ role: m.role, content: m.content }))
+	const openaiTools = ollamaTools.map(tool => ({
+		type: 'function' as const,
+		function: {
+			name: tool.function.name,
+			description: tool.function.description,
+			parameters: tool.function.parameters
+		}
+	}))
 
 	let fullText = ''
 	let usage: Usage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 }
 	let resolvedModel = model
 
-	for await (const chunk of stream) {
+	while (true) {
 		if (signal?.aborted) break
 
-		resolvedModel = chunk.model ?? resolvedModel
+		const completion = await client.chat.completions.create(
+			{
+				model,
+				temperature: aiSettings.temperature,
+				max_tokens: aiSettings.maxTokens,
+				tool_choice: 'auto',
+				tools: openaiTools,
+				messages: [
+					{ role: 'system', content: aiSettings.systemInstruction },
+					...turnMessages
+				]
+			},
+			{ signal }
+		)
 
-		const delta = chunk.choices[0]?.delta?.content ?? ''
-		if (delta) {
-			fullText += delta
-			yield { type: 'text', model: resolvedModel, delta }
+		resolvedModel = completion.model ?? resolvedModel
+
+		if (completion.usage) {
+			usage = {
+				inputTokens: completion.usage.prompt_tokens ?? 0,
+				outputTokens: completion.usage.completion_tokens ?? 0,
+				totalTokens: completion.usage.total_tokens ?? 0
+			}
 		}
 
-		// OpenAI sends usage in the final chunk when stream_options.include_usage is set
-		if (chunk.usage) {
-			usage = {
-				inputTokens: chunk.usage.prompt_tokens ?? 0,
-				outputTokens: chunk.usage.completion_tokens ?? 0,
-				totalTokens: chunk.usage.total_tokens ?? 0
+		const assistantMessage = completion.choices[0]?.message
+		const turnText = assistantMessage?.content ?? ''
+
+		if (turnText) {
+			fullText += turnText
+			yield { type: 'text', model: resolvedModel, delta: turnText }
+		}
+
+		const toolCalls = assistantMessage?.tool_calls ?? []
+		if (!toolCalls.length) break
+
+		turnMessages.push({
+			role: 'assistant',
+			content: turnText,
+			tool_calls: toolCalls
+		})
+
+		for (const call of toolCalls) {
+			if (call?.type !== 'function') continue
+
+			const toolName = call?.function?.name
+			if (!toolName) continue
+
+			try {
+				const toolFunction: ToolsFunction = (
+					await require(`../tools/functions/${toolName}`)
+				).default
+
+				const rawArgs = call.function.arguments ?? '{}'
+				const args = safeJsonParse(rawArgs)
+				const chunkedResult = toolFunction(args as any)
+				let resultContent = ''
+
+				for await (const toolChunk of chunkedResult) {
+					if (toolChunk.toSave) {
+						yield {
+							type: 'tool',
+							delta: toolChunk.toSave,
+							model: resolvedModel
+						}
+					}
+
+					if (toolChunk.result) {
+						resultContent = toolChunk.result
+						break
+					}
+				}
+
+				turnMessages.push({
+					role: 'tool',
+					tool_call_id: call.id,
+					content: resultContent || '[NO RESULT]'
+				})
+			} catch (e: any) {
+				const errorMessage = e instanceof Error ? e.message : 'Unknown error'
+				clg(errorMessage)
+
+				turnMessages.push({
+					role: 'tool',
+					tool_call_id: call.id,
+					content: `[ERROR] ${errorMessage}`
+				})
 			}
 		}
 	}
@@ -64,5 +135,13 @@ export default async function* (
 		provider: 'openai',
 		model: resolvedModel,
 		usage
+	}
+}
+
+function safeJsonParse(raw: string): Record<string, any> {
+	try {
+		return JSON.parse(raw)
+	} catch {
+		return {}
 	}
 }

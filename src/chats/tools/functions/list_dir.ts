@@ -13,11 +13,10 @@ export default async function* ({
 	})
 
 	const toSave = `<display_ui>${toolCalling}</display_ui>`
-	yield { toSave }
 
 	// --- START FILE READ ---
 	const fs = acode.require('fs')
-	const entries = await fs(path).lsDir()
+	const entries = await fs(path)?.lsDir()
 
 	if (!entries) {
 		throw new Error('Directory path is invalid or inaccessible.')
@@ -33,5 +32,5 @@ export default async function* ({
 		})
 		.join(' | ')
 
-	yield { result }
+	yield { result, toSave }
 }

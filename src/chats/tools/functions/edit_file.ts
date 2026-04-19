@@ -1,5 +1,8 @@
 import { openEditedFilesDialog } from '../../../panel/renderEditedFilesDialog'
-import { getCurrentChatID, saveEditedFileHistory } from '../../history/chatHistory'
+import {
+	getCurrentChatID,
+	saveEditedFileHistory
+} from '../../history/chatHistory'
 import { CurrentEditedFiles } from '../../types'
 import {
 	DisplayToolsCallUsed,
@@ -19,7 +22,7 @@ export default async function* ({
 	const fs = acode.require('fs')
 	const fsPath = fs(path)
 
-	const exists = await fsPath.exists()
+	const exists = await fsPath?.exists()
 
 	if (!exists) {
 		throw new Error('File does not exist.')
@@ -32,8 +35,7 @@ export default async function* ({
 	if (!openFile) {
 		const filename = path.substring(path.lastIndexOf('/') + 1)
 		openFile = acode.newEditorFile(filename, { uri: path, render: true })
-	}
-	else openFile.makeActive()
+	} else openFile.makeActive()
 
 	try {
 		if (openFile) openFile.markChanged = false
@@ -51,8 +53,11 @@ export default async function* ({
 		let totalRemoved = 0
 
 		const rPath = getRelativePath(path, false)
-		currentEdittedFiles[rPath] ??= { totalAdded: 0, totalRemoved: 0, editedHistoryIds: [] }
-
+		currentEdittedFiles[rPath] ??= {
+			totalAdded: 0,
+			totalRemoved: 0,
+			editedHistoryIds: []
+		}
 
 		for (let index = 0; index < lines.length; index++) {
 			const { line, text } = lines[index]

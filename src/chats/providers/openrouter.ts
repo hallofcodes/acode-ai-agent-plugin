@@ -110,6 +110,8 @@ export default async function* (
 				const chunkedResult = toolFunction(args as any)
 				let resultContent = ''
 
+				clg(`TOOL CALLED: [${toolName}]`, args)
+
 				for await (const toolChunk of chunkedResult) {
 					if (toolChunk.toSave) {
 						yield {
@@ -132,7 +134,8 @@ export default async function* (
 					output: resultContent || '[NO RESULT]'
 				})
 			} catch (e: any) {
-				const errorMessage = e instanceof Error ? e.message : 'Unknown error'
+				const errorMessage =
+					e instanceof Error ? e.message : 'Unknown error'
 				clg(errorMessage)
 
 				nextInput.push({

@@ -1,5 +1,5 @@
 {
-	"name": "acode-ai-agent-plugin",
+	"name": "rutex_coding_agent",
 	"version": "0.0.1",
 	"description": "An autonomous AI agent plugin for Acode that enables LLMs to directly read, create, and refactor files, while executing terminal commands through a secure agentic loop—bringing desktop-class AI automation to Android.",
 	"main": "dist/main.js",

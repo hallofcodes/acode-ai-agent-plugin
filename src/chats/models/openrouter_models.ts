@@ -2,4253 +2,1252 @@ import { ProviderModelMeta } from './types'
 
 export default [
 	// ─── Anthropic ─────────────────────────────────────────────────────────────────
+	// ════════════════════════════════════════════════════
+	// Claude 4.x — Opus (Latest flagship, 2026)
+	// ════════════════════════════════════════════════════
+	{
+		id: 'anthropic/claude-opus-4.6-fast',
+		label: 'Anthropic / Claude Opus 4.6 (Fast)',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Long-running agents', 'Large codebases', 'Complex refactors'],
+		notes: 'Fast-mode Opus 4.6. Same capabilities, up to 2.5x higher output speed at 6x premium pricing. $30/$150 per million tokens.'
+	},
+	{
+		id: 'anthropic/claude-opus-4.6',
+		label: 'Anthropic / Claude Opus 4.6',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: [
+			'Agentic coding',
+			'Complex multi-step tasks',
+			'Long professional work'
+		],
+		notes: 'Strongest Claude for coding and long-running workflows. Deep contextual understanding, strong problem decomposition. $5/$25 per million tokens.'
+	},
+	{
+		id: 'anthropic/claude-sonnet-4.6',
+		label: 'Anthropic / Claude Sonnet 4.6',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: [
+			'Iterative development',
+			'Codebase navigation',
+			'Agent workflows'
+		],
+		notes: 'Most capable Sonnet. Frontier coding performance, project management with memory, computer use. Best value Claude for agents. $3/$15 per million tokens.'
+	},
+	{
+		id: 'anthropic/claude-opus-4.5',
+		label: 'Anthropic / Claude Opus 4.5',
+		contextWindow: '200K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: [
+			'Complex software engineering',
+			'Long-horizon computer use',
+			'Multi-agent setups'
+		],
+		notes: 'Frontier reasoning model. Configurable effort levels via Verbosity param (low/medium/high). Strong on agentic debugging and multi-step planning. $5/$25 per million tokens.'
+	},
+	{
+		id: 'anthropic/claude-haiku-4.5',
+		label: 'Anthropic / Claude Haiku 4.5',
+		contextWindow: '200K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Real-time responses', 'Sub-agents', 'High-volume workflows'],
+		notes: 'Fastest and cheapest Claude. 73%+ on SWE-bench. Extended thinking support. Best for parallelized sub-agents and scaled deployment. $1/$5 per million tokens.'
+	},
+	{
+		id: 'anthropic/claude-sonnet-4.5',
+		label: 'Anthropic / Claude Sonnet 4.5',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: [
+			'Agentic coding',
+			'Long-running workflows',
+			'Parallel tool execution'
+		],
+		notes: 'Advanced Sonnet for real-world agents. Speculative parallel execution, efficient context/memory management, strong tool orchestration. $3/$15 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// Claude 4.x — Opus 4.0 / 4.1
+	// ════════════════════════════════════════════════════
 	{
 		id: 'anthropic/claude-opus-4.1',
 		label: 'Anthropic / Claude Opus 4.1',
 		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
+		maxOutputTokens: '32K tokens',
 		bestFor: [
-			'Deep analysis',
-			'Long-form synthesis',
-			'Difficult engineering tasks'
+			'Multi-file refactoring',
+			'Research',
+			'Data analysis with tools'
 		],
-		notes: 'Premium Claude Opus line model available through OpenRouter.'
+		notes: '74.5% SWE-bench Verified. Extended thinking up to 64K tokens. Strong debugging precision and detail-oriented reasoning. $15/$75 per million tokens.'
 	},
+	{
+		id: 'anthropic/claude-opus-4',
+		label: 'Anthropic / Claude Opus 4',
+		contextWindow: '200K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: [
+			'Complex long-running tasks',
+			'Agent workflows',
+			'Software engineering'
+		],
+		notes: "World's best coding model at launch. 72.5% SWE-bench, 43.2% Terminal-bench. Handles thousands of agent steps for hours without degradation. $15/$75 per million tokens."
+	},
+	{
+		id: 'anthropic/claude-sonnet-4',
+		label: 'Anthropic / Claude Sonnet 4',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: [
+			'Everyday coding',
+			'Agentic tasks',
+			'Complex software development'
+		],
+		notes: '72.7% SWE-bench. Improved autonomous codebase navigation, reduced agent error rates. Good balance of capability and efficiency. $3/$15 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// Claude 3.7 (Deprecating May 5, 2026 — include for now)
+	// ════════════════════════════════════════════════════
 	{
 		id: 'anthropic/claude-3.7-sonnet',
 		label: 'Anthropic / Claude 3.7 Sonnet',
 		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: ['Reasoning', 'Code generation', 'Daily development'],
-		notes: 'Strong Sonnet generation model included for compatibility and choice.'
-	},
-	{
-		id: 'anthropic/claude-haiku-base',
-		label: 'Anthropic / Claude Haiku Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Claude family for quick responses and lightweight automation. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-haiku-mini',
-		label: 'Anthropic / Claude Haiku Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Claude family for quick responses and lightweight automation. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-haiku-nano',
-		label: 'Anthropic / Claude Haiku Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Claude family for quick responses and lightweight automation. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-haiku-pro',
-		label: 'Anthropic / Claude Haiku Pro',
-		contextWindow: '256K tokens',
 		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Claude family for quick responses and lightweight automation. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-haiku-small',
-		label: 'Anthropic / Claude Haiku Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Claude family for quick responses and lightweight automation. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-haiku-ultra',
-		label: 'Anthropic / Claude Haiku Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Claude family for quick responses and lightweight automation. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-instant-base',
-		label: 'Anthropic / Claude Instant Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency assistant family for short request/response loops. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-instant-mini',
-		label: 'Anthropic / Claude Instant Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency assistant family for short request/response loops. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-instant-nano',
-		label: 'Anthropic / Claude Instant Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency assistant family for short request/response loops. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-instant-pro',
-		label: 'Anthropic / Claude Instant Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency assistant family for short request/response loops. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-instant-small',
-		label: 'Anthropic / Claude Instant Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency assistant family for short request/response loops. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-instant-ultra',
-		label: 'Anthropic / Claude Instant Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency assistant family for short request/response loops. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-opus-base',
-		label: 'Anthropic / Claude Opus Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Top-tier Claude family for deep reasoning and complex long-form analysis. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-opus-mini',
-		label: 'Anthropic / Claude Opus Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Top-tier Claude family for deep reasoning and complex long-form analysis. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-opus-nano',
-		label: 'Anthropic / Claude Opus Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Top-tier Claude family for deep reasoning and complex long-form analysis. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-opus-pro',
-		label: 'Anthropic / Claude Opus Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Top-tier Claude family for deep reasoning and complex long-form analysis. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-opus-small',
-		label: 'Anthropic / Claude Opus Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Top-tier Claude family for deep reasoning and complex long-form analysis. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-opus-ultra',
-		label: 'Anthropic / Claude Opus Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Top-tier Claude family for deep reasoning and complex long-form analysis. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-reasoning-base',
-		label: 'Anthropic / Claude Reasoning Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-tuned Claude family focused on deliberate problem solving. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-reasoning-mini',
-		label: 'Anthropic / Claude Reasoning Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-tuned Claude family focused on deliberate problem solving. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-reasoning-nano',
-		label: 'Anthropic / Claude Reasoning Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-tuned Claude family focused on deliberate problem solving. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-reasoning-pro',
-		label: 'Anthropic / Claude Reasoning Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-tuned Claude family focused on deliberate problem solving. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-reasoning-small',
-		label: 'Anthropic / Claude Reasoning Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-tuned Claude family focused on deliberate problem solving. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-reasoning-ultra',
-		label: 'Anthropic / Claude Reasoning Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-tuned Claude family focused on deliberate problem solving. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-sonnet-base',
-		label: 'Anthropic / Claude Sonnet Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Claude family for coding quality, speed, and instruction following. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-sonnet-mini',
-		label: 'Anthropic / Claude Sonnet Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Claude family for coding quality, speed, and instruction following. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-sonnet-nano',
-		label: 'Anthropic / Claude Sonnet Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Claude family for coding quality, speed, and instruction following. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-sonnet-pro',
-		label: 'Anthropic / Claude Sonnet Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Claude family for coding quality, speed, and instruction following. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-sonnet-small',
-		label: 'Anthropic / Claude Sonnet Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Claude family for coding quality, speed, and instruction following. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'anthropic/claude-sonnet-ultra',
-		label: 'Anthropic / Claude Sonnet Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Claude family for coding quality, speed, and instruction following. Ultra tier prioritizes long-context tasks in plugin workflows.'
+		bestFor: ['Reasoning', 'Front-end coding', 'Agentic workflows'],
+		notes: 'Hybrid reasoning model. Choose rapid or extended step-by-step mode. Deprecating May 5, 2026 — consider migrating to Sonnet 4.x. $3/$15 per million tokens.'
 	},
 
-	// ─── Cohere ─────────────────────────────────────────────────────────────────
+	// ════════════════════════════════════════════════════
+	// Claude 3.5 (Legacy, still active)
+	// ════════════════════════════════════════════════════
 	{
-		id: 'cohere/command-coder-base',
-		label: 'Cohere / Command Coder Base',
+		id: 'anthropic/claude-3.5-haiku',
+		label: 'Anthropic / Claude 3.5 Haiku',
 		contextWindow: '200K tokens',
 		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Command family for implementation workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
+		bestFor: ['Fast chat', 'Code completions', 'Real-time interactions'],
+		notes: 'Fast and cheap previous-gen Haiku. Strong tool use and coding accuracy. $0.80/$4 per million tokens.'
 	},
 	{
-		id: 'cohere/command-coder-mini',
-		label: 'Cohere / Command Coder Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Command family for implementation workflows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-coder-nano',
-		label: 'Cohere / Command Coder Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Command family for implementation workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-coder-pro',
-		label: 'Cohere / Command Coder Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Command family for implementation workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-coder-small',
-		label: 'Cohere / Command Coder Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Command family for implementation workflows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-coder-ultra',
-		label: 'Cohere / Command Coder Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Command family for implementation workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-fast-base',
-		label: 'Cohere / Command Fast Base',
+		id: 'anthropic/claude-3-haiku',
+		label: 'Anthropic / Claude 3 Haiku',
 		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency Command family for interactive assistant loops. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-fast-mini',
-		label: 'Cohere / Command Fast Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency Command family for interactive assistant loops. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-fast-nano',
-		label: 'Cohere / Command Fast Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency Command family for interactive assistant loops. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-fast-pro',
-		label: 'Cohere / Command Fast Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency Command family for interactive assistant loops. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-fast-small',
-		label: 'Cohere / Command Fast Small',
-		contextWindow: '128K tokens',
 		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency Command family for interactive assistant loops. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-fast-ultra',
-		label: 'Cohere / Command Fast Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Low-latency Command family for interactive assistant loops. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-long-base',
-		label: 'Cohere / Command Long Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Command family for large-source comprehension. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-long-mini',
-		label: 'Cohere / Command Long Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Command family for large-source comprehension. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-long-nano',
-		label: 'Cohere / Command Long Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Command family for large-source comprehension. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-long-pro',
-		label: 'Cohere / Command Long Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Command family for large-source comprehension. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-long-small',
-		label: 'Cohere / Command Long Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Command family for large-source comprehension. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-long-ultra',
-		label: 'Cohere / Command Long Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Command family for large-source comprehension. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-base',
-		label: 'Cohere / Command R Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Retrieval-optimized Command family for enterprise RAG tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-mini',
-		label: 'Cohere / Command R Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Retrieval-optimized Command family for enterprise RAG tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-nano',
-		label: 'Cohere / Command R Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Retrieval-optimized Command family for enterprise RAG tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-plus-base',
-		label: 'Cohere / Command R Plus Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Command family for stronger reasoning and synthesis. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-plus-mini',
-		label: 'Cohere / Command R Plus Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Command family for stronger reasoning and synthesis. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-plus-nano',
-		label: 'Cohere / Command R Plus Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Command family for stronger reasoning and synthesis. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-plus-pro',
-		label: 'Cohere / Command R Plus Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Command family for stronger reasoning and synthesis. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-plus-small',
-		label: 'Cohere / Command R Plus Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Command family for stronger reasoning and synthesis. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-plus-ultra',
-		label: 'Cohere / Command R Plus Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Command family for stronger reasoning and synthesis. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-pro',
-		label: 'Cohere / Command R Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Retrieval-optimized Command family for enterprise RAG tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-small',
-		label: 'Cohere / Command R Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Retrieval-optimized Command family for enterprise RAG tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'cohere/command-r-ultra',
-		label: 'Cohere / Command R Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Retrieval-optimized Command family for enterprise RAG tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-
-	// ─── DeepSeek ─────────────────────────────────────────────────────────────────
-	{
-		id: 'deepseek/deepseek-chat-base',
-		label: 'DeepSeek / Deepseek Chat Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General assistant DeepSeek family for everyday coding requests. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-chat-mini',
-		label: 'DeepSeek / Deepseek Chat Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General assistant DeepSeek family for everyday coding requests. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-chat-nano',
-		label: 'DeepSeek / Deepseek Chat Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General assistant DeepSeek family for everyday coding requests. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-chat-pro',
-		label: 'DeepSeek / Deepseek Chat Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General assistant DeepSeek family for everyday coding requests. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-chat-small',
-		label: 'DeepSeek / Deepseek Chat Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General assistant DeepSeek family for everyday coding requests. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-chat-ultra',
-		label: 'DeepSeek / Deepseek Chat Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General assistant DeepSeek family for everyday coding requests. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-coder-base',
-		label: 'DeepSeek / Deepseek Coder Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-oriented DeepSeek family for code generation and repair. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-coder-mini',
-		label: 'DeepSeek / Deepseek Coder Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-oriented DeepSeek family for code generation and repair. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-coder-nano',
-		label: 'DeepSeek / Deepseek Coder Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-oriented DeepSeek family for code generation and repair. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-coder-pro',
-		label: 'DeepSeek / Deepseek Coder Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-oriented DeepSeek family for code generation and repair. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-coder-small',
-		label: 'DeepSeek / Deepseek Coder Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-oriented DeepSeek family for code generation and repair. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-coder-ultra',
-		label: 'DeepSeek / Deepseek Coder Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-oriented DeepSeek family for code generation and repair. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-lite-base',
-		label: 'DeepSeek / Deepseek Lite Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient DeepSeek family for low-latency, lower-cost usage. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-lite-mini',
-		label: 'DeepSeek / Deepseek Lite Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient DeepSeek family for low-latency, lower-cost usage. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-lite-nano',
-		label: 'DeepSeek / Deepseek Lite Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient DeepSeek family for low-latency, lower-cost usage. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-lite-pro',
-		label: 'DeepSeek / Deepseek Lite Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient DeepSeek family for low-latency, lower-cost usage. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-lite-small',
-		label: 'DeepSeek / Deepseek Lite Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient DeepSeek family for low-latency, lower-cost usage. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-lite-ultra',
-		label: 'DeepSeek / Deepseek Lite Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient DeepSeek family for low-latency, lower-cost usage. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-long-base',
-		label: 'DeepSeek / Deepseek Long Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context DeepSeek family for repository and document analysis. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-long-mini',
-		label: 'DeepSeek / Deepseek Long Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context DeepSeek family for repository and document analysis. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-long-nano',
-		label: 'DeepSeek / Deepseek Long Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context DeepSeek family for repository and document analysis. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-long-pro',
-		label: 'DeepSeek / Deepseek Long Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context DeepSeek family for repository and document analysis. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-long-small',
-		label: 'DeepSeek / Deepseek Long Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context DeepSeek family for repository and document analysis. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-long-ultra',
-		label: 'DeepSeek / Deepseek Long Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context DeepSeek family for repository and document analysis. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-reasoner-base',
-		label: 'DeepSeek / Deepseek Reasoner Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning DeepSeek family for deliberate multi-step solutions. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-reasoner-mini',
-		label: 'DeepSeek / Deepseek Reasoner Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning DeepSeek family for deliberate multi-step solutions. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-reasoner-nano',
-		label: 'DeepSeek / Deepseek Reasoner Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning DeepSeek family for deliberate multi-step solutions. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-reasoner-pro',
-		label: 'DeepSeek / Deepseek Reasoner Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning DeepSeek family for deliberate multi-step solutions. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-reasoner-small',
-		label: 'DeepSeek / Deepseek Reasoner Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning DeepSeek family for deliberate multi-step solutions. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'deepseek/deepseek-reasoner-ultra',
-		label: 'DeepSeek / Deepseek Reasoner Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning DeepSeek family for deliberate multi-step solutions. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-
-	// ─── Google ───────────────────────────────────────────────────────────────
-	{
-		id: 'google/gemini-2.5-pro',
-		label: 'Google / Gemini 2.5 Pro',
-		contextWindow: '1M tokens',
-		maxOutputTokens: '64K tokens',
-		bestFor: ['Complex reasoning', 'Long context', 'Architecture support'],
-		notes: 'High-quality Gemini model through OpenRouter with large context window.'
-	},
-	{
-		id: 'google/gemini-2.5-flash-lite',
-		label: 'Google / Gemini 2.5 Flash-Lite',
-		contextWindow: '1M tokens',
-		maxOutputTokens: '64K tokens',
-		bestFor: [
-			'Cost-aware usage',
-			'Fast responses',
-			'High-volume assistant tasks'
-		],
-		notes: 'Efficient Gemini tier for throughput-oriented workloads.'
-	},
-	{
-		id: 'google/gemma-4-31b-it:free',
-		label: 'Google / Gemma 4 31B',
-		contextWindow: '262K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: ['General chat', 'Vision tasks', 'Tool use', 'Multilingual'],
-		notes: 'Latest Gemma 4 model. Vision + tools support. Apache 2.0 license.'
-	},
-	{
-		id: 'google/gemma-4-26b-a4b-it:free',
-		label: 'Google / Gemma 4 26B (MoE)',
-		contextWindow: '262K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'General chat',
-			'Vision tasks',
-			'Tool use',
-			'Efficient inference'
-		],
-		notes: 'MoE variant of Gemma 4, 26B total / 4B active. Very efficient.'
-	},
-	{
-		id: 'google/gemma-3-27b-it:free',
-		label: 'Google / Gemma 3 27B',
-		contextWindow: '131K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: ['General chat', 'Vision tasks', 'Multilingual'],
-		notes: 'Strong general-purpose Gemma 3 model. Vision support.'
-	},
-	{
-		id: 'google/gemma-3-12b-it:free',
-		label: 'Google / Gemma 3 12B',
-		contextWindow: '33K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: ['General chat', 'Vision tasks', 'Lightweight tasks'],
-		notes: 'Mid-size Gemma 3. Good balance of speed and quality.'
-	},
-	{
-		id: 'google/gemma-3-4b-it:free',
-		label: 'Google / Gemma 3 4B',
-		contextWindow: '33K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: ['Fast responses', 'Simple tasks', 'Vision tasks'],
-		notes: 'Small but capable Gemma 3. Fast inference.'
-	},
-	{
-		id: 'google/gemma-3n-e4b-it:free',
-		label: 'Google / Gemma 3n E4B (Mobile)',
-		contextWindow: '8K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: ['Edge deployment', 'Mobile tasks', 'Vision', 'Audio'],
-		notes: 'Mobile-optimized multimodal model. MatFormer architecture with Per-Layer Embedding. Supports text, vision, and audio.'
-	},
-	{
-		id: 'google/gemma-3n-e2b-it:free',
-		label: 'Google / Gemma 3n E2B (Mobile)',
-		contextWindow: '8K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: ['Edge deployment', 'On-device inference', 'Mobile tasks'],
-		notes: 'Smallest mobile-optimized Gemma. Designed for on-device use. 140+ language support.'
-	},
-	{
-		id: 'google/gemini-code-base',
-		label: 'Google / Gemini Code Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Gemini family for implementation and refactor tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-code-mini',
-		label: 'Google / Gemini Code Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Gemini family for implementation and refactor tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-code-nano',
-		label: 'Google / Gemini Code Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Gemini family for implementation and refactor tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-code-pro',
-		label: 'Google / Gemini Code Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Gemini family for implementation and refactor tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-code-small',
-		label: 'Google / Gemini Code Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Gemini family for implementation and refactor tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-code-ultra',
-		label: 'Google / Gemini Code Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Gemini family for implementation and refactor tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-flash-base',
-		label: 'Google / Gemini Flash Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-throughput Gemini family for low-latency coding assistance. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-flash-mini',
-		label: 'Google / Gemini Flash Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-throughput Gemini family for low-latency coding assistance. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-flash-nano',
-		label: 'Google / Gemini Flash Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-throughput Gemini family for low-latency coding assistance. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-flash-pro',
-		label: 'Google / Gemini Flash Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-throughput Gemini family for low-latency coding assistance. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-flash-small',
-		label: 'Google / Gemini Flash Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-throughput Gemini family for low-latency coding assistance. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-flash-ultra',
-		label: 'Google / Gemini Flash Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-throughput Gemini family for low-latency coding assistance. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-multimodal-base',
-		label: 'Google / Gemini Multimodal Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Gemini family for image-aware and mixed-input workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-multimodal-mini',
-		label: 'Google / Gemini Multimodal Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Gemini family for image-aware and mixed-input workflows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-multimodal-nano',
-		label: 'Google / Gemini Multimodal Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Gemini family for image-aware and mixed-input workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-multimodal-pro',
-		label: 'Google / Gemini Multimodal Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Gemini family for image-aware and mixed-input workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-multimodal-small',
-		label: 'Google / Gemini Multimodal Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Gemini family for image-aware and mixed-input workflows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-multimodal-ultra',
-		label: 'Google / Gemini Multimodal Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Gemini family for image-aware and mixed-input workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-pro-base',
-		label: 'Google / Gemini Pro Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Gemini family suited for reasoning, architecture, and large context. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-pro-mini',
-		label: 'Google / Gemini Pro Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Gemini family suited for reasoning, architecture, and large context. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-pro-nano',
-		label: 'Google / Gemini Pro Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Gemini family suited for reasoning, architecture, and large context. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-pro-pro',
-		label: 'Google / Gemini Pro Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Gemini family suited for reasoning, architecture, and large context. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-pro-small',
-		label: 'Google / Gemini Pro Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Gemini family suited for reasoning, architecture, and large context. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-pro-ultra',
-		label: 'Google / Gemini Pro Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-quality Gemini family suited for reasoning, architecture, and large context. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-thinking-base',
-		label: 'Google / Gemini Thinking Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Thinking-focused Gemini family for multi-step problem solving. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-thinking-mini',
-		label: 'Google / Gemini Thinking Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Thinking-focused Gemini family for multi-step problem solving. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-thinking-nano',
-		label: 'Google / Gemini Thinking Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Thinking-focused Gemini family for multi-step problem solving. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-thinking-pro',
-		label: 'Google / Gemini Thinking Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Thinking-focused Gemini family for multi-step problem solving. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-thinking-small',
-		label: 'Google / Gemini Thinking Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Thinking-focused Gemini family for multi-step problem solving. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'google/gemini-thinking-ultra',
-		label: 'Google / Gemini Thinking Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Thinking-focused Gemini family for multi-step problem solving. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3-reasoning-base',
-		label: 'Meta Llama / Llama 3 Reasoning Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Llama family for structured analytical tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3-reasoning-mini',
-		label: 'Meta Llama / Llama 3 Reasoning Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Llama family for structured analytical tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3-reasoning-nano',
-		label: 'Meta Llama / Llama 3 Reasoning Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Llama family for structured analytical tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3-reasoning-pro',
-		label: 'Meta Llama / Llama 3 Reasoning Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Llama family for structured analytical tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3-reasoning-small',
-		label: 'Meta Llama / Llama 3 Reasoning Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Llama family for structured analytical tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3-reasoning-ultra',
-		label: 'Meta Llama / Llama 3 Reasoning Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Llama family for structured analytical tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-coder-base',
-		label: 'Meta Llama / Llama 3.1 Coder Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-oriented Llama family optimized for generation and edits. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-coder-mini',
-		label: 'Meta Llama / Llama 3.1 Coder Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-oriented Llama family optimized for generation and edits. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-coder-nano',
-		label: 'Meta Llama / Llama 3.1 Coder Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-oriented Llama family optimized for generation and edits. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-coder-pro',
-		label: 'Meta Llama / Llama 3.1 Coder Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-oriented Llama family optimized for generation and edits. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-coder-small',
-		label: 'Meta Llama / Llama 3.1 Coder Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-oriented Llama family optimized for generation and edits. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-coder-ultra',
-		label: 'Meta Llama / Llama 3.1 Coder Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-oriented Llama family optimized for generation and edits. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-instruct-base',
-		label: 'Meta Llama / Llama 3.1 Instruct Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General instruction-tuned Llama family for broad assistant usage. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-instruct-mini',
-		label: 'Meta Llama / Llama 3.1 Instruct Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General instruction-tuned Llama family for broad assistant usage. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-instruct-nano',
-		label: 'Meta Llama / Llama 3.1 Instruct Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General instruction-tuned Llama family for broad assistant usage. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-instruct-pro',
-		label: 'Meta Llama / Llama 3.1 Instruct Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General instruction-tuned Llama family for broad assistant usage. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-instruct-small',
-		label: 'Meta Llama / Llama 3.1 Instruct Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General instruction-tuned Llama family for broad assistant usage. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.1-instruct-ultra',
-		label: 'Meta Llama / Llama 3.1 Instruct Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General instruction-tuned Llama family for broad assistant usage. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.2-vision-base',
-		label: 'Meta Llama / Llama 3.2 Vision Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Vision-capable Llama family for multimodal analysis tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.2-vision-mini',
-		label: 'Meta Llama / Llama 3.2 Vision Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Vision-capable Llama family for multimodal analysis tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.2-vision-nano',
-		label: 'Meta Llama / Llama 3.2 Vision Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Vision-capable Llama family for multimodal analysis tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.2-vision-pro',
-		label: 'Meta Llama / Llama 3.2 Vision Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Vision-capable Llama family for multimodal analysis tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.2-vision-small',
-		label: 'Meta Llama / Llama 3.2 Vision Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Vision-capable Llama family for multimodal analysis tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-3.2-vision-ultra',
-		label: 'Meta Llama / Llama 3.2 Vision Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Vision-capable Llama family for multimodal analysis tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-guard-base',
-		label: 'Meta Llama / Llama Guard Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Safety and moderation family for policy and filtering assistance. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-guard-mini',
-		label: 'Meta Llama / Llama Guard Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Safety and moderation family for policy and filtering assistance. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-guard-nano',
-		label: 'Meta Llama / Llama Guard Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Safety and moderation family for policy and filtering assistance. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-guard-pro',
-		label: 'Meta Llama / Llama Guard Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Safety and moderation family for policy and filtering assistance. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-guard-small',
-		label: 'Meta Llama / Llama Guard Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Safety and moderation family for policy and filtering assistance. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'meta-llama/llama-guard-ultra',
-		label: 'Meta Llama / Llama Guard Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Safety and moderation family for policy and filtering assistance. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-coder-base',
-		label: 'Microsoft / Phi Coder Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Phi family for code editing and generation. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-coder-mini',
-		label: 'Microsoft / Phi Coder Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Phi family for code editing and generation. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-coder-nano',
-		label: 'Microsoft / Phi Coder Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Phi family for code editing and generation. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-coder-pro',
-		label: 'Microsoft / Phi Coder Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Phi family for code editing and generation. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-coder-small',
-		label: 'Microsoft / Phi Coder Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Phi family for code editing and generation. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-coder-ultra',
-		label: 'Microsoft / Phi Coder Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Developer-oriented Phi family for code editing and generation. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-fast-base',
-		label: 'Microsoft / Phi Fast Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Phi family for iterative chatbot interactions. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-fast-mini',
-		label: 'Microsoft / Phi Fast Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Phi family for iterative chatbot interactions. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-fast-nano',
-		label: 'Microsoft / Phi Fast Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Phi family for iterative chatbot interactions. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-fast-pro',
-		label: 'Microsoft / Phi Fast Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Phi family for iterative chatbot interactions. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-fast-small',
-		label: 'Microsoft / Phi Fast Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Phi family for iterative chatbot interactions. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-fast-ultra',
-		label: 'Microsoft / Phi Fast Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast Phi family for iterative chatbot interactions. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-instruct-base',
-		label: 'Microsoft / Phi Instruct Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Compact Phi instruction family for lightweight general tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-instruct-mini',
-		label: 'Microsoft / Phi Instruct Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Compact Phi instruction family for lightweight general tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-instruct-nano',
-		label: 'Microsoft / Phi Instruct Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Compact Phi instruction family for lightweight general tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-instruct-pro',
-		label: 'Microsoft / Phi Instruct Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Compact Phi instruction family for lightweight general tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-instruct-small',
-		label: 'Microsoft / Phi Instruct Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Compact Phi instruction family for lightweight general tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-instruct-ultra',
-		label: 'Microsoft / Phi Instruct Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Compact Phi instruction family for lightweight general tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-long-base',
-		label: 'Microsoft / Phi Long Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Phi family for larger prompt windows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-long-mini',
-		label: 'Microsoft / Phi Long Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Phi family for larger prompt windows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-long-nano',
-		label: 'Microsoft / Phi Long Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Phi family for larger prompt windows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-long-pro',
-		label: 'Microsoft / Phi Long Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Phi family for larger prompt windows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-long-small',
-		label: 'Microsoft / Phi Long Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Phi family for larger prompt windows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-long-ultra',
-		label: 'Microsoft / Phi Long Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Phi family for larger prompt windows. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-reasoning-base',
-		label: 'Microsoft / Phi Reasoning Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Phi family for logic-heavy workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-reasoning-mini',
-		label: 'Microsoft / Phi Reasoning Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Phi family for logic-heavy workflows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-reasoning-nano',
-		label: 'Microsoft / Phi Reasoning Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Phi family for logic-heavy workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-reasoning-pro',
-		label: 'Microsoft / Phi Reasoning Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Phi family for logic-heavy workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-reasoning-small',
-		label: 'Microsoft / Phi Reasoning Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Phi family for logic-heavy workflows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'microsoft/phi-reasoning-ultra',
-		label: 'Microsoft / Phi Reasoning Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Phi family for logic-heavy workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'mistralai/codestral-base',
-		label: 'Mistral AI / Codestral Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-centric Mistral family aimed at developer productivity tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'mistralai/codestral-mini',
-		label: 'Mistral AI / Codestral Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-centric Mistral family aimed at developer productivity tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'mistralai/codestral-nano',
-		label: 'Mistral AI / Codestral Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-centric Mistral family aimed at developer productivity tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'mistralai/codestral-pro',
-		label: 'Mistral AI / Codestral Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-centric Mistral family aimed at developer productivity tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'mistralai/codestral-small',
-		label: 'Mistral AI / Codestral Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-centric Mistral family aimed at developer productivity tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'mistralai/codestral-ultra',
-		label: 'Mistral AI / Codestral Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-centric Mistral family aimed at developer productivity tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-large-base',
-		label: 'Mistral AI / Mistral Large Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Highest quality Mistral family for difficult reasoning workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-large-mini',
-		label: 'Mistral AI / Mistral Large Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Highest quality Mistral family for difficult reasoning workflows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-large-nano',
-		label: 'Mistral AI / Mistral Large Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Highest quality Mistral family for difficult reasoning workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-large-pro',
-		label: 'Mistral AI / Mistral Large Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Highest quality Mistral family for difficult reasoning workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-large-small',
-		label: 'Mistral AI / Mistral Large Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Highest quality Mistral family for difficult reasoning workflows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-large-ultra',
-		label: 'Mistral AI / Mistral Large Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Highest quality Mistral family for difficult reasoning workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-medium-base',
-		label: 'Mistral AI / Mistral Medium Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Mistral family for general coding and chat tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-medium-mini',
-		label: 'Mistral AI / Mistral Medium Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Mistral family for general coding and chat tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-medium-nano',
-		label: 'Mistral AI / Mistral Medium Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Mistral family for general coding and chat tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-medium-pro',
-		label: 'Mistral AI / Mistral Medium Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Mistral family for general coding and chat tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-medium-small',
-		label: 'Mistral AI / Mistral Medium Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Mistral family for general coding and chat tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-medium-ultra',
-		label: 'Mistral AI / Mistral Medium Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Balanced Mistral family for general coding and chat tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-small-base',
-		label: 'Mistral AI / Mistral Small Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast compact Mistral family for responsive low-cost interactions. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-small-mini',
-		label: 'Mistral AI / Mistral Small Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast compact Mistral family for responsive low-cost interactions. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-small-nano',
-		label: 'Mistral AI / Mistral Small Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast compact Mistral family for responsive low-cost interactions. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-small-pro',
-		label: 'Mistral AI / Mistral Small Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast compact Mistral family for responsive low-cost interactions. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-small-small',
-		label: 'Mistral AI / Mistral Small Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast compact Mistral family for responsive low-cost interactions. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'mistralai/mistral-small-ultra',
-		label: 'Mistral AI / Mistral Small Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Fast compact Mistral family for responsive low-cost interactions. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'mistralai/pixtral-base',
-		label: 'Mistral AI / Pixtral Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Mistral family for image-plus-text assistant flows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'mistralai/pixtral-mini',
-		label: 'Mistral AI / Pixtral Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Mistral family for image-plus-text assistant flows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'mistralai/pixtral-nano',
-		label: 'Mistral AI / Pixtral Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Mistral family for image-plus-text assistant flows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'mistralai/pixtral-pro',
-		label: 'Mistral AI / Pixtral Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Mistral family for image-plus-text assistant flows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'mistralai/pixtral-small',
-		label: 'Mistral AI / Pixtral Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Mistral family for image-plus-text assistant flows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'mistralai/pixtral-ultra',
-		label: 'Mistral AI / Pixtral Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Mistral family for image-plus-text assistant flows. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-
-	// ─── NVIDIA ───────────────────────────────────────────────────────────────
-	{
-		id: 'nvidia/nemotron-chat-base',
-		label: 'NVIDIA / Nemotron Chat Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron chat family for general instruction-following tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-chat-mini',
-		label: 'NVIDIA / Nemotron Chat Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron chat family for general instruction-following tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-chat-nano',
-		label: 'NVIDIA / Nemotron Chat Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron chat family for general instruction-following tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-chat-pro',
-		label: 'NVIDIA / Nemotron Chat Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron chat family for general instruction-following tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-3-super-120b-a12b:free',
-		label: 'NVIDIA / Nemotron 3 Super 120B',
-		contextWindow: '262K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: ['Multi-agent apps', 'Complex reasoning', 'Tool use', 'Coding'],
-		notes: '120B hybrid Mamba-Transformer MoE. Activates 12B params. Excellent for multi-agent workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-3-nano-30b-a3b:free',
-		label: 'NVIDIA / Nemotron 3 Nano 30B',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: ['Efficient inference', 'Tool use', 'Coding'],
-		notes: '30B total / 3B active MoE. Very efficient with large context.'
-	},
-	{
-		id: 'nvidia/nemotron-nano-12b-v2-vl:free',
-		label: 'NVIDIA / Nemotron Nano 12B VL',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: ['Vision tasks', 'Tool use', 'Multimodal analysis'],
-		notes: 'Vision-language model from NVIDIA. Good for image understanding tasks.'
-	},
-	{
-		id: 'nvidia/nemotron-nano-9b-v2:free',
-		label: 'NVIDIA / Nemotron Nano 9B',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: ['Fast responses', 'Tool use', 'Lightweight coding'],
-		notes: 'Small efficient NVIDIA model. Good for quick tasks.'
-	},
-	{
-		id: 'nvidia/nemotron-chat-small',
-		label: 'NVIDIA / Nemotron Chat Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron chat family for general instruction-following tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-chat-ultra',
-		label: 'NVIDIA / Nemotron Chat Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron chat family for general instruction-following tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-coder-base',
-		label: 'NVIDIA / Nemotron Coder Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron coding family for software engineering workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-coder-mini',
-		label: 'NVIDIA / Nemotron Coder Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron coding family for software engineering workflows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-coder-nano',
-		label: 'NVIDIA / Nemotron Coder Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron coding family for software engineering workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-coder-pro',
-		label: 'NVIDIA / Nemotron Coder Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron coding family for software engineering workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-coder-small',
-		label: 'NVIDIA / Nemotron Coder Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron coding family for software engineering workflows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-coder-ultra',
-		label: 'NVIDIA / Nemotron Coder Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron coding family for software engineering workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-fast-base',
-		label: 'NVIDIA / Nemotron Fast Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient Nemotron family for low-latency interactions. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-fast-mini',
-		label: 'NVIDIA / Nemotron Fast Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient Nemotron family for low-latency interactions. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-fast-nano',
-		label: 'NVIDIA / Nemotron Fast Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient Nemotron family for low-latency interactions. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-fast-pro',
-		label: 'NVIDIA / Nemotron Fast Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient Nemotron family for low-latency interactions. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-fast-small',
-		label: 'NVIDIA / Nemotron Fast Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient Nemotron family for low-latency interactions. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-fast-ultra',
-		label: 'NVIDIA / Nemotron Fast Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient Nemotron family for low-latency interactions. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-long-base',
-		label: 'NVIDIA / Nemotron Long Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Nemotron family for retrieval-heavy tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-long-mini',
-		label: 'NVIDIA / Nemotron Long Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Nemotron family for retrieval-heavy tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-long-nano',
-		label: 'NVIDIA / Nemotron Long Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Nemotron family for retrieval-heavy tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-long-pro',
-		label: 'NVIDIA / Nemotron Long Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Nemotron family for retrieval-heavy tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-long-small',
-		label: 'NVIDIA / Nemotron Long Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Nemotron family for retrieval-heavy tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-long-ultra',
-		label: 'NVIDIA / Nemotron Long Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Nemotron family for retrieval-heavy tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-reasoning-base',
-		label: 'NVIDIA / Nemotron Reasoning Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron reasoning family for deep problem analysis. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-reasoning-mini',
-		label: 'NVIDIA / Nemotron Reasoning Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron reasoning family for deep problem analysis. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-reasoning-nano',
-		label: 'NVIDIA / Nemotron Reasoning Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron reasoning family for deep problem analysis. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-reasoning-pro',
-		label: 'NVIDIA / Nemotron Reasoning Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron reasoning family for deep problem analysis. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-reasoning-small',
-		label: 'NVIDIA / Nemotron Reasoning Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron reasoning family for deep problem analysis. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'nvidia/nemotron-reasoning-ultra',
-		label: 'NVIDIA / Nemotron Reasoning Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Nemotron reasoning family for deep problem analysis. Ultra tier prioritizes long-context tasks in plugin workflows.'
+		bestFor: ['Ultra-fast responses', 'Simple tasks', 'High-throughput'],
+		notes: 'Oldest active Haiku. Near-instant responsiveness. Cheapest Claude at $0.25/$1.25 per million tokens.'
 	},
 
 	// ─── OPENAI ───────────────────────────────────────────────────────────────
+
+	// ════════════════════════════════════════════════════
+	// GPT-5.4 Series (Latest, March 2026)
+	// ════════════════════════════════════════════════════
 	{
-		id: 'openai/gpt-5.3-codex',
-		label: 'OpenAI / GPT-5.3 Codex',
+		id: 'openai/gpt-5.4',
+		label: 'OpenAI / GPT-5.4',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: ['Coding', 'Agentic workflows', 'Multimodal tasks'],
+		notes: 'Latest OpenAI flagship. Unifies Codex + GPT lines. 1M context, built-in computer use, 57.7% SWE-Bench Pro. Best default for coding agents. $2.50/$15 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5.4-pro',
+		label: 'OpenAI / GPT-5.4 Pro',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: [
+			'Advanced reasoning',
+			'Complex agentic tasks',
+			'High-stakes coding'
+		],
+		notes: 'Most advanced GPT-5.4 variant. Enhanced reasoning for complex multi-step workflows. Very expensive at $30/$180 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5.4-mini',
+		label: 'OpenAI / GPT-5.4 Mini',
 		contextWindow: '400K tokens',
 		maxOutputTokens: '128K tokens',
 		bestFor: [
-			'Agentic coding',
-			'Repository-wide edits',
-			'Complex code transformations'
+			'High-throughput tasks',
+			'Coding assistants',
+			'Agent workflows'
 		],
-		notes: 'Codex-tuned GPT-5.3 for advanced software engineering tasks via OpenRouter.'
+		notes: 'Faster, cost-efficient GPT-5.4. Strong reasoning, coding, and tool use at lower latency. $0.75/$4.50 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5-nano',
+		label: 'OpenAI / GPT-5 Nano',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Ultra-low latency', 'Classification', 'Autocompletion'],
+		notes: 'Smallest, fastest GPT-5 variant. Optimized for real-time/cost-sensitive tasks. Successor to GPT-4.1-nano. Very cheap at $0.05/$0.40 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// GPT-5.3 / Codex (Feb 2026)
+	// ════════════════════════════════════════════════════
+	{
+		id: 'openai/gpt-5.3-chat',
+		label: 'OpenAI / GPT-5.3 Chat',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: [
+			'General chat',
+			'Document drafting',
+			'Structured knowledge work'
+		],
+		notes: 'GPT-5.3 chat variant. Strong across structured knowledge tasks, spreadsheets, and document workflows.'
 	},
 	{
 		id: 'openai/gpt-5.2-codex',
 		label: 'OpenAI / GPT-5.2 Codex',
 		contextWindow: '400K tokens',
 		maxOutputTokens: '128K tokens',
-		bestFor: [
-			'Code generation',
-			'Refactoring',
-			'Tool-driven development flows'
-		],
-		notes: 'Stable Codex model variant exposed through OpenRouter.'
+		bestFor: ['Agentic coding', 'Large refactors', 'Code review'],
+		notes: 'Upgraded Codex for long, independent software engineering tasks. More steerable than 5.1-Codex. Adjustable reasoning effort. $1.75/$14 per million tokens.'
 	},
 	{
-		id: 'openai/gpt-5.4',
-		label: 'OpenAI / GPT-5.4',
+		id: 'openai/gpt-5.2',
+		label: 'OpenAI / GPT-5.2',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: ['Reasoning', 'Coding', 'Tool calling'],
+		notes: 'Latest GPT-5.2 frontier model. Adaptive reasoning, stronger long-context and agentic performance than GPT-5.1. $1.75/$14 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5.2-pro',
+		label: 'OpenAI / GPT-5.2 Pro',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: ['Complex reasoning', 'High-stakes tasks', 'Coding and writing'],
+		notes: 'Most advanced GPT-5.2. Reduced hallucination and sycophancy. Test-time routing support. $21/$168 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5.2-chat',
+		label: 'OpenAI / GPT-5.2 Chat',
+		contextWindow: '128K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: [
+			'Low-latency chat',
+			'Conversational tasks',
+			'High-throughput workloads'
+		],
+		notes: 'Fast, lightweight GPT-5.2. Adaptive reasoning on harder queries. Warmer conversational tone. $1.75/$14 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// GPT-5.1 Series
+	// ════════════════════════════════════════════════════
+	{
+		id: 'openai/gpt-5.1',
+		label: 'OpenAI / GPT-5.1',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: ['Reasoning', 'Coding', 'Structured analysis'],
+		notes: 'Primary GPT-5 successor. Adaptive reasoning, improved instruction following and conversational alignment. $1.25/$10 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5.1-codex',
+		label: 'OpenAI / GPT-5.1 Codex',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: ['Agentic coding', 'Code review', 'Multimodal dev tasks'],
+		notes: 'Codex specialized for software engineering. Adjustable reasoning effort. Supports image/screenshot input. Integrates with CLI and IDE. $1.25/$10 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5.1-codex-mini',
+		label: 'OpenAI / GPT-5.1 Codex Mini',
 		contextWindow: '400K tokens',
 		maxOutputTokens: '128K tokens',
 		bestFor: [
-			'Top-tier reasoning',
-			'Complex planning',
-			'High-accuracy coding'
+			'Fast coding tasks',
+			'Low-cost agent coding',
+			'Tool-driven flows'
 		],
-		notes: 'Latest high-capability GPT family entry in this static catalog.'
+		notes: 'Smaller, faster Codex variant. Best value coding model at $0.25/$2 per million tokens.'
 	},
 	{
-		id: 'openai/gpt-oss-120b:free',
-		label: 'OpenAI / GPT-OSS 120B',
-		contextWindow: '131K tokens',
+		id: 'openai/gpt-5.1-codex-max',
+		label: 'OpenAI / GPT-5.1 Codex Max',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: [
+			'Long-running engineering tasks',
+			'High-context software development'
+		],
+		notes: 'Highest-capability Codex. Updated reasoning stack, agentic workflows, improved token efficiency. $1.25/$10 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5.1-chat',
+		label: 'OpenAI / GPT-5.1 Chat',
+		contextWindow: '128K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Fast chat', 'Interactive workloads', 'Low-latency tasks'],
+		notes: 'Lightweight GPT-5.1 for responsive, conversational use. Selectively thinks on harder queries. $1.25/$10 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// GPT-5 Series (Aug 2025)
+	// ════════════════════════════════════════════════════
+	{
+		id: 'openai/gpt-5',
+		label: 'OpenAI / GPT-5',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: ['Reasoning', 'Coding', 'Complex instruction following'],
+		notes: 'Original GPT-5. Strong step-by-step reasoning, reduced hallucination and sycophancy. $1.25/$10 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5-mini',
+		label: 'OpenAI / GPT-5 Mini',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '64K tokens',
+		bestFor: [
+			'Lighter reasoning tasks',
+			'Fast general use',
+			'Cost-sensitive workloads'
+		],
+		notes: 'Compact GPT-5. Successor to o4-mini. Full instruction following and safety. $0.25/$2 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5-codex',
+		label: 'OpenAI / GPT-5 Codex',
+		contextWindow: '400K tokens',
+		maxOutputTokens: '128K tokens',
+		bestFor: ['Agentic coding', 'Large-scale refactors', 'Code review'],
+		notes: 'GPT-5 specialized for software engineering. Adjustable reasoning effort. Multimodal input support. $1.25/$10 per million tokens.'
+	},
+	{
+		id: 'openai/gpt-5-chat',
+		label: 'OpenAI / GPT-5 Chat',
+		contextWindow: '128K tokens',
 		maxOutputTokens: '16K tokens',
 		bestFor: [
-			'General chat',
-			'Tool use',
-			'Agentic workflows',
-			'Self-hosting'
+			'Enterprise chat',
+			'Multimodal conversations',
+			'Context-aware dialogue'
 		],
-		notes: "OpenAI's first open-weight model (Apache 2.0). MoE with 4-bit quantization. Near o4-mini performance on reasoning."
+		notes: 'GPT-5 tuned for advanced natural multimodal chat. $1.25/$10 per million tokens.'
 	},
+
+	// ════════════════════════════════════════════════════
+	// GPT-4.1 Series
+	// ════════════════════════════════════════════════════
 	{
-		id: 'openai/gpt-oss-20b:free',
-		label: 'OpenAI / GPT-OSS 20B',
-		contextWindow: '131K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: ['Coding', 'Tool use', 'Fast responses', 'On-device AI'],
-		notes: 'Smaller open-weight model from OpenAI. Runs on 16GB consumer hardware. Good for code tasks.'
-	},
-	{
-		id: 'openai/gpt-4.1-base',
-		label: 'OpenAI / Gpt 4.1 Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
+		id: 'openai/gpt-4.1',
+		label: 'OpenAI / GPT-4.1',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '32K tokens',
 		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
+			'Software engineering',
+			'Long-context reasoning',
+			'Agent reliability'
 		],
-		notes: 'High-capability long-context model for complex implementation and review tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
+		notes: 'Flagship GPT-4.1. 54.6% SWE-bench Verified. 1M context. Tuned for precise code diffs and long document retrieval. $2/$8 per million tokens.'
 	},
 	{
 		id: 'openai/gpt-4.1-mini',
-		label: 'OpenAI / Gpt 4.1 Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-capability long-context model for complex implementation and review tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4.1-mini-base',
-		label: 'OpenAI / Gpt 4.1 Mini Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Faster lower-cost variant for iterative development workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4.1-mini-mini',
-		label: 'OpenAI / Gpt 4.1 Mini Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Faster lower-cost variant for iterative development workflows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4.1-mini-nano',
-		label: 'OpenAI / Gpt 4.1 Mini Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Faster lower-cost variant for iterative development workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4.1-mini-pro',
-		label: 'OpenAI / Gpt 4.1 Mini Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Faster lower-cost variant for iterative development workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4.1-mini-small',
-		label: 'OpenAI / Gpt 4.1 Mini Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Faster lower-cost variant for iterative development workflows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4.1-mini-ultra',
-		label: 'OpenAI / Gpt 4.1 Mini Ultra',
-		contextWindow: '512K tokens',
+		label: 'OpenAI / GPT-4.1 Mini',
+		contextWindow: '1.05M tokens',
 		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Faster lower-cost variant for iterative development workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
+		bestFor: ['Interactive apps', 'Coding', 'Vision tasks'],
+		notes: 'Mid-sized GPT-4.1. Competitive with GPT-4o at lower cost. 1M context. Strong coding and vision. $0.40/$1.60 per million tokens.'
 	},
 	{
 		id: 'openai/gpt-4.1-nano',
-		label: 'OpenAI / Gpt 4.1 Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-capability long-context model for complex implementation and review tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4.1-pro',
-		label: 'OpenAI / Gpt 4.1 Pro',
-		contextWindow: '256K tokens',
+		label: 'OpenAI / GPT-4.1 Nano',
+		contextWindow: '1.05M tokens',
 		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-capability long-context model for complex implementation and review tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
+		bestFor: ['Classification', 'Autocompletion', 'Ultra-low latency'],
+		notes: 'Fastest and cheapest GPT-4.1. 1M context. Higher MMLU than GPT-4o mini. $0.10/$0.40 per million tokens.'
 	},
+
+	// ════════════════════════════════════════════════════
+	// o-Series Reasoning Models
+	// ════════════════════════════════════════════════════
 	{
-		id: 'openai/gpt-4.1-small',
-		label: 'OpenAI / Gpt 4.1 Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-capability long-context model for complex implementation and review tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4.1-ultra',
-		label: 'OpenAI / Gpt 4.1 Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'High-capability long-context model for complex implementation and review tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4o-base',
-		label: 'OpenAI / Gpt 4o Base',
+		id: 'openai/o3',
+		label: 'OpenAI / o3',
 		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General-purpose multimodal model tuned for reliable chat and coding support. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4o-mini',
-		label: 'OpenAI / Gpt 4o Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General-purpose multimodal model tuned for reliable chat and coding support. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4o-nano',
-		label: 'OpenAI / Gpt 4o Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General-purpose multimodal model tuned for reliable chat and coding support. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4o-pro',
-		label: 'OpenAI / Gpt 4o Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General-purpose multimodal model tuned for reliable chat and coding support. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4o-small',
-		label: 'OpenAI / Gpt 4o Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General-purpose multimodal model tuned for reliable chat and coding support. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'openai/gpt-4o-ultra',
-		label: 'OpenAI / Gpt 4o Ultra',
-		contextWindow: '512K tokens',
 		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General-purpose multimodal model tuned for reliable chat and coding support. Ultra tier prioritizes long-context tasks in plugin workflows.'
+		bestFor: ['Math', 'Science', 'Multi-step coding and analysis'],
+		notes: 'Powerful reasoning model. New standard for math, science, coding, and visual reasoning. $2/$8 per million tokens.'
 	},
 	{
-		id: 'openai/o3-base',
-		label: 'OpenAI / O3 Base',
+		id: 'openai/o4-mini',
+		label: 'OpenAI / o4 Mini',
 		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-oriented model for difficult planning and debugging tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Fast reasoning', 'STEM tasks', 'Code editing'],
+		notes: 'Compact o-series reasoning model. 99.5% AIME with Python. Competitive with o3 in many domains. $1.10/$4.40 per million tokens.'
+	},
+	{
+		id: 'openai/o4-mini-high',
+		label: 'OpenAI / o4 Mini High',
+		contextWindow: '200K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Hard reasoning tasks', 'Complex STEM', 'Deep code analysis'],
+		notes: 'o4-mini with reasoning_effort set to high. More thorough thinking for harder problems.'
 	},
 	{
 		id: 'openai/o3-mini',
-		label: 'OpenAI / O3 Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-oriented model for difficult planning and debugging tasks. Mini tier prioritizes general chat in plugin workflows.'
+		label: 'OpenAI / o3 Mini',
+		contextWindow: '200K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['STEM reasoning', 'Math', 'Coding'],
+		notes: 'Cost-efficient reasoning model. Adjustable reasoning effort (low/medium/high). Matches o1 on AIME and GPQA at lower cost. $1.10/$4.40 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// Open-Weight GPT-OSS Models (Free tiers available)
+	// ════════════════════════════════════════════════════
+	{
+		id: 'openai/gpt-oss-120b',
+		label: 'OpenAI / GPT-OSS 120B',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Agentic tasks', 'Tool calling', 'Reasoning'],
+		notes: 'Open-weight MoE model from OpenAI. 117B total, 5.1B active. Configurable reasoning, chain-of-thought, native tool use. Apache 2.0. Free tier available. $0.039/$0.19 per million tokens.'
 	},
 	{
-		id: 'openai/o3-nano',
-		label: 'OpenAI / O3 Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-oriented model for difficult planning and debugging tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
+		id: 'openai/gpt-oss-120b:free',
+		label: 'OpenAI / GPT-OSS 120B (free)',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Free-tier agentic tasks', 'Tool calling', 'Reasoning'],
+		notes: 'Free variant of GPT-OSS 120B. One of the best free models on OpenRouter. Rate-limited.'
 	},
 	{
-		id: 'openai/o3-pro',
-		label: 'OpenAI / O3 Pro',
-		contextWindow: '256K tokens',
+		id: 'openai/gpt-oss-20b',
+		label: 'OpenAI / GPT-OSS 20B',
+		contextWindow: '131K tokens',
 		maxOutputTokens: '16K tokens',
 		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
+			'Low-latency inference',
+			'Tool calling',
+			'Consumer-hardware deployment'
 		],
-		notes: 'Reasoning-oriented model for difficult planning and debugging tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
+		notes: 'Smaller open-weight OpenAI MoE. 21B total, 3.6B active. Apache 2.0. Runs on consumer GPU. Fine-tunable. Free tier available. $0.02/$0.10 per million tokens.'
 	},
 	{
-		id: 'openai/o3-small',
-		label: 'OpenAI / O3 Small',
+		id: 'openai/gpt-oss-20b:free',
+		label: 'OpenAI / GPT-OSS 20B (free)',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Free-tier tasks', 'Fast lightweight agent flows'],
+		notes: 'Free variant of GPT-OSS 20B. Rate-limited.'
+	},
+	// ════════════════════════════════════════════════════
+	// Cohere — No free tiers. Niche use: RAG + enterprise
+	// ════════════════════════════════════════════════════
+	{
+		id: 'cohere/command-a',
+		label: 'Cohere / Command A',
+		contextWindow: '256K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Agentic tasks', 'Multilingual', 'RAG workflows'],
+		notes: 'Cohere flagship. 111B open-weights model. Strong on RAG, tool use, and multilingual business tasks. Maximum performance with minimum hardware costs. $2.50/$10 per million tokens.'
+	},
+	{
+		id: 'cohere/command-r-plus-08-2024',
+		label: 'Cohere / Command R+ (Aug 2024)',
 		contextWindow: '128K tokens',
 		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-oriented model for difficult planning and debugging tasks. Small tier prioritizes coding assistance in plugin workflows.'
+		bestFor: ['RAG', 'Tool use', 'Multilingual tasks'],
+		notes: '50% higher throughput and 25% lower latency than original Command R+. Good for RAG pipelines. $2.50/$10 per million tokens.'
 	},
 	{
-		id: 'openai/o3-ultra',
-		label: 'OpenAI / O3 Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-oriented model for difficult planning and debugging tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
+		id: 'cohere/command-r7b-12-2024',
+		label: 'Cohere / Command R7B (Dec 2024)',
+		contextWindow: '128K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Fast RAG', 'Tool use', 'Lightweight agent tasks'],
+		notes: 'Small and fast 7B model. Excels at RAG and tool use at very low cost. $0.0375/$0.15 per million tokens — cheapest Cohere model.'
 	},
+
+	// ─── DeepSeek ─────────────────────────────────────────────────────────────────
 	{
-		id: 'openai/o4-mini-base',
-		label: 'OpenAI / O4 Mini Base',
-		contextWindow: '200K tokens',
+		id: 'deepseek/deepseek-chat',
+		label: 'DeepSeek / DeepSeek V3',
+		contextWindow: '131K tokens',
 		maxOutputTokens: '8K tokens',
 		bestFor: [
 			'Balanced quality/speed',
 			'Code and assistant tasks',
 			'Tool-driven agent flows'
 		],
-		notes: 'Efficient reasoning model for tool-heavy interactive workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
+		notes: 'General assistant from the DeepSeek V3 family for everyday coding requests. Prioritizes balanced quality/speed in plugin workflows.'
 	},
 	{
-		id: 'openai/o4-mini-mini',
-		label: 'OpenAI / O4 Mini Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
+		id: 'deepseek/deepseek-r1-distill-qwen-7b',
+		label: 'DeepSeek / R1 Distill Qwen 7B',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '4K tokens',
 		bestFor: [
 			'General chat',
 			'Code and assistant tasks',
 			'Tool-driven agent flows'
 		],
-		notes: 'Efficient reasoning model for tool-heavy interactive workflows. Mini tier prioritizes general chat in plugin workflows.'
+		notes: 'Lightweight DeepSeek model distilled from R1. Mini tier prioritizing general chat in plugin workflows with lower inference cost.'
 	},
 	{
-		id: 'openai/o4-mini-nano',
-		label: 'OpenAI / O4 Mini Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
+		id: 'deepseek/deepseek-v3.2',
+		label: 'DeepSeek / DeepSeek V3.2',
+		contextWindow: '164K tokens',
+		maxOutputTokens: '8K tokens',
 		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
+			'Advanced reasoning',
+			'Code and agent tasks',
 			'Tool-driven agent flows'
 		],
-		notes: 'Efficient reasoning model for tool-heavy interactive workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'openai/o4-mini-pro',
-		label: 'OpenAI / O4 Mini Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient reasoning model for tool-heavy interactive workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'openai/o4-mini-small',
-		label: 'OpenAI / O4 Mini Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient reasoning model for tool-heavy interactive workflows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'openai/o4-mini-ultra',
-		label: 'OpenAI / O4 Mini Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Efficient reasoning model for tool-heavy interactive workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
+		notes: 'Latest DeepSeek flagship with sparse attention and strong agentic tool-use. GPT-5 class performance at a fraction of the cost. Supports optional reasoning mode.'
 	},
 
-	// ─── Qwen ─────────────────────────────────────────────────────────────────
+	// ─── GOOGLE ───────────────────────────────────────────────────────────────
+
+	// ── Gemini 3.x (Latest frontier) ─────────────────────
 	{
-		id: 'qwen/qwen-3.5',
-		label: 'Qwen / Qwen 3.5',
-		contextWindow: '262K tokens',
-		maxOutputTokens: '64K tokens',
-		bestFor: ['Modern coding tasks', 'Tool use', 'High-context development'],
-		notes: 'Catalog placeholder for Qwen 3.5 line requested by users.'
+		id: 'google/gemini-3-pro-preview',
+		label: 'Google / Gemini 3 Pro Preview',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Complex reasoning', 'Agentic coding', 'Multimodal tasks'],
+		notes: 'Google flagship frontier model. State-of-the-art on GPQA, SWE-Bench, and MathArena. Best for hard engineering and agentic workflows.'
 	},
 	{
-		id: 'qwen/qwen3-coder:free',
-		label: 'Qwen / Qwen3 Coder 480B',
-		contextWindow: '262K tokens',
-		maxOutputTokens: '16K tokens',
+		id: 'google/gemini-3-flash-preview',
+		label: 'Google / Gemini 3 Flash Preview',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Agentic workflows', 'Multi-turn chat', 'Coding assistance'],
+		notes: 'Near Pro-level reasoning at lower latency. Configurable thinking levels. Strong multimodal support including audio, video, and PDFs.'
+	},
+	// ── Gemini 2.5 ────────────────────────────────────────
+	{
+		id: 'google/gemini-2.5-pro',
+		label: 'Google / Gemini 2.5 Pro',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Advanced reasoning', 'Complex coding', 'Scientific tasks'],
+		notes: 'Top-tier reasoning model. #1 on LMArena leaderboard. Supports deep thinking mode for nuanced problem solving.'
+	},
+	{
+		id: 'google/gemini-2.5-flash-lite-preview-09-2025',
+		label: 'Google / Gemini 2.5 Flash Lite Preview',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '4K tokens',
 		bestFor: [
+			'Fast tasks',
+			'High-throughput workflows',
+			'Low-cost inference'
+		],
+		notes: 'Lightweight Gemini 2.5. Faster token generation with optional thinking mode. Very cost-effective at $0.10/$0.40 per million tokens.'
+	},
+	// ── Gemini 2.0 ────────────────────────────────────────
+	{
+		id: 'google/gemini-2.0-flash-001',
+		label: 'Google / Gemini 2.0 Flash',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: [
+			'Multimodal understanding',
 			'Code generation',
-			'Agentic coding',
-			'Tool use',
-			'Repo-level tasks'
+			'Function calling'
 		],
-		notes: 'Best free coding model on OpenRouter. 480B total / 35B active MoE. State-of-the-art on coding benchmarks.'
+		notes: 'Fast multimodal model with strong instruction following and function calling. Good balance of speed and capability.'
 	},
 	{
-		id: 'qwen/qwen3-next-80b-a3b-instruct:free',
-		label: 'Qwen / Qwen3 Next 80B',
+		id: 'google/gemini-2.0-flash-lite-001',
+		label: 'Google / Gemini 2.0 Flash Lite',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Fast chat', 'Real-time tasks', 'High-volume operations'],
+		notes: 'Fastest Gemini 2.0 variant. Very low latency and economical pricing at $0.075/$0.30 per million tokens.'
+	},
+	// ── Gemma 4 (Open, free tiers available) ─────────────
+	{
+		id: 'google/gemma-4-31b-it',
+		label: 'Google / Gemma 4 31B',
 		contextWindow: '262K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: ['Reasoning', 'General chat', 'Tool use', 'Long context'],
-		notes: '80B total / 3B active MoE. Strong reasoning with large context.'
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Coding', 'Reasoning', 'Document understanding'],
+		notes: 'Dense multimodal open model from Google DeepMind. Supports thinking mode and function calling. Apache 2.0. Free tier available.'
 	},
 	{
-		id: 'qwen/qwen3-235b-a22b-thinking-2507',
-		label: 'Qwen / Qwen3 235B Thinking 2507',
-		contextWindow: '131K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Reasoning-heavy prompts',
-			'Math and logic',
-			'Multi-step planning'
-		],
-		notes: 'Qwen3 thinking-focused model family, represented for newer Qwen generation coverage.'
-	},
-	{
-		id: 'qwen/qwen3-coder-480b-a35b-instruct',
-		label: 'Qwen / Qwen3 Coder 480B Instruct',
+		id: 'google/gemma-4-31b-it:free',
+		label: 'Google / Gemma 4 31B (free)',
 		contextWindow: '262K tokens',
-		maxOutputTokens: '64K tokens',
-		bestFor: ['Large-scale coding', 'Refactoring', 'Repository maintenance'],
-		notes: 'Large Qwen3 coder model for high-end software engineering tasks.'
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Coding', 'Reasoning', 'Free-tier tasks'],
+		notes: 'Free variant of Gemma 4 31B. Same capabilities — multimodal, thinking mode, function calling. Rate-limited.'
 	},
 	{
-		id: 'qwen/qwen3-30b-a3b-instruct-2507',
-		label: 'Qwen / Qwen3 30B Instruct 2507',
+		id: 'google/gemma-4-26b-a4b-it',
+		label: 'Google / Gemma 4 26B A4B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Efficient inference', 'Coding', 'Multimodal tasks'],
+		notes: 'MoE model — only 3.8B params activate per token, delivering near-31B quality cheaply. Supports video input, thinking mode, function calling.'
+	},
+	{
+		id: 'google/gemma-4-26b-a4b-it:free',
+		label: 'Google / Gemma 4 26B A4B (free)',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Efficient inference', 'Free-tier coding', 'Multimodal tasks'],
+		notes: 'Free variant of Gemma 4 26B MoE. Near-31B quality at zero cost. Rate-limited.'
+	},
+	// ── Gemma 3 (Open, free tiers available) ─────────────
+	{
+		id: 'google/gemma-3-27b-it',
+		label: 'Google / Gemma 3 27B',
+		contextWindow: '96K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['General assistant', 'Code tasks', 'Multilingual'],
+		notes: 'Largest open Gemma 3 model. Multimodal, 140+ languages, function calling. Free tier available.'
+	},
+	{
+		id: 'google/gemma-3-27b-it:free',
+		label: 'Google / Gemma 3 27B (free)',
 		contextWindow: '131K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'General chat',
-			'Coding assistance',
-			'Balanced speed and quality'
-		],
-		notes: 'General-purpose Qwen3 instruct variant included for broader Qwen 3.x availability.'
+		maxOutputTokens: '4K tokens',
+		bestFor: ['General assistant', 'Code tasks', 'Free-tier tasks'],
+		notes: 'Free variant of Gemma 3 27B. Rate-limited.'
 	},
 	{
-		id: 'qwen/qwen-2.5-coder-base',
-		label: 'Qwen / Qwen 2.5 Coder Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-specialized Qwen family for implementation and bug fixing. Base tier prioritizes balanced quality/speed in plugin workflows.'
+		id: 'google/gemma-3-12b-it',
+		label: 'Google / Gemma 3 12B',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Balanced tasks', 'Code', 'Multilingual'],
+		notes: 'Mid-size Gemma 3 model. Multimodal with function calling support. Free tier available.'
 	},
 	{
-		id: 'qwen/qwen-2.5-coder-mini',
-		label: 'Qwen / Qwen 2.5 Coder Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-specialized Qwen family for implementation and bug fixing. Mini tier prioritizes general chat in plugin workflows.'
+		id: 'google/gemma-3-12b-it:free',
+		label: 'Google / Gemma 3 12B (free)',
+		contextWindow: '33K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['General chat', 'Code', 'Free-tier tasks'],
+		notes: 'Free variant of Gemma 3 12B. Rate-limited.'
 	},
 	{
-		id: 'qwen/qwen-2.5-coder-nano',
-		label: 'Qwen / Qwen 2.5 Coder Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-specialized Qwen family for implementation and bug fixing. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-coder-pro',
-		label: 'Qwen / Qwen 2.5 Coder Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-specialized Qwen family for implementation and bug fixing. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-coder-small',
-		label: 'Qwen / Qwen 2.5 Coder Small',
-		contextWindow: '128K tokens',
+		id: 'google/gemma-3-4b-it',
+		label: 'Google / Gemma 3 4B',
+		contextWindow: '96K tokens',
 		maxOutputTokens: '4K tokens',
 		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
+			'Lightweight tasks',
+			'Fast responses',
+			'Mobile-class inference'
 		],
-		notes: 'Coding-specialized Qwen family for implementation and bug fixing. Small tier prioritizes coding assistance in plugin workflows.'
+		notes: 'Small multimodal Gemma 3. Function calling support. Very cheap at ~$0.017/$0.068 per million tokens. Free tier available.'
 	},
 	{
-		id: 'qwen/qwen-2.5-coder-ultra',
-		label: 'Qwen / Qwen 2.5 Coder Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Coding-specialized Qwen family for implementation and bug fixing. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-instruct-base',
-		label: 'Qwen / Qwen 2.5 Instruct Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Instruction-following Qwen family for broad interactive use. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-instruct-mini',
-		label: 'Qwen / Qwen 2.5 Instruct Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Instruction-following Qwen family for broad interactive use. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-instruct-nano',
-		label: 'Qwen / Qwen 2.5 Instruct Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Instruction-following Qwen family for broad interactive use. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-instruct-pro',
-		label: 'Qwen / Qwen 2.5 Instruct Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Instruction-following Qwen family for broad interactive use. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-instruct-small',
-		label: 'Qwen / Qwen 2.5 Instruct Small',
-		contextWindow: '128K tokens',
+		id: 'google/gemma-3-4b-it:free',
+		label: 'Google / Gemma 3 4B (free)',
+		contextWindow: '33K tokens',
 		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Instruction-following Qwen family for broad interactive use. Small tier prioritizes coding assistance in plugin workflows.'
+		bestFor: ['Lightweight tasks', 'Fast responses', 'Free-tier tasks'],
+		notes: 'Free variant of Gemma 3 4B. Rate-limited.'
 	},
 	{
-		id: 'qwen/qwen-2.5-instruct-ultra',
-		label: 'Qwen / Qwen 2.5 Instruct Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Instruction-following Qwen family for broad interactive use. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-reasoner-base',
-		label: 'Qwen / Qwen 2.5 Reasoner Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Qwen family for step-by-step analysis. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-reasoner-mini',
-		label: 'Qwen / Qwen 2.5 Reasoner Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Qwen family for step-by-step analysis. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-reasoner-nano',
-		label: 'Qwen / Qwen 2.5 Reasoner Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Qwen family for step-by-step analysis. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-reasoner-pro',
-		label: 'Qwen / Qwen 2.5 Reasoner Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Qwen family for step-by-step analysis. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-2.5-reasoner-small',
-		label: 'Qwen / Qwen 2.5 Reasoner Small',
-		contextWindow: '128K tokens',
+		id: 'google/gemma-3n-e4b-it',
+		label: 'Google / Gemma 3n 4B',
+		contextWindow: '33K tokens',
 		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Qwen family for step-by-step analysis. Small tier prioritizes coding assistance in plugin workflows.'
+		bestFor: ['On-device inference', 'Mobile tasks', 'Offline use'],
+		notes: 'Mobile-optimized Gemma 3n. Supports text, audio, and visual inputs. PLE caching for efficient memory. 140+ languages. Free tier available.'
 	},
 	{
-		id: 'qwen/qwen-2.5-reasoner-ultra',
-		label: 'Qwen / Qwen 2.5 Reasoner Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning-focused Qwen family for step-by-step analysis. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-long-base',
-		label: 'Qwen / Qwen Long Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Qwen family for retrieval and large-document tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-long-mini',
-		label: 'Qwen / Qwen Long Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Qwen family for retrieval and large-document tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-long-nano',
-		label: 'Qwen / Qwen Long Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Qwen family for retrieval and large-document tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-long-pro',
-		label: 'Qwen / Qwen Long Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Qwen family for retrieval and large-document tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-long-small',
-		label: 'Qwen / Qwen Long Small',
-		contextWindow: '128K tokens',
+		id: 'google/gemma-3n-e4b-it:free',
+		label: 'Google / Gemma 3n 4B (free)',
+		contextWindow: '8K tokens',
 		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Qwen family for retrieval and large-document tasks. Small tier prioritizes coding assistance in plugin workflows.'
+		bestFor: ['On-device inference', 'Mobile tasks', 'Free-tier tasks'],
+		notes: 'Free variant of Gemma 3n 4B. Rate-limited.'
 	},
 	{
-		id: 'qwen/qwen-long-ultra',
-		label: 'Qwen / Qwen Long Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Qwen family for retrieval and large-document tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-vision-base',
-		label: 'Qwen / Qwen Vision Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Qwen family for image-aware workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-vision-mini',
-		label: 'Qwen / Qwen Vision Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Qwen family for image-aware workflows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-vision-nano',
-		label: 'Qwen / Qwen Vision Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Qwen family for image-aware workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-vision-pro',
-		label: 'Qwen / Qwen Vision Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Qwen family for image-aware workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'qwen/qwen-vision-small',
-		label: 'Qwen / Qwen Vision Small',
-		contextWindow: '128K tokens',
+		id: 'google/gemma-3n-e2b-it:free',
+		label: 'Google / Gemma 3n 2B (free)',
+		contextWindow: '8K tokens',
 		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Qwen family for image-aware workflows. Small tier prioritizes coding assistance in plugin workflows.'
+		bestFor: ['Edge deployment', 'On-device inference', 'Mobile tasks'],
+		notes: 'Smallest free mobile-optimized Gemma 3n. 2B effective params on 6B architecture. 140+ languages. MatFormer/Mix-and-Match design.'
+	},
+	// ── Gemini 1.5 (Older but still active) ──────────────
+	{
+		id: 'google/gemini-2.0-flash-exp:free',
+		label: 'Google / Gemini 2.0 Flash Exp (free)',
+		contextWindow: '1.05M tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Free-tier multimodal', 'Function calling', 'Agent flows'],
+		notes: 'Free experimental Gemini 2.0 Flash. Strong multimodal and tool-use capabilities at zero cost. Rate-limited.'
+	},
+	// ── Gemma 2 (Legacy open models) ─────────────────────
+	{
+		id: 'google/gemma-2-27b-it',
+		label: 'Google / Gemma 2 27B',
+		contextWindow: '8K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['General tasks', 'Text generation', 'Q&A'],
+		notes: 'Previous-gen open Gemma model. Still capable for general tasks.'
 	},
 	{
-		id: 'qwen/qwen-vision-ultra',
-		label: 'Qwen / Qwen Vision Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Multimodal Qwen family for image-aware workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
+		id: 'google/gemma-2-9b-it',
+		label: 'Google / Gemma 2 9B',
+		contextWindow: '8K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Lightweight tasks', 'Fast responses', 'General chat'],
+		notes: 'Efficient previous-gen Gemma. Good performance-to-cost ratio at $0.03/$0.09 per million tokens.'
 	},
 
-	// ─── X Grok ─────────────────────────────────────────────────────────────────
+	// ─── META LLAMA ───────────────────────────────────────────────────────────────
 	{
-		id: 'x-ai/grok-beta-base',
-		label: 'xAI / Grok Beta Base',
-		contextWindow: '200K tokens',
+		id: 'meta-llama/llama-4-maverick',
+		label: 'Meta Llama / Llama 4 Maverick',
+		contextWindow: '1.05M tokens',
 		maxOutputTokens: '8K tokens',
 		bestFor: [
 			'Balanced quality/speed',
 			'Code and assistant tasks',
 			'Tool-driven agent flows'
 		],
-		notes: 'General Grok family for broad conversational and coding tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
+		notes: 'Meta flagship MoE model. 400B total params, 17B active. Native multimodal (text+image). 1M context. Best overall Llama for coding agents.'
 	},
 	{
-		id: 'x-ai/grok-beta-mini',
-		label: 'xAI / Grok Beta Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General Grok family for broad conversational and coding tasks. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-beta-nano',
-		label: 'xAI / Grok Beta Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General Grok family for broad conversational and coding tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-beta-pro',
-		label: 'xAI / Grok Beta Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General Grok family for broad conversational and coding tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-beta-small',
-		label: 'xAI / Grok Beta Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General Grok family for broad conversational and coding tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-beta-ultra',
-		label: 'xAI / Grok Beta Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'General Grok family for broad conversational and coding tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-code-base',
-		label: 'xAI / Grok Code Base',
-		contextWindow: '200K tokens',
+		id: 'meta-llama/llama-4-scout',
+		label: 'Meta Llama / Llama 4 Scout',
+		contextWindow: '328K tokens',
 		maxOutputTokens: '8K tokens',
 		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Grok family for generation and refactor tasks. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-code-mini',
-		label: 'xAI / Grok Code Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
 			'General chat',
 			'Code and assistant tasks',
 			'Tool-driven agent flows'
 		],
-		notes: 'Code-focused Grok family for generation and refactor tasks. Mini tier prioritizes general chat in plugin workflows.'
+		notes: 'Efficient Llama 4 MoE model. 109B total, 17B active. 10M token context (328K on OpenRouter). Cheap at $0.08/$0.30 per million tokens.'
 	},
+	// ── Llama 3.3 ─────────────────────────────────────────
 	{
-		id: 'x-ai/grok-code-nano',
-		label: 'xAI / Grok Code Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Grok family for generation and refactor tasks. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-code-pro',
-		label: 'xAI / Grok Code Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Grok family for generation and refactor tasks. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-code-small',
-		label: 'xAI / Grok Code Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Grok family for generation and refactor tasks. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-code-ultra',
-		label: 'xAI / Grok Code Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Code-focused Grok family for generation and refactor tasks. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-fast-base',
-		label: 'xAI / Grok Fast Base',
-		contextWindow: '200K tokens',
+		id: 'meta-llama/llama-3.3-70b-instruct',
+		label: 'Meta Llama / Llama 3.3 70B Instruct',
+		contextWindow: '131K tokens',
 		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Latency-optimized Grok family for rapid response interactions. Base tier prioritizes balanced quality/speed in plugin workflows.'
+		bestFor: ['Multilingual tasks', 'Code', 'General assistant'],
+		notes: 'Best Llama 3.x model. Multilingual (EN, DE, FR, IT, PT, HI, ES, TH). Outperforms many closed models on benchmarks. Free tier available.'
 	},
-	{
-		id: 'x-ai/grok-fast-mini',
-		label: 'xAI / Grok Fast Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Latency-optimized Grok family for rapid response interactions. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-fast-nano',
-		label: 'xAI / Grok Fast Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Latency-optimized Grok family for rapid response interactions. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-fast-pro',
-		label: 'xAI / Grok Fast Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Latency-optimized Grok family for rapid response interactions. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-fast-small',
-		label: 'xAI / Grok Fast Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Latency-optimized Grok family for rapid response interactions. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-fast-ultra',
-		label: 'xAI / Grok Fast Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Latency-optimized Grok family for rapid response interactions. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-long-base',
-		label: 'xAI / Grok Long Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Grok family for extensive prompt contexts. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-long-mini',
-		label: 'xAI / Grok Long Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Grok family for extensive prompt contexts. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-long-nano',
-		label: 'xAI / Grok Long Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Grok family for extensive prompt contexts. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-long-pro',
-		label: 'xAI / Grok Long Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Grok family for extensive prompt contexts. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-long-small',
-		label: 'xAI / Grok Long Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Grok family for extensive prompt contexts. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-long-ultra',
-		label: 'xAI / Grok Long Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Long-context Grok family for extensive prompt contexts. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-reasoning-base',
-		label: 'xAI / Grok Reasoning Base',
-		contextWindow: '200K tokens',
-		maxOutputTokens: '8K tokens',
-		bestFor: [
-			'Balanced quality/speed',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Grok family for deeper analytical workflows. Base tier prioritizes balanced quality/speed in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-reasoning-mini',
-		label: 'xAI / Grok Reasoning Mini',
-		contextWindow: '64K tokens',
-		maxOutputTokens: '2K tokens',
-		bestFor: [
-			'General chat',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Grok family for deeper analytical workflows. Mini tier prioritizes general chat in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-reasoning-nano',
-		label: 'xAI / Grok Reasoning Nano',
-		contextWindow: '32K tokens',
-		maxOutputTokens: '1K tokens',
-		bestFor: [
-			'Low-latency requests',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Grok family for deeper analytical workflows. Nano tier prioritizes low-latency requests in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-reasoning-pro',
-		label: 'xAI / Grok Reasoning Pro',
-		contextWindow: '256K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'Complex reasoning',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Grok family for deeper analytical workflows. Pro tier prioritizes complex reasoning in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-reasoning-small',
-		label: 'xAI / Grok Reasoning Small',
-		contextWindow: '128K tokens',
-		maxOutputTokens: '4K tokens',
-		bestFor: [
-			'Coding assistance',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Grok family for deeper analytical workflows. Small tier prioritizes coding assistance in plugin workflows.'
-	},
-	{
-		id: 'x-ai/grok-reasoning-ultra',
-		label: 'xAI / Grok Reasoning Ultra',
-		contextWindow: '512K tokens',
-		maxOutputTokens: '32K tokens',
-		bestFor: [
-			'Long-context tasks',
-			'Code and assistant tasks',
-			'Tool-driven agent flows'
-		],
-		notes: 'Reasoning Grok family for deeper analytical workflows. Ultra tier prioritizes long-context tasks in plugin workflows.'
-	},
-
-	// ─── Meta ─────────────────────────────────────────────────────────────────
 	{
 		id: 'meta-llama/llama-3.3-70b-instruct:free',
-		label: 'Meta / Llama 3.3 70B',
-		contextWindow: '65K tokens',
-		maxOutputTokens: '16K tokens',
-		bestFor: [
-			'General chat',
-			'Tool use',
-			'Multilingual',
-			'Daily development'
-		],
-		notes: 'GPT-4 level performance. Supports EN, DE, FR, IT, PT, HI, ES, TH. Excellent all-rounder.'
+		label: 'Meta Llama / Llama 3.3 70B Instruct (free)',
+		contextWindow: '128K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Free-tier tasks', 'General assistant', 'Code'],
+		notes: 'Free variant of Llama 3.3 70B. Rate-limited. One of the best free models available on OpenRouter.'
+	},
+	{
+		id: 'meta-llama/llama-3.3-8b-instruct',
+		label: 'Meta Llama / Llama 3.3 8B Instruct',
+		contextWindow: '128K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Fast responses', 'Lightweight tasks', 'Low latency'],
+		notes: 'Ultra-fast lightweight variant of Llama 3.3 70B. Best for when response speed is the top priority.'
+	},
+	// ── Llama 3.2 ─────────────────────────────────────────
+	{
+		id: 'meta-llama/llama-3.2-11b-vision-instruct',
+		label: 'Meta Llama / Llama 3.2 11B Vision',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Vision tasks', 'Image reasoning', 'Multimodal chat'],
+		notes: 'Multimodal Llama with image+text input. Good for visual code review or screenshot-based tasks.'
+	},
+	{
+		id: 'meta-llama/llama-3.2-3b-instruct',
+		label: 'Meta Llama / Llama 3.2 3B Instruct',
+		contextWindow: '80K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Lightweight tasks', 'Fast inference', 'Edge deployment'],
+		notes: 'Small but capable multilingual model. Good for quick tasks where latency matters. Free tier available.'
 	},
 	{
 		id: 'meta-llama/llama-3.2-3b-instruct:free',
-		label: 'Meta / Llama 3.2 3B',
+		label: 'Meta Llama / Llama 3.2 3B Instruct (free)',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Free-tier lightweight tasks', 'Fast responses'],
+		notes: 'Free variant of Llama 3.2 3B. Rate-limited.'
+	},
+	// ── Llama 3.1 ─────────────────────────────────────────
+	{
+		id: 'meta-llama/llama-3.1-405b-instruct',
+		label: 'Meta Llama / Llama 3.1 405B Instruct',
 		contextWindow: '131K tokens',
 		maxOutputTokens: '8K tokens',
-		bestFor: ['Simple tasks', 'Fast responses', 'Low-latency use cases'],
-		notes: 'Very small and fast Llama model. Good for lightweight tasks.'
+		bestFor: ['Complex reasoning', 'High-quality code', 'Hard problems'],
+		notes: 'Largest Llama 3.1 model. Comparable to GPT-4o on evaluations. Best open-source quality in the Llama 3.1 family.'
+	},
+	{
+		id: 'meta-llama/llama-3.1-70b-instruct',
+		label: 'Meta Llama / Llama 3.1 70B Instruct',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Dialogue', 'Code tasks', 'General assistant'],
+		notes: 'Solid mid-size Llama 3.1. Good balance of quality and cost at $0.40/$0.40 per million tokens.'
+	},
+	{
+		id: 'meta-llama/llama-3.1-8b-instruct',
+		label: 'Meta Llama / Llama 3.1 8B Instruct',
+		contextWindow: '16K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Fast tasks', 'Low-cost inference', 'Simple coding'],
+		notes: 'Fast and cheap Llama 3.1. Very low cost at $0.02/$0.05 per million tokens. Good for high-volume simple task.'
+	},
+
+	// ─── NVIDIA ───────────────────────────────────────────────────────────────
+	{
+		id: 'nvidia/nemotron-3-super-120b-a12b',
+		label: 'NVIDIA / Nemotron 3 Super 120B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: [
+			'Balanced quality/speed',
+			'Code and assistant tasks',
+			'Tool-driven agent flows'
+		],
+		notes: 'NVIDIA flagship MoE model. 120B total, 12B active. Hybrid Mamba-Transformer. Leading scores on AIME 2025, SWE-Bench, TerminalBench. Free tier available.'
+	},
+	{
+		id: 'nvidia/nemotron-3-nano-30b-a3b',
+		label: 'NVIDIA / Nemotron 3 Nano 30B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: [
+			'General chat',
+			'Code and assistant tasks',
+			'Tool-driven agent flows'
+		],
+		notes: 'Small efficient NVIDIA MoE. 30B total, 3B active. Designed for specialized agentic AI. Very cheap at $0.05/$0.20 per million tokens. Free tier available.'
+	},
+
+	// ── Additional NVIDIA models ─────────────────────────
+	{
+		id: 'nvidia/nemotron-3-super-120b-a12b:free',
+		label: 'NVIDIA / Nemotron 3 Super 120B (free)',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Free-tier agentic tasks', 'Complex reasoning', 'Code'],
+		notes: 'Free variant of Nemotron 3 Super. One of the best free models on OpenRouter. Rate-limited.'
+	},
+	{
+		id: 'nvidia/nemotron-3-nano-30b-a3b:free',
+		label: 'NVIDIA / Nemotron 3 Nano 30B (free)',
+		contextWindow: '256K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Free-tier agentic tasks', 'Lightweight inference'],
+		notes: 'Free variant of Nemotron 3 Nano. Rate-limited.'
+	},
+	{
+		id: 'nvidia/llama-3.3-nemotron-super-49b-v1.5',
+		label: 'NVIDIA / Llama 3.3 Nemotron Super 49B V1.5',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Reasoning', 'Code', 'RAG and tool calling'],
+		notes: 'Derived from Llama 3.3 70B with NAS optimization. Reasoning on/off modes. Strong on MATH500, AIME, LiveCodeBench. Single H100 deployable.'
+	},
+	{
+		id: 'nvidia/nemotron-nano-9b-v2',
+		label: 'NVIDIA / Nemotron Nano 9B V2',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Reasoning tasks', 'Fast inference', 'Low-cost tasks'],
+		notes: 'Unified reasoning+non-reasoning model trained from scratch by NVIDIA. Reasoning trace controllable via system prompt. Very cheap at $0.04/$0.16 per million tokens. Free tier available.'
+	},
+	{
+		id: 'nvidia/nemotron-nano-9b-v2:free',
+		label: 'NVIDIA / Nemotron Nano 9B V2 (free)',
+		contextWindow: '128K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: ['Free-tier reasoning', 'Fast responses'],
+		notes: 'Free variant of Nemotron Nano 9B V2. Rate-limited.'
+	},
+	{
+		id: 'nvidia/nemotron-nano-12b-v2-vl',
+		label: 'NVIDIA / Nemotron Nano 12B VL',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '4K tokens',
+		bestFor: [
+			'Vision tasks',
+			'Document intelligence',
+			'OCR and chart reasoning'
+		],
+		notes: 'Multimodal vision-language model. Hybrid Transformer-Mamba. Strong on OCRBench, ChartQA, DocVQA. Supports video via Efficient Video Sampling. Free tier available.'
+	},
+	{
+		id: 'nvidia/llama-3.1-nemotron-ultra-253b-v1',
+		label: 'NVIDIA / Llama 3.1 Nemotron Ultra 253B',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Advanced reasoning', 'RAG', 'Complex tool calling'],
+		notes: 'Derived from Llama 3.1 405B with NAS. Reasoning on/off via system prompt. Most capable NVIDIA model. Requires 8x H100. $0.60/$1.80 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// QWEN 3.6 (Latest, April 2026)
+	// ════════════════════════════════════════════════════
+	{
+		id: 'qwen/qwen3.6-plus',
+		label: 'Qwen / Qwen3.6 Plus',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Agentic coding', 'Front-end development', 'Complex reasoning'],
+		notes: 'Latest Qwen flagship. 78.8% SWE-bench Verified. Hybrid MoE + linear attention. Major gains over 3.5 series in coding and reasoning. Free tier available. $0.325/$1.95 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3.6-plus-preview',
+		label: 'Qwen / Qwen3.6 Plus Preview',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: [
+			'Agentic coding',
+			'Front-end development',
+			'Complex problem-solving'
+		],
+		notes: 'Preview of next-gen Qwen Plus. Stronger reasoning and agentic behavior than 3.5 series. Note: prompts may be logged for model improvement. Free tier available.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// QWEN 3.5 Series (Feb 2026)
+	// ════════════════════════════════════════════════════
+	{
+		id: 'qwen/qwen3.5-397b-a17b',
+		label: 'Qwen / Qwen3.5 397B A17B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Complex reasoning', 'Code generation', 'Agentic tasks'],
+		notes: 'Largest Qwen3.5. Native vision-language MoE. State-of-the-art across language, reasoning, code, and GUI interaction. $0.39/$2.34 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3.5-122b-a10b',
+		label: 'Qwen / Qwen3.5 122B A10B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Reasoning', 'Vision tasks', 'Code'],
+		notes: 'Second strongest Qwen3.5. Surpasses Qwen3-235B-2507 in text, and Qwen3-VL-235B in vision. $0.26/$2.08 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3.5-27b',
+		label: 'Qwen / Qwen3.5 27B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Fast responses', 'Vision-language tasks', 'Code'],
+		notes: 'Dense Qwen3.5 with linear attention. Performance comparable to 122B-A10B. Fast response times. $0.195/$1.56 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3.5-35b-a3b',
+		label: 'Qwen / Qwen3.5 35B A3B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Efficient inference', 'Vision tasks', 'Code'],
+		notes: 'MoE variant comparable to Qwen3.5-27B. Only 3B active params for high efficiency. $0.1625/$1.30 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3.5-9b',
+		label: 'Qwen / Qwen3.5 9B',
+		contextWindow: '256K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Lightweight tasks', 'Vision reasoning', 'Fast coding'],
+		notes: 'Compact multimodal Qwen3.5. Strong reasoning and visual understanding at very low cost. $0.05/$0.15 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3.5-flash-02-23',
+		label: 'Qwen / Qwen3.5 Flash',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: [
+			'Fast responses',
+			'High-throughput tasks',
+			'Balanced performance'
+		],
+		notes: 'Fast hybrid MoE Qwen3.5. Balances inference speed with strong performance. $0.065/$0.26 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3.5-plus-02-15',
+		label: 'Qwen / Qwen3.5 Plus',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['General tasks', 'Multimodal', 'Code'],
+		notes: 'Hybrid MoE Plus tier. State-of-the-art parity across a wide range of tasks. $0.26/$1.56 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// QWEN3 Coder (Specialized coding models)
+	// ════════════════════════════════════════════════════
+	{
+		id: 'qwen/qwen3-coder',
+		label: 'Qwen / Qwen3 Coder 480B A35B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Agentic coding', 'Function calling', 'Repo-level reasoning'],
+		notes: 'Best open coding model on OpenRouter. 480B total, 35B active. Optimized for tool use, function calling, long-context repo tasks. Free tier available. $0.22/$1.00 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-coder:free',
+		label: 'Qwen / Qwen3 Coder 480B A35B (free)',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Free-tier agentic coding', 'Tool use', 'Repo-level tasks'],
+		notes: 'Free variant of the strongest open coding model. Currently rated #1 free coding model on OpenRouter. Rate-limited.'
+	},
+	{
+		id: 'qwen/qwen3-coder-plus',
+		label: 'Qwen / Qwen3 Coder Plus',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Autonomous programming', 'Tool calling', 'Agent workflows'],
+		notes: 'Alibaba proprietary version of Qwen3 Coder 480B. 1M context. Strong agentic coding with tool calling and environment interaction. $0.65/$3.25 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-coder-flash',
+		label: 'Qwen / Qwen3 Coder Flash',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Fast coding tasks', 'Tool use', 'Cost-efficient agents'],
+		notes: 'Fast, cheap Coder Plus variant. Good for high-volume coding agent tasks. $0.195/$0.975 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-coder-next',
+		label: 'Qwen / Qwen3 Coder Next',
+		contextWindow: '256K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Local agent deployment', 'Long-horizon coding', 'Tool use'],
+		notes: '80B total, 3B active MoE. No thinking mode — clean output ideal for production coding agents. Reliable on long-horizon tasks and tool recovery. $0.15/$0.80 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-coder-30b-a3b-instruct',
+		label: 'Qwen / Qwen3 Coder 30B A3B',
+		contextWindow: '160K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Code generation', 'Function calling', 'Browser use'],
+		notes: '30B MoE coder. 256K native context, extensible to 1M. No thinking mode. Good for OpenAI-compatible tool-use workflows. $0.07/$0.27 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// QWEN3 Reasoning / General (2025)
+	// ════════════════════════════════════════════════════
+	{
+		id: 'qwen/qwen3-max-thinking',
+		label: 'Qwen / Qwen3 Max Thinking',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Deep multi-step reasoning', 'Math', 'Complex agentic tasks'],
+		notes: 'Flagship Qwen3 reasoning model. Deep thinking mode for high-stakes cognitive tasks. Scaled RL for accuracy. $0.78/$3.90 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-max',
+		label: 'Qwen / Qwen3 Max',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Reasoning', 'Math', 'Multilingual RAG and tool calling'],
+		notes: 'Updated Qwen3 Max without thinking mode. Strong across math, coding, logic. Optimized for RAG and tool use. $0.78/$3.90 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-235b-a22b-thinking-2507',
+		label: 'Qwen / Qwen3 235B A22B Thinking',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '81K tokens',
+		bestFor: ['Structured reasoning', 'Math', 'Long-form generation'],
+		notes: 'Open-weight 235B MoE. Thinking-only mode. Top open-source reasoning model. Surpasses many closed models on AIME, LiveCodeBench. $0.13/$0.60 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-next-80b-a3b-instruct',
+		label: 'Qwen / Qwen3 Next 80B A3B Instruct',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['RAG', 'Tool use', 'High-throughput agent workflows'],
+		notes: 'Fast stable instruct model. No thinking traces for cleaner production output. Great for RAG and multi-turn agentic workflows. Free tier available. $0.09/$1.10 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-next-80b-a3b-instruct:free',
+		label: 'Qwen / Qwen3 Next 80B A3B Instruct (free)',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Free-tier agent workflows', 'RAG', 'Code'],
+		notes: 'Free variant of Qwen3 Next 80B. Rate-limited.'
+	},
+	{
+		id: 'qwen/qwen3-next-80b-a3b-thinking',
+		label: 'Qwen / Qwen3 Next 80B A3B Thinking',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Math', 'Code synthesis', 'Logic and agentic planning'],
+		notes: 'Thinking-only mode variant. Designed for hard multi-step problems. Stable under long chains of thought. $0.0975/$0.78 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-30b-a3b-thinking-2507',
+		label: 'Qwen / Qwen3 30B A3B Thinking',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Reasoning', 'Math', 'Competitive problem solving'],
+		notes: 'Compact thinking-mode MoE. Strong on logic, math, science, coding. Good for agentic apps needing structured reasoning at low cost. $0.08/$0.40 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-30b-a3b-instruct-2507',
+		label: 'Qwen / Qwen3 30B A3B Instruct',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Instruction following', 'Multilingual', 'Tool use'],
+		notes: 'Non-thinking instruct mode. Competitive on reasoning, coding, alignment benchmarks. $0.09/$0.30 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen-plus-2025-07-28',
+		label: 'Qwen / Qwen Plus 0728',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Balanced performance', 'General tasks', 'RAG'],
+		notes: 'Qwen3-based hybrid reasoning model. Balanced speed, performance, and cost. 1M context. $0.26/$0.78 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen-plus-2025-07-28:thinking',
+		label: 'Qwen / Qwen Plus 0728 (thinking)',
+		contextWindow: '1M tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: [
+			'Complex reasoning',
+			'Hard coding tasks',
+			'Multi-step planning'
+		],
+		notes: 'Thinking variant of Qwen Plus 0728. Same model with reasoning traces enabled. $0.26/$0.78 per million tokens.'
+	},
+
+	// ════════════════════════════════════════════════════
+	// QWEN3 Vision-Language Models
+	// ════════════════════════════════════════════════════
+	{
+		id: 'qwen/qwen3-vl-235b-a22b-instruct',
+		label: 'Qwen / Qwen3 VL 235B A22B',
+		contextWindow: '262K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Document parsing', 'Visual QA', 'GUI automation'],
+		notes: 'Largest open vision-language model. Strong on OCR, chart/table extraction, video understanding, and visual coding. $0.20/$0.88 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-vl-235b-a22b-thinking',
+		label: 'Qwen / Qwen3 VL 235B A22B Thinking',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Visual reasoning', 'STEM', 'Math over images'],
+		notes: 'Thinking variant of the largest Qwen VL model. Optimized for multimodal reasoning in STEM and math. $0.26/$2.60 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-vl-32b-instruct',
+		label: 'Qwen / Qwen3 VL 32B',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: [
+			'Document intelligence',
+			'Spatial reasoning',
+			'Visual tool use'
+		],
+		notes: '32B vision-language model. Fine-grained spatial reasoning, 32-language OCR, agentic interaction. $0.104/$0.416 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-vl-30b-a3b-instruct',
+		label: 'Qwen / Qwen3 VL 30B A3B',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['GUI automation', 'Visual coding', 'Multimodal agents'],
+		notes: 'MoE vision-language model. GUI automation, video timeline alignment, sketch-to-code. $0.13/$0.52 per million tokens.'
+	},
+	{
+		id: 'qwen/qwen3-vl-8b-instruct',
+		label: 'Qwen / Qwen3 VL 8B',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '8K tokens',
+		bestFor: ['Lightweight vision tasks', 'Document parsing', 'VQA'],
+		notes: 'Small but capable vision-language model. 256K native context, extensible to 1M. 32-language OCR. $0.08/$0.50 per million tokens.'
+	},
+
+	// ─── X Grok ─────────────────────────────────────────────────────────────────
+	// ════════════════════════════════════════════════════
+	// xAI Grok — No free tiers. But insane value on Fast models.
+	// ════════════════════════════════════════════════════
+
+	// ── Grok 4.20 (Latest, March 2026) ───────────────────
+	{
+		id: 'x-ai/grok-4.20',
+		label: 'xAI / Grok 4.20',
+		contextWindow: '2M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Agentic tool calling', 'Coding', 'Precise reasoning'],
+		notes: 'Latest xAI flagship. Lowest hallucination rate, strict prompt adherence. Optional reasoning on/off. 2M context. $2/$6 per million tokens.'
+	},
+	{
+		id: 'x-ai/grok-4.20-multi-agent',
+		label: 'xAI / Grok 4.20 Multi-Agent',
+		contextWindow: '2M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Multi-agent workflows', 'Deep research', 'Parallel tool use'],
+		notes: 'Multi-agent variant of Grok 4.20. Runs 4 agents (low/medium effort) or 16 agents (high/xhigh) in parallel for complex coordinated tasks. $2/$6 per million tokens.'
+	},
+
+	// ── Grok 4.1 (Nov 2025) ──────────────────────────────
+	{
+		id: 'x-ai/grok-4.1-fast',
+		label: 'xAI / Grok 4.1 Fast',
+		contextWindow: '2M tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Agentic tool calling', 'Customer support', 'Deep research'],
+		notes: 'Best agentic tool calling model from xAI. 2M context. Optional reasoning. Cheapest frontier-class model at $0.20/$0.50 per million tokens — undercuts GPT-5 Mini, Gemini Flash, and all Claude models.'
+	},
+
+	// ── Grok 4 (Jul–Sep 2025) ────────────────────────────
+	{
+		id: 'x-ai/grok-4',
+		label: 'xAI / Grok 4',
+		contextWindow: '256K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Deep reasoning', 'Parallel tool calling', 'Multimodal tasks'],
+		notes: 'Reasoning-always model. Parallel tool calling, structured outputs, image+text inputs. Reasoning cannot be disabled. Pricing increases past 128K tokens. $3/$15 per million tokens.'
+	},
+	{
+		id: 'x-ai/grok-4-fast',
+		label: 'xAI / Grok 4 Fast',
+		contextWindow: '2M tokens',
+		maxOutputTokens: '30K tokens',
+		bestFor: ['Cost-efficient multimodal tasks', 'Reasoning', 'Agent flows'],
+		notes: 'SOTA cost-efficiency with 2M context. Optional reasoning on/off. Multimodal. $0.20/$0.50 per million tokens.'
+	},
+
+	// ── Grok Code (Aug 2025) ─────────────────────────────
+	{
+		id: 'x-ai/grok-code-fast-1',
+		label: 'xAI / Grok Code Fast 1',
+		contextWindow: '256K tokens',
+		maxOutputTokens: '32K tokens',
+		bestFor: ['Agentic coding', 'Code workflows', 'Reasoning traces'],
+		notes: 'Specialized coding reasoning model. Reasoning traces visible in response for steerability. Fast and economical. $0.20/$1.50 per million tokens.'
+	},
+
+	// ── Grok 3 (Apr–Jun 2025) ────────────────────────────
+	{
+		id: 'x-ai/grok-3',
+		label: 'xAI / Grok 3',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Data extraction', 'Coding', 'Domain knowledge tasks'],
+		notes: 'Flagship enterprise model. Deep domain knowledge in finance, healthcare, law, science. Strong on GPQA, LCB, MMLU-Pro. $3/$15 per million tokens.'
+	},
+	{
+		id: 'x-ai/grok-3-mini',
+		label: 'xAI / Grok 3 Mini',
+		contextWindow: '131K tokens',
+		maxOutputTokens: '16K tokens',
+		bestFor: ['Logic tasks', 'Math', 'Fast reasoning'],
+		notes: 'Lightweight thinking model. Thinks before responding. Accessible reasoning traces. Great for logic and quantitative tasks. $0.30/$0.50 per million tokens.'
 	},
 
 	// ─── Nous Research ────────────────────────────────────────────────────────

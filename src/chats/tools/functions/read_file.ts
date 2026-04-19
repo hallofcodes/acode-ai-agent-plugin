@@ -6,7 +6,6 @@ export default async function* ({
 	start_line,
 	end_line
 }: ReadFileInfo): AsyncGenerator<ToolsReturnType> {
-
 	// --- SEND SIGNAL TO PANEL THAT FILE IS BEING READ ---
 	const relativePath = getRelativePath(path)
 
@@ -15,12 +14,10 @@ export default async function* ({
 	})
 	const toSave = `<display_ui>${toolCalling}</display_ui>`
 
-	yield { toSave }
-
 	// --- START FILE READ ---
 	const fs = acode.require('fs')
 
-	const exists = await fs(path).exists()
+	const exists = await fs(path)?.exists()
 
 	if (!exists) {
 		throw new Error('File does not exist.')
@@ -35,5 +32,5 @@ export default async function* ({
 		.map((line, index) => `${start_line + index}: ${line}`)
 		.join('\n')
 
-	yield { result }
+	yield { result, toSave }
 }

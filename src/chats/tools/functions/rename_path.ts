@@ -13,7 +13,7 @@ export default async function* ({ path, new_name }: RenameFileInfo) {
 	// --- START FILE READ ---
 	const fs = acode.require('fs')
 
-	const exists = await fs(path).exists()
+	const exists = await fs(path)?.exists()
 
 	if (!exists) {
 		throw new Error('Specified path does not exist.')

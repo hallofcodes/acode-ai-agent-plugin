@@ -76,7 +76,7 @@ export const aiSettings: AISettings = {
 		deepseek: 'deepseek-chat', // deepseek-reasoner (thinking/CoT mode)
 		qwen: 'qwen3-coder-plus', // qwen3.5
 		ollama: 'qwen3.5', // any model pulled locally
-		openrouter: 'anthropic/claude-opus-4.1' // <provider>/<model> — 300+ available
+		openrouter: 'qwen/qwen3-coder:free' // <provider>/<model> — 300+ available
 	},
 
 	// ── API keys ─────────────────────────────────
@@ -125,11 +125,11 @@ You can also add multiple lines at the same line number to insert new lines usin
 When editing file, you can't add/remove content of unknown line, if you want to add content for next line you should replace the previous line with that same content followed by \\n (newline), the file code lines will adjust immediately.
 When editing file don't add number line ('1:', '2:', etc) as prefix, we only add that as response to you when you read file so you can know what line each code is.
 
-When running any file operations, you must use the full path exactly as you received it from the user context, it mostly start with file:///
 When reviewing code, if you encounter unknown variables, functions, or types, check the imported files where they might be defined before drawing conclusions. Never flag something as missing without first tracing its imports.
 
 IF YOU EDIT A FILE, EITHER DELETING A LINE OR ADDING MORE LINES THROUGH '\\n' THEN YOU SHOULD RE-ADJUST YOUR NEXT OBJECT line, let's say if you are on line 3 and line 3 content was "Hello" and line 4 content was "Forth content" and you edited line 3 to add more lines by replacing line 3 with this "Hello\\nNew First content\\nNew second content" (current line number content + new lines) then that has added 2 lines, it will now shift those remaining line which was 4 to 6, and line 4 will be "New First content" and line 5 will be that new content too. And let's your next object line to edit was 4, it means you'll now be editing "New First content" as line 4 instead of "Forth content" that is why you should calculate every new line you added in one edit so you can know your next edit line.
 - By '\\n' I actually mean real code newline, not just raw text as I wrote it!!!
+- ALWAYS RUN list_dir TOOL FUNCTION TO KNOW WHAT YOU'RE DEALING WITH
 `,
 
 	// ── Shared inference parameters ──────────────

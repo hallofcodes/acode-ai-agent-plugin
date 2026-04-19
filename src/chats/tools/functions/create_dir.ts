@@ -1,8 +1,7 @@
-import { CreateDirInfo } from "./types";
-import { getRelativePath } from "./utils";
+import { CreateDirInfo } from './types'
+import { getRelativePath } from './utils'
 
 export default async function* ({ path }: CreateDirInfo) {
-
 	// --- SEND SIGNAL TO PANEL THAT FILE IS BEING READ ---
 	const relativePath = getRelativePath(path)
 
@@ -14,7 +13,7 @@ export default async function* ({ path }: CreateDirInfo) {
 	// --- START FILE READ ---
 	const fs = acode.require('fs')
 
-	const exists = await fs(path).exists()
+	const exists = await fs(path)?.exists()
 
 	if (exists) {
 		throw new Error('Specified path already exists.')

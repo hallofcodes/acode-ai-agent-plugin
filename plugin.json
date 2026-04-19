@@ -1,13 +1,20 @@
 {
 	"$schema": "https://acode.app/schema/plugin/v0.1.0.json",
-	"id": "hallofcodes.rutex.ai_agent",
-	"name": "Rutex AI Agent",
+	"id": "hallofcodes.rutex.coding_agent",
+	"name": "RutexAI Coding Agent",
 	"main": "dist/main.js",
 	"version": "0.0.1",
 	"readme": "./readme.md",
 	"repository": "https://github.com/hallofcodes/acode-ai-agent-plugin",
 	"icon": "icon.svg",
-	"keywords": ["ai", "ai agent", "agentic code", "copilot", "rutex"],
+	"keywords": [
+		"ai",
+		"ai agent",
+		"coding agent",
+		"agentic code",
+		"copilot",
+		"rutex"
+	],
 	"files": [],
 	"permissions": [],
 	"license": "MIT",

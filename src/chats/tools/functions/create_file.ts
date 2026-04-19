@@ -13,7 +13,7 @@ export default async function* ({ path, content = '' }: CreateFileInfo) {
 	// --- START FILE READ ---
 	const fs = acode.require('fs')
 
-	const exists = await fs(path).exists()
+	const exists = await fs(path)?.exists()
 
 	if (exists) {
 		throw new Error('Specified path already exists.')
@@ -22,7 +22,7 @@ export default async function* ({ path, content = '' }: CreateFileInfo) {
 	const dirPath = path.substring(0, path.lastIndexOf('/'))
 	const filename = path.substring(path.lastIndexOf('/') + 1)
 
-	const dirExists = await fs(dirPath).exists()
+	const dirExists = await fs(dirPath)?.exists()
 
 	if (!dirExists) throw new Error('Directory path does not exist.')
 

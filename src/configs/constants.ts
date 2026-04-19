@@ -1,4 +1,4 @@
-export const PLUGIN_ID = 'hallofcodes.rutex.ai_agent'
+export const PLUGIN_ID = 'hallofcodes.rutex.coding_agent'
 export const AI_SETTINGS_STORAGE_KEY = 'rutex_settings'
 export const CHAT_HISTORY_KEYS = 'rutex_chat_history_keys'
 export const LAST_ACTIVE_CHAT_HISTORY_KEY = 'rutex_chat_history_last_active'

@@ -11,6 +11,11 @@ Rutex is a high-performance, autonomous AI agent plugin built specifically for t
 -  **💻 Terminal Integration**: Bridges the gap between the editor and the shell for seamless build and deployment workflows.
 -  **⚡ Context-Aware**: Maintains deep project context to handle complex refactoring and multi-file updates.
 
+### 📸 Screenshots
+
+![Rutex Interface 1](https://raw.githubusercontent.com/dconco/acode-ai-agent-plugin/main/screenshots/1.png)
+![Rutex Interface 2](https://raw.githubusercontent.com/dconco/acode-ai-agent-plugin/main/screenshots/2.png)
+
 ### 🔌 Supported Providers
 
 Rutex currently supports the following AI providers, with more coming soon:

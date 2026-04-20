@@ -151,7 +151,9 @@ export default async function* ({
 
 		const toolCalling = JSON.stringify({
 			path: relativePath,
-			editedFileHistoryId: id
+			editedFileHistoryId: id,
+			totalAdded,
+			totalRemoved,
 		} as DisplayToolsCallUsed)
 
 		const toSave = `<display_ui>${toolCalling}</display_ui>`

@@ -204,7 +204,9 @@ export const renderMarkdown = async (raw: string): Promise<string> => {
 
 export const renderEditedFileLines = (
 	lines: OldEditedFileLines[],
-	editedFilePath: string
+	editedFilePath: string,
+	totalAdded: number,
+	totalRemoved: number
 ): string => {
 	// Normalize upfront so grouping/range detection is deterministic.
 	lines.sort((a, b) => a.line - b.line)
@@ -314,7 +316,7 @@ export const renderEditedFileLines = (
 		'<div class="code-block edited-lines-block">',
 		`<div class="code-header edited-h"><span class="code-lang edited">EDITED: ${escapeHtml(
 			editedFilePath
-		)}</span></div>`,
+		)} +${totalAdded} -${totalRemoved}</span></div>`,
 		`<div class="code-body edited-lines-body">${rows.join('')}</div>`,
 		'</div>'
 	].join('')

@@ -32,6 +32,7 @@
 		"@openrouter/sdk": "^0.12.2",
 		"highlight.js": "^11.11.1",
 		"openai": "^6.34.0",
-		"path-browserify": "^1.0.1"
+		"path-browserify": "^1.0.1",
+		"zod": "^4.3.6"
 	}
 }

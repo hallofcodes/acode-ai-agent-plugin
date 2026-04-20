@@ -69,4 +69,9 @@ export type ToolsFunction = (
 
 export type DisplayToolsCallUsed =
 	| { header: string }
-	| { path: string; editedFileHistoryId: string }
+	| {
+		path: string
+		editedFileHistoryId: string
+		totalAdded: number
+		totalRemoved: number
+	}

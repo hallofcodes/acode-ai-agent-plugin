@@ -23,13 +23,15 @@ export default async function* (
 	let fullText = ''
 	let chunk: any = null
 
+	const chat_messages = [...messages]
+
 	while (true) {
 		const body = JSON.stringify({
 			model,
 			stream: true,
 			messages: [
 				{ role: 'system', content: aiSettings.systemInstruction },
-				...messages.map(m => ({
+				...chat_messages.map(m => ({
 					role: m.role,
 					content: m.content,
 					tool_calls: m.tool_calls,
@@ -122,7 +124,7 @@ export default async function* (
 		}
 
 		if (toolCalls.length) {
-			messages.push({
+			chat_messages.push({
 				role: 'assistant',
 				content: fullText,
 				tool_calls: toolCalls
@@ -149,7 +151,7 @@ export default async function* (
 					}
 
 					if (toolChunk.result) {
-						messages.push({
+						chat_messages.push({
 							role: 'tool',
 							tool_name: call.function.name,
 							content: toolChunk.result || '[NO RESULT]'
@@ -162,7 +164,7 @@ export default async function* (
 				const errorMessage = e instanceof Error ? e.message : 'Unknown error'
 				clg(errorMessage)
 
-				messages.push({
+				chat_messages.push({
 					role: 'tool',
 					tool_name: call.function.name,
 					content: '[ERROR] ' + errorMessage

@@ -68,7 +68,7 @@ async function convertToolCallsToHTML(
 		if (!result.length) return { html: '' }
 
 		return {
-			html: renderEditedFileLines(result[0]?.content ?? [], command.path)
+			html: renderEditedFileLines(result[0]?.content ?? [], command.path, command.totalAdded, command.totalRemoved),
 		}
 	}
 

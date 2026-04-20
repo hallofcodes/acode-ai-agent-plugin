@@ -682,7 +682,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		inputEl.focus()
 	})
 
-	initializeEditedFilesDialogEvents()
+	initializeEditedFilesDialogEvents(doc.document)
 	settingsContainer(container)
 	resize()
 	updateCount()

@@ -32,9 +32,7 @@ export default async function* ({ uri, content = '' }: CreateFileInfo) {
 
 	acode.newEditorFile(filename, { render: true, uri })
 
-
-	const rPath = getRelativePath(uri, false)
-	currentEdittedFiles[rPath] ??= {
+	currentEdittedFiles[uri] ??= {
 		type: 'created',
 		totalAdded: content.split('\n').length,
 		totalRemoved: 0,

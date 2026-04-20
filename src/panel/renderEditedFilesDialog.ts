@@ -71,12 +71,12 @@ export function openEditedFilesDialog() {
 		})
 
 		rejectBtn?.addEventListener('click', async () => {
-         if (fileInfo.type === 'created') {
-            const fs = acode.require('fs')
-            await fs(filePath)?.delete()
-            acceptBtn?.click()
-            return
-         }
+			if (fileInfo.type === 'created') {
+				const fs = acode.require('fs')
+				await fs(filePath)?.delete()
+				acceptBtn?.click()
+				return
+			}
 
 			const editedFileHistoryIds =
 				currentEdittedFiles[filePath].editedHistoryIds
@@ -90,7 +90,7 @@ export function openEditedFilesDialog() {
 				revertEditedLines(record?.content ?? [], record.filePath)
 			}
 
-         acceptBtn?.click()
+			acceptBtn?.click()
 		})
 
 		filesList.appendChild(item)
@@ -107,9 +107,9 @@ export function closeEditedFilesDialog() {
 	filesList.innerHTML = ''
 }
 
-export function initializeEditedFilesDialogEvents() {
-	const acceptAllBtn = doc.document.getElementById('accept-all-btn')
-	const rejectAllBtn = doc.document.getElementById('reject-all-btn')
+export function initializeEditedFilesDialogEvents(doc: Document) {
+	const acceptAllBtn = doc.getElementById('accept-all-btn')
+	const rejectAllBtn = doc.getElementById('reject-all-btn')
 
 	acceptAllBtn?.addEventListener('click', () => {
 		const allAcceptBtns = doc.document.querySelectorAll(
@@ -131,5 +131,5 @@ function revertEditedLines(history: OldEditedFileLines[], file: string) {
 	// --- Filter and remove edits we can't revert ---
 	const reversedHistory = history.reverse().filter(entry => entry.revertable)
 	clg('REVERT NOT YET IMPLEMENTED: CHECK THE HISTORY')
-   clg('Revert history', reversedHistory)
+	clg('Revert history', reversedHistory)
 }

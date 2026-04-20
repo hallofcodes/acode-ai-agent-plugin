@@ -27,6 +27,7 @@ import {
 import { processSingleToolCallTag } from './panel/commandParser'
 import { getWorkspaceFolders, getActiveFiles } from './helpers/workspace'
 import { OldEditedFileLines } from './chats/tools/functions/types'
+import { initializeEditedFilesDialogEvents } from './panel/renderEditedFilesDialog'
 
 declare global {
 	interface Window {
@@ -682,6 +683,7 @@ const renderPanel = (container: HTMLElement): (() => void) => {
 		inputEl.focus()
 	})
 
+	initializeEditedFilesDialogEvents()
 	settingsContainer(container)
 	resize()
 	updateCount()

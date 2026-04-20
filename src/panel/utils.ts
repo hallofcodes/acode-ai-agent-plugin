@@ -11,7 +11,7 @@ export const escapeHtml = (
 	let content = pre.innerHTML
 
 	if (includeNL)
-		content = content.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>')
+		content = content?.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>')
 	return content
 }
 

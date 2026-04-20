@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const jszip = require('jszip')
 
-const iconFile = path.join(__dirname, '../icon.svg')
+const iconFile = path.join(__dirname, '../icon.png')
 const pluginJSON = path.join(__dirname, '../plugin.json')
 const distFolder = path.join(__dirname, '../dist')
 let readmeDotMd = path.join(__dirname, '../readme.md')
@@ -15,7 +15,7 @@ if (!fs.existsSync(readmeDotMd)) {
 
 const zip = new jszip()
 
-zip.file('icon.svg', fs.readFileSync(iconFile))
+zip.file('icon.png', fs.readFileSync(iconFile))
 zip.file('plugin.json', fs.readFileSync(pluginJSON))
 zip.file('readme.md', fs.readFileSync(readmeDotMd))
 
@@ -38,7 +38,7 @@ function loadFile(root, folder) {
 			return
 		}
 
-		if (!/LICENSE.txt/.test(file)) {
+		if (!/LICENSE/.test(file)) {
 			zip.file(
 				path.join(root, file),
 				fs.readFileSync(path.join(folder, file))

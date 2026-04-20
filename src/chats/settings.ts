@@ -135,7 +135,7 @@ Note: Ignore <display_old_task_ui> tags in history; these are UI-only and not pa
 
 	// ── Shared inference parameters ──────────────
 	temperature: 0.7, // 0-1
-	maxTokens: 2048,
+	maxTokens: 8064,
 
 	// ── Ollama-only ───────────────────────────────
 	ollamaHost: 'https://ollama.com',

@@ -129,12 +129,12 @@ export default async function* ({
 			const session = openFile.session
 
 			// Get the last row index
-			const lastRow = session.getLength() - 1
+			const lastRow = session?.getLength() - 1
 			// Get the character count of the last line
-			const lastColumn = session.getLine(lastRow).length
+			const lastColumn = session?.getLine(lastRow).length
 
 			// Replace everything from start to the actual end
-			session.replace(
+			session?.replace(
 				{
 					start: { row: 0, column: 0 },
 					end: { row: lastRow, column: lastColumn }
@@ -155,7 +155,7 @@ export default async function* ({
 			path: relativePath,
 			editedFileHistoryId: id,
 			totalAdded,
-			totalRemoved,
+			totalRemoved
 		} as DisplayToolsCallUsed)
 
 		const toSave = `<display_old_task_ui>${toolCalling}</display_old_task_ui>`

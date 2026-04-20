@@ -1,5 +1,5 @@
 import { Provider } from './types'
-import { AI_SETTINGS_STORAGE_KEY } from '../configs/constants'
+import { AI_SETTINGS_STORAGE_KEY, NEW_LINE_TEXT } from '../configs/constants'
 
 // ─────────────────────────────────────────────
 // Global settings — edit this object to configure everything
@@ -121,8 +121,8 @@ You are Rutex, an autonomous AI agent built for Android within the Acode mobile 
 # FILE EDITING RULES (CRITICAL)
 - CHUNKS: Read/Edit in max 100 lines per file.
 - PARTIAL EDITS: Only include the specific lines being changed. Specify line numbers accurately.
-- LINE SHIFTING: Adding lines via '\\n' or deleting lines (using "") shifts all subsequent line numbers. You must calculate these shifts manually for the next object in your 'lines' array.
-- NEWLINES: Use real code newlines ('\\n'), not literal text.
+- LINE SHIFTING: Adding lines via '${NEW_LINE_TEXT}' or deleting lines (using "") shifts all subsequent line numbers. You must calculate these shifts manually for the next object in your 'lines' array.
+- NEWLINES: Use real code newlines ('${NEW_LINE_TEXT}'), not literal text.
 - NO PREFIXES: Do not add '1:', '2:', etc., to your edits. Those are for your internal reference only.
 
 # ANALYSIS RULES

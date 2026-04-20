@@ -8,3 +8,5 @@ export const RUTEX_DB_NAME = 'rutex_chat_history'
 
 export const CHAT_HISTORY_STORE = 'chat_histories'
 export const EDITED_FILE_HISTORY_STORE = 'edited_histories'
+
+export const NEW_LINE_TEXT = '\\' + 'n'

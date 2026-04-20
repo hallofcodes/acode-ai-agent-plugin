@@ -3,6 +3,7 @@ import { aiSettings } from '../settings'
 import { ToolsFunction } from '../tools/functions/types'
 import { tools as ollamaTools } from '../tools/ollama_tools'
 import { Usage, StreamChunk, ChatMessage } from '../types'
+import { OutputFunctionCallItem } from '@openrouter/sdk/esm/models'
 
 // ─────────────────────────────────────────────
 // OpenRouter  (official @openrouter/sdk)
@@ -27,49 +28,129 @@ export default async function* (
 			content: m.content
 		}))
 
-	chat_messages.unshift({
-		role: 'system',
-		content: aiSettings.systemInstruction
-	})
-
 	const responseTools = ollamaTools.map(tool => ({
 		type: 'function' as const,
-		function: {
-			name: tool.function.name,
-			description: tool.function.description,
-			parameters: tool.function.parameters,
-			strict: null
-		}
+		name: tool.function.name,
+		description: tool.function.description,
+		parameters: tool.function.parameters,
 	}))
 
 	let fullText = ''
 	let resolvedModel = model
-	let toolCalls
 	let usage: Usage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 }
 
 	while (true) {
 		if (signal?.aborted) break
 
-		const response = await client.chat.send(
+		// Map of call_id → accumulated partial tool call
+		const pendingToolCalls: Record<string, OutputFunctionCallItem> = {}
+
+		const response = await client.beta.responses.send(
 			{
-				chatRequest: {
+				responsesRequest: {
 					model,
 					temperature: aiSettings.temperature,
-					maxCompletionTokens: aiSettings.maxTokens,
+					maxOutputTokens: aiSettings.maxTokens,
 					parallelToolCalls: true,
 					tools: responseTools,
-					stream: true,
 					toolChoice: 'auto',
-					messages: chat_messages
+					input: chat_messages,
+					instructions: aiSettings.systemInstruction,
+					stream: true
 				},
 			},
 			{ signal }
 		)
 
 		for await (const chunk of response) {
-			// Full type information for streaming responses
-			const content = chunk.choices[0]?.delta?.content;
+			if (signal?.aborted) break
+
+			switch (chunk.type) {
+				case 'response.output_text.delta':
+
+					fullText += chunk.delta
+					yield { type: 'text', delta: chunk.delta, model: resolvedModel }
+					break
+
+				// A new output item started — capture id and call_id for function_calls
+				case 'response.output_item.added':
+					const item = chunk.item
+
+					if (item.type === 'function_call' && item.id) {
+						pendingToolCalls[item.id] = item
+					}
+					break
+
+				case 'response.function_call_arguments.done':
+
+					if (pendingToolCalls[chunk.itemId] ?? null) {
+						pendingToolCalls[chunk.itemId].arguments = chunk.arguments
+					}
+					break
+
+				case 'response.completed':
+					// chunk.response.usage has token counts
+					usage.inputTokens += chunk.response.usage?.inputTokens ?? 0,
+					usage.outputTokens += chunk.response.usage?.outputTokens ?? 0,
+					usage.totalTokens += chunk.response.usage?.totalTokens ?? 0,
+
+					// chunk.response.model has the resolved model name
+					resolvedModel = chunk.response.model || model
+					break
+			}
 		}
+
+
+		// No tool calls → we're done
+		if (Object.entries(pendingToolCalls).length === 0) break
+
+		// Push all function_call items into history (assistant's side)
+		for (const tcId in pendingToolCalls) {
+			const tc = pendingToolCalls[tcId]
+
+			chat_messages.push(tc)
+
+			try {
+				const toolFunction: ToolsFunction = (
+					await require(`../tools/functions/${tc.name}`)
+				).default
+
+				const args = safeJson(tc.arguments)
+				const chunkedResult = toolFunction(args)
+
+				for await (const toolChunk of chunkedResult) {
+					if (toolChunk.toSave) {
+						yield {
+							type: 'tool',
+							delta: toolChunk.toSave,
+							model: resolvedModel
+						}
+					}
+
+					if (toolChunk.result) {
+						chat_messages.push({
+							type: 'function_call_output',
+							id: tc.callId,
+							callId: tc.callId,
+							output: toolChunk.result,
+						})
+
+						break
+					}
+				}
+			} catch (e: any) {
+				const errorMessage = e instanceof Error ? e.message : 'Unknown error'
+				clg(errorMessage)
+
+				chat_messages.push({
+					type: 'function_call_output',
+					id: tc.callId,
+					callId: tc.callId,
+					output: '[ERROR] ' + errorMessage
+				})
+			}
+		}
+
 	}
 
 
@@ -82,26 +163,12 @@ export default async function* (
 	}
 }
 
-function getResponseText(response: any): string {
-	if (response?.outputText) return response.outputText
-	if (response?.output_text) return response.output_text
-	if (!Array.isArray(response?.output)) return ''
 
-	let text = ''
-
-	
-
-	return text
-}
-
-function safeJsonParse(raw: string): Record<string, any> {
+function safeJson(text: string) {
 	try {
-		return JSON.parse(raw)
+		const output = JSON.parse(text)
+		return output
 	} catch {
 		return {}
 	}
-}
-
-function createFunctionOutputId(callId?: string): string {
-	return `fco_${callId ?? 'unknown'}_${Date.now()}`
 }

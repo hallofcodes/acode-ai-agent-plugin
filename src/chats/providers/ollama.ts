@@ -123,13 +123,11 @@ export default async function* (
 			break
 		}
 
-		if (toolCalls.length) {
-			chat_messages.push({
-				role: 'assistant',
-				content: fullText,
-				tool_calls: toolCalls
-			})
-		}
+		chat_messages.push({
+			role: 'assistant',
+			content: fullText,
+			tool_calls: toolCalls
+		})
 
 		for (const call of toolCalls) {
 			if (!call.function.name) continue

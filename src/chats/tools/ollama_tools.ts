@@ -1,3 +1,5 @@
+import { NEW_LINE_TEXT } from "../../configs/constants";
+
 export const tools = [
 	{
 		type: 'function',
@@ -68,7 +70,7 @@ export const tools = [
 								text: {
 									type: 'string',
 									description:
-										'The new text for the line, empty string would delete this line, using \\n would insert a new line after this line, both deleting line & insertion of new line would readjust the target file lines as we all know, so the next object line value in the lines array should depend on how the current edit was made. when just only replacing the current line, then nothing will get adjusted'
+										`The new text for the line, empty string would delete this line, using ${NEW_LINE_TEXT} would insert a new line after this line, both deleting line & insertion of new line would readjust the target file lines as we all know, so the next object line value in the lines array should depend on how the current edit was made. when just only replacing the current line, then nothing will get adjusted`
 								}
 							}
 						},

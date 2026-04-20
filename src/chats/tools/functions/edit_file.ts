@@ -66,19 +66,22 @@ export default async function* ({
 			// --- Requested line is always starting from 1 but array index starts from 0 ---
 			const targetLine = line - 1
 
-			const buildOldContentLines = {
-				line,
-				text: contentLines[targetLine],
-				isAdded: false,
-				revertable: true
-			}
-			newLines.push(buildOldContentLines)
+			// --- Mark as removed only if the line content has changed ---
+			if (contentLines[targetLine].trimEnd() !== text.trimEnd()) {
+				const buildOldContentLines = {
+					line,
+					text: contentLines[targetLine],
+					isAdded: false,
+					revertable: true
+				}
+				newLines.push(buildOldContentLines)
 
-			if (text === '') {
 				// delete, so only one line object shows which is removed line
 				totalRemoved++
 				currentEdittedFiles[rPath].totalRemoved++
+			}
 
+			if (text === '') {
 				// Because we sorted descending, deleting this line
 				// doesn't shift the indices of the lines we still need to process.
 				contentLines.splice(targetLine, 1)

@@ -884,6 +884,28 @@
 	.edited-line.removed .edited-line-prefix {
 		color: var(--danger);
 	}
+	.edited-line-separator {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		margin: 3px 0;
+		padding: 0 6px;
+		color: var(--text-dim);
+		font-family: var(--mono);
+		font-size: 10px;
+		line-height: 1.4;
+		opacity: 0.9;
+	}
+	.edited-line-separator::before,
+	.edited-line-separator::after {
+		content: '';
+		height: 1px;
+		flex: 1;
+		background: color-mix(in srgb, var(--text-dim) 45%, transparent);
+	}
+	.edited-line-separator > span {
+		white-space: nowrap;
+	}
 
 	/* ── Message Actions ──────────────────────────── */
 	.msg-actions {

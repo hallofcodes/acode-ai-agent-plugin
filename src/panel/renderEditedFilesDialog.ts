@@ -25,9 +25,8 @@ export function openEditedFilesDialog() {
 			const addedSpan = fileOption.querySelector('.edited-file-added')
 			const removedSpan = fileOption.querySelector('.edited-file-removed')
 
-			if (addedSpan) addedSpan.textContent = String(fileInfo.totalAdded)
-			if (removedSpan)
-				removedSpan.textContent = String(fileInfo.totalRemoved)
+			if (addedSpan) addedSpan.textContent = `+${fileInfo.totalAdded}`
+			if (removedSpan) removedSpan.textContent = `-${fileInfo.totalRemoved}`
 
 			continue
 		}

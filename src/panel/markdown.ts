@@ -208,6 +208,11 @@ export const renderEditedFileLines = (
 	totalAdded: number,
 	totalRemoved: number
 ): string => {
+	// Rendering strategy:
+	// 1) group all edits by line number
+	// 2) split unique line numbers into consecutive blocks
+	// 3) render each block, and insert a separator when a block gap exists
+	// Example: edits on 1..4 and 8 will produce an "Lines 5-7 omitted" separator.
 	// Normalize upfront so grouping/range detection is deterministic.
 	lines.sort((a, b) => a.line - b.line)
 
@@ -221,7 +226,7 @@ export const renderEditedFileLines = (
 
 	const uniqueLines = [...groups.keys()].sort((a, b) => a - b)
 
-	// First, split into consecutive ranges (e.g. 1-4, 8-10).
+	// Split unique line numbers into consecutive ranges (e.g. 1-4, 8-10).
 	const blocks: Array<{ startLine: number; endLine: number; lines: number[] }> = []
 	for (let i = 0; i < uniqueLines.length; ) {
 		const blockStartIndex = i
@@ -274,7 +279,8 @@ export const renderEditedFileLines = (
 	for (let blockIndex = 0; blockIndex < blocks.length; blockIndex++) {
 		const block = blocks[blockIndex]
 
-		// Insert a demarcation row whenever there is a gap between blocks.
+		// Insert a demarcation row whenever there is a non-consecutive gap.
+		// This is the visual divider between ranges like 1-4 and 8.
 		if (blockIndex > 0) {
 			const prev = blocks[blockIndex - 1]
 			if (block.startLine > prev.endLine + 1) {

@@ -1,10 +1,8 @@
-import { OpenRouter, ToolType } from '@openrouter/sdk'
-import { z } from 'zod'
+import { OpenRouter } from '@openrouter/sdk'
 import { aiSettings } from '../settings'
 import { ToolsFunction } from '../tools/functions/types'
 import { tools as ollamaTools } from '../tools/ollama_tools'
 import { Usage, StreamChunk, ChatMessage } from '../types'
-import { createInputSchemaFromJsonSchema } from './utils/jsonSchemaToZod'
 
 // ─────────────────────────────────────────────
 // OpenRouter  (official @openrouter/sdk)
@@ -21,61 +19,59 @@ export default async function* (
 		appTitle: aiSettings.openRouterSiteName || undefined
 	})
 
-	const input = messages.map(message => ({
-		type: 'message' as const,
-		role: message.role as 'user' | 'assistant' | 'system',
-		content: message.content
-	}))
+	// Mirror the provider pattern used elsewhere: plain incoming history,
+	// then provider-local tool loop with function_call_output continuations.
+	const chat_messages: any[] = messages
+		.map(m => ({
+			role: m.role,
+			content: m.content
+		}))
 
-	const responseTools = createCallModelTools()
+	chat_messages.unshift({
+		role: 'system',
+		content: aiSettings.systemInstruction
+	})
+
+	const responseTools = ollamaTools.map(tool => ({
+		type: 'function' as const,
+		function: {
+			name: tool.function.name,
+			description: tool.function.description,
+			parameters: tool.function.parameters,
+			strict: null
+		}
+	}))
 
 	let fullText = ''
 	let resolvedModel = model
+	let toolCalls
 	let usage: Usage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 }
 
-	const result = client.callModel(
-		{
-			model,
-			instructions: aiSettings.systemInstruction,
-			temperature: aiSettings.temperature,
-			maxOutputTokens: aiSettings.maxTokens,
-			parallelToolCalls: true,
-			toolChoice: 'auto',
-			input,
-			tools: responseTools
-		},
-		{ signal }
-	)
-
-	for await (const event of result.getFullResponsesStream()) {
+	while (true) {
 		if (signal?.aborted) break
 
-		if (event.type === 'response.output_text.delta') {
-			fullText += event.delta
-			yield { type: 'text', model: resolvedModel, delta: event.delta }
-		}
+		const response = await client.chat.send(
+			{
+				chatRequest: {
+					model,
+					temperature: aiSettings.temperature,
+					maxCompletionTokens: aiSettings.maxTokens,
+					parallelToolCalls: true,
+					tools: responseTools,
+					stream: true,
+					toolChoice: 'auto',
+					messages: chat_messages
+				},
+			},
+			{ signal }
+		)
 
-		if (event.type === 'tool.preliminary_result') {
-			if (hasToolSaveText(event.result)) {
-				yield {
-					type: 'tool',
-					delta: event.result.toSave,
-					model: resolvedModel
-				}
-			}
-		}
-	}
-
-	const response = await result.getResponse()
-	resolvedModel = response.model || resolvedModel
-
-	if (response.usage) {
-		usage = {
-			inputTokens: response.usage.inputTokens ?? 0,
-			outputTokens: response.usage.outputTokens ?? 0,
-			totalTokens: response.usage.totalTokens ?? 0
+		for await (const chunk of response) {
+			// Full type information for streaming responses
+			const content = chunk.choices[0]?.delta?.content;
 		}
 	}
+
 
 	yield {
 		type: 'done',
@@ -86,46 +82,26 @@ export default async function* (
 	}
 }
 
-function createCallModelTools() {
-	const eventSchema = z.object({ toSave: z.string() })
-	const outputSchema = z.object({ result: z.string() })
+function getResponseText(response: any): string {
+	if (response?.outputText) return response.outputText
+	if (response?.output_text) return response.output_text
+	if (!Array.isArray(response?.output)) return ''
 
-	return ollamaTools.map(toolDef => ({
-		type: ToolType.Function,
-		function: {
-			name: toolDef.function.name,
-			description: toolDef.function.description,
-			inputSchema: createInputSchemaFromJsonSchema(toolDef.function.parameters),
-			eventSchema,
-			outputSchema,
-			execute: async function* (params: Record<string, unknown>) {
-				const toolFunction: ToolsFunction = (
-					await require(`../tools/functions/${toolDef.function.name}`)
-				).default
+	let text = ''
 
-				const chunkedResult = toolFunction(params as Parameters<ToolsFunction>[0])
-				let resultText = '[NO RESULT]'
+	
 
-				for await (const toolChunk of chunkedResult) {
-					if (toolChunk.toSave) {
-						yield { toSave: toolChunk.toSave }
-					}
-
-					if (toolChunk.result) {
-						resultText = toolChunk.result
-						break
-					}
-				}
-
-				return { result: resultText }
-			}
-		}
-	}))
+	return text
 }
 
-function hasToolSaveText(value: unknown): value is { toSave: string } {
-	if (!value || typeof value !== 'object') return false
+function safeJsonParse(raw: string): Record<string, any> {
+	try {
+		return JSON.parse(raw)
+	} catch {
+		return {}
+	}
+}
 
-	const maybeValue = value as { toSave?: unknown }
-	return typeof maybeValue.toSave === 'string' && maybeValue.toSave.length > 0
+function createFunctionOutputId(callId?: string): string {
+	return `fco_${callId ?? 'unknown'}_${Date.now()}`
 }

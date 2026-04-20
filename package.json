@@ -1,6 +1,6 @@
 {
 	"name": "rutex_coding_agent",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "An autonomous AI agent plugin for Acode that enables LLMs to directly read, create, and refactor files, while executing terminal commands through a secure agentic loop—bringing desktop-class AI automation to Android.",
 	"main": "dist/main.js",
 	"repository": "https://github.com/dconco/phpspa-highlighter-plugin.git",

@@ -112,17 +112,17 @@ export function initializeEditedFilesDialogEvents(doc: Document) {
 	const rejectAllBtn = doc.getElementById('reject-all-btn')
 
 	acceptAllBtn?.addEventListener('click', () => {
-		const allAcceptBtns = doc.document.querySelectorAll(
+		const allAcceptBtns = doc.querySelectorAll(
 			'.edited-file-option .edited-file-action.accept'
-		)
-		allAcceptBtns.forEach(btn => (btn as HTMLButtonElement).click())
+		) as NodeListOf<HTMLButtonElement>
+		allAcceptBtns.forEach((btn: HTMLButtonElement) => btn.click())
 	})
 
 	rejectAllBtn?.addEventListener('click', () => {
-		const allRejectBtns = doc.document.querySelectorAll(
+		const allRejectBtns = doc.querySelectorAll(
 			'.edited-file-option .edited-file-action.reject'
-		)
-		allRejectBtns.forEach(btn => (btn as HTMLButtonElement).click())
+		) as NodeListOf<HTMLButtonElement>
+		allRejectBtns.forEach((btn: HTMLButtonElement) => btn.click())
 	})
 }
 

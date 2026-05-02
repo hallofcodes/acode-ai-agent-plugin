@@ -27,7 +27,6 @@ import {
 import { processSingleToolCallTag } from './panel/commandParser'
 import { getWorkspaceFolders, getActiveFiles } from './helpers/workspace'
 import { OldEditedFileLines } from './chats/tools/functions/types'
-import { initializeEditedFilesDialogEvents } from './panel/renderEditedFilesDialog'
 
 declare global {
 	interface Window {
@@ -695,7 +694,6 @@ After editing any files you should re-read them to make sure there's no error in
 		inputEl.focus()
 	})
 
-	initializeEditedFilesDialogEvents(doc.document)
 	settingsContainer(container)
 	resize()
 	updateCount()

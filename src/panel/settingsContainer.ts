@@ -65,6 +65,14 @@ export const settingsContainer = (container: HTMLElement) => {
 		container,
 		'#setting-model-openai-btn'
 	)
+	const customModelOpenaiInput = getElement<HTMLInputElement>(
+		container,
+		'#setting-custom-model-openai'
+	)
+	const openAIHostInput = getElement<HTMLInputElement>(
+		container,
+		'#setting-openai-host'
+	)
 	const modelDeepSeekTrigger = getElement<HTMLButtonElement>(
 		container,
 		'#setting-model-deepseek-btn'
@@ -201,17 +209,17 @@ export const settingsContainer = (container: HTMLElement) => {
 			.join('')
 
 		infoEl.innerHTML = `
-<div><strong>Model ID:</strong> ${escapeHtml(modelMeta.id)}</div>
-<div><strong>Context:</strong> ${escapeHtml(modelMeta.contextWindow)}</div>
-<div><strong>Max output:</strong> ${escapeHtml(modelMeta.maxOutputTokens)}</div>
-<div><strong>Best for:</strong></div>
-<ul>${bestFor}</ul>
-${
-	modelMeta.notes
-		? `<div><strong>Notes:</strong> ${escapeHtml(modelMeta.notes)}</div>`
-		: ''
-}
-`
+         <div><strong>Model ID:</strong> ${escapeHtml(modelMeta.id)}</div>
+         <div><strong>Context:</strong> ${escapeHtml(modelMeta.contextWindow)}</div>
+         <div><strong>Max output:</strong> ${escapeHtml(modelMeta.maxOutputTokens)}</div>
+         <div><strong>Best for:</strong></div>
+         <ul>${bestFor}</ul>
+         ${
+         	modelMeta.notes
+         		? `<div><strong>Notes:</strong> ${escapeHtml(modelMeta.notes)}</div>`
+         		: ''
+         }
+      `
 	}
 
 	const refreshSettingsUI = (): void => {
@@ -223,6 +231,8 @@ ${
 			'openai',
 			aiSettings.models.openai
 		)
+		openAIHostInput.value = aiSettings.openaiHost
+		customModelOpenaiInput.value = aiSettings.models.openai
 		modelDeepSeekTrigger.textContent = getModelLabel(
 			'deepseek',
 			aiSettings.models.deepseek
@@ -297,6 +307,10 @@ ${
 			option.addEventListener('click', () => {
 				if (!modelMenuProvider) return
 				aiSettings.models[modelMenuProvider] = model.id
+
+				if (modelMenuProvider == 'openai')
+					customModelOpenaiInput.value = model.id
+
 				persistSettings()
 				closeModelMenu()
 			})
@@ -401,6 +415,17 @@ ${
 	})
 
 	modelSearchInput.addEventListener('input', renderModelMenuOptions)
+
+	customModelOpenaiInput.addEventListener('change', () => {
+		aiSettings.models.openai =
+			customModelOpenaiInput.value.trim() || aiSettings.models.openai
+		persistSettings()
+	})
+
+	openAIHostInput.addEventListener('change', () => {
+		aiSettings.openaiHost = openAIHostInput.value.trim()
+		persistSettings()
+	})
 
 	modelOllamaInput.addEventListener('change', () => {
 		aiSettings.models.ollama =

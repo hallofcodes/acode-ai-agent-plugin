@@ -15,10 +15,15 @@ export default async function* (
 	messages: ChatMessage[],
 	signal?: AbortSignal
 ): AsyncGenerator<StreamChunk> {
-	const client = new OpenAI({
+	const config: any = {
 		apiKey: aiSettings.apiKeys.openai,
 		dangerouslyAllowBrowser: true
-	})
+	}
+
+	if (String(aiSettings.openaiHost).length > 0)
+		config['baseURL'] = aiSettings.openaiHost
+
+	const client = new OpenAI(config)
 
 	// Keep incoming history plain; tool state is built only inside this loop.
 	const input: any[] = messages
@@ -46,7 +51,7 @@ export default async function* (
 				instructions: aiSettings.systemInstruction,
 				temperature: aiSettings.temperature,
 				max_output_tokens: aiSettings.maxTokens,
-				parallel_tool_calls: false,
+				parallel_tool_calls: true,
 				tool_choice: 'auto',
 				tools: openaiTools,
 				input
@@ -78,7 +83,7 @@ export default async function* (
 		const toolCalls = Array.isArray(response?.output)
 			? response.output.filter(
 					(item: any) => item?.type === 'function_call' && item?.name
-			  )
+				)
 			: []
 
 		if (!toolCalls.length) break

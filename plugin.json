@@ -3,7 +3,7 @@
 	"id": "hallofcodes.rutex.coding_agent",
 	"name": "RutexAI Coding Agent",
 	"main": "dist/main.js",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"readme": "./readme.md",
 	"repository": "https://github.com/hallofcodes/acode-ai-agent-plugin",
 	"icon": "icon.png",

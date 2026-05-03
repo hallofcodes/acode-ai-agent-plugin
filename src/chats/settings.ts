@@ -33,6 +33,9 @@ export interface AISettings {
 	temperature: number // 0-1
 	maxTokens: number
 
+	// ── OpenAI-only ───────────────────────────────
+	openaiHost: string
+
 	// ── Ollama-only ───────────────────────────────
 	ollamaHost: string
 
@@ -52,6 +55,7 @@ type PersistedAISettings = Partial<
 		| 'providers'
 		| 'temperature'
 		| 'maxTokens'
+		| 'openaiHost'
 		| 'ollamaHost'
 		| 'openRouterSiteUrl'
 		| 'openRouterSiteName'
@@ -119,7 +123,7 @@ You are Rutex, an autonomous AI agent built for Android within the Acode mobile 
 - BIT-FOR-BIT COPY: Copy the URI exactly as it appears in the USER CONTEXT provided in the prompt.
 
 # FILE EDITING RULES (CRITICAL)
-- CHUNKS: Read/Edit in max 100 lines per file.
+- CHUNKS: Read/Edit in max 100 lines per file. And after each edit always read the file again to be sure you made the right edit!
 - PARTIAL EDITS: Only include the specific lines being changed. Specify line numbers accurately.
 - LINE SHIFTING: Adding lines via '${NEW_LINE_TEXT}' or deleting lines (using "") shifts all subsequent line numbers. You must calculate these shifts manually for the next object in your 'lines' array.
 - NEWLINES: Use real code newlines ('${NEW_LINE_TEXT}'), not literal text.
@@ -141,6 +145,9 @@ Note: Ignore <system_injected_preview> tags in history; these are UI-only and no
 	// ── Ollama-only ───────────────────────────────
 	ollamaHost: 'https://ollama.com',
 
+	// ── OpenAI-only ───────────────────────────────
+	openaiHost: '',
+
 	// ── OpenRouter-only (optional attribution) ────
 	openRouterSiteUrl: '',
 	openRouterSiteName: '',
@@ -156,6 +163,7 @@ export const saveAiSettingsToLocalStorage = (): void => {
 		temperature: aiSettings.temperature,
 		maxTokens: aiSettings.maxTokens,
 		ollamaHost: aiSettings.ollamaHost,
+		openaiHost: aiSettings.openaiHost,
 		openRouterSiteUrl: aiSettings.openRouterSiteUrl,
 		openRouterSiteName: aiSettings.openRouterSiteName,
 		lifetimeTokensUsed: aiSettings.lifetimeTokensUsed
@@ -184,6 +192,9 @@ export const loadAiSettingsFromLocalStorage = (): void => {
 
 		if (typeof parsed.ollamaHost === 'string') {
 			aiSettings.ollamaHost = parsed.ollamaHost.trim()
+		}
+		if (typeof parsed.openaiHost === 'string') {
+			aiSettings.openaiHost = parsed.openaiHost.trim()
 		}
 		if (typeof parsed.openRouterSiteUrl === 'string') {
 			aiSettings.openRouterSiteUrl = parsed.openRouterSiteUrl.trim()

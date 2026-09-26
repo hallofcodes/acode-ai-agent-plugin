@@ -77,7 +77,7 @@ export default async function* (
 		const seenToolCallIds = new Set()
 
 		try {
-			while (signal?.aborted === false) {
+			while (!signal?.aborted) {
 				const { done, value } = await reader.read()
 				if (done && signal?.aborted) break
 				pending += done

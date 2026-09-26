@@ -25,7 +25,7 @@ export default async function* (
 
 	const chat_messages = [...messages]
 
-	while (true) {
+	while (!signal?.aborted) {
 		const body = JSON.stringify({
 			model,
 			stream: true,
@@ -79,7 +79,7 @@ export default async function* (
 		try {
 			while (!signal?.aborted) {
 				const { done, value } = await reader.read()
-				if (done && signal?.aborted) break
+				if (signal?.aborted) break
 				pending += done
 					? decoder.decode()
 					: decoder.decode(value, { stream: true })
@@ -87,6 +87,7 @@ export default async function* (
 				pending = done ? '' : lines.pop()!
 
 				for (const line of lines.filter(Boolean)) {
+					if (signal?.aborted) break
 					try {
 						chunk = JSON.parse(line)
 
@@ -121,7 +122,7 @@ export default async function* (
 
 		// --- Handle any tool calls at the end of the stream ---
 
-		if (!toolCalls.length) {
+		if (signal?.aborted || !toolCalls.length) {
 			break
 		}
 
@@ -132,22 +133,26 @@ export default async function* (
 		})
 
 		for (const call of toolCalls) {
+			if (signal?.aborted) break
 			if (!call.function.name) continue
 
 			try {
 				const toolFunction: ToolsFunction = (
 					await require(`../tools/functions/${call.function.name}`)
 				).default
+				if (signal?.aborted) break
 
 				const chunkedResult = toolFunction(call.function.arguments)
 
 				for await (const toolChunk of chunkedResult) {
+					if (signal?.aborted) break
 					if (toolChunk.toSave) {
 						yield {
 							type: 'tool',
 							delta: toolChunk.toSave,
 							model: chunk?.model ?? model
 						}
+						if (signal?.aborted) break
 					}
 
 					if (toolChunk.result) {

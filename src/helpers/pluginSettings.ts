@@ -12,12 +12,17 @@ type UpdateFn = (
 
 // Typed getter
 export function getPluginSettings(): Partial<PluginSettings> {
-	const settings = acode.require('settings')
-	return (
-		((settings.value as unknown as Record<string, unknown>)[
-			PLUGIN_ID
-		] as Partial<PluginSettings>) ?? {}
-	)
+	if (typeof acode === 'undefined' || !acode?.require) return {}
+	try {
+		const settings = acode.require('settings')
+		return (
+			((settings?.value as unknown as Record<string, unknown>)?.[
+				PLUGIN_ID
+			] as Partial<PluginSettings>) ?? {}
+		)
+	} catch {
+		return {}
+	}
 }
 
 // Typed setter — mutates + persists
@@ -25,20 +30,29 @@ export async function setPluginSetting<K extends keyof PluginSettings>(
 	key: K,
 	value: PluginSettings[K]
 ): Promise<void> {
-	const settings = acode.require('settings')
-	const current = getPluginSettings()
-	const updated = { ...current, [key]: value }
+	if (typeof acode === 'undefined' || !acode?.require) return
+	try {
+		const settings = acode.require('settings')
+		const current = getPluginSettings()
+		const updated = { ...current, [key]: value }
 
-	// Mutate in-memory
-	;(settings.value as unknown as Record<string, unknown>)[PLUGIN_ID] = updated
+		// Mutate in-memory
+		if (settings?.value) {
+			;(settings.value as unknown as Record<string, unknown>)[PLUGIN_ID] = updated
+		}
 
-	// Persist — double cast to bypass ISettings type mismatch
-	// Third arg `save: true` is what actually writes to disk
-	await (settings.update as unknown as UpdateFn)(
-		{ [PLUGIN_ID]: updated } as Partial<Acode.ISettings>,
-		false, // no toast
-		true // save to disk
-	)
+		// Persist — double cast to bypass ISettings type mismatch
+		// Third arg `save: true` is what actually writes to disk
+		if (settings?.update) {
+			await (settings.update as unknown as UpdateFn)(
+				{ [PLUGIN_ID]: updated } as Partial<Acode.ISettings>,
+				false, // no toast
+				true // save to disk
+			)
+		}
+	} catch {
+		// Ignore if acode settings API is unavailable
+	}
 }
 
 // Load all saved keys into aiSettings on plugin init

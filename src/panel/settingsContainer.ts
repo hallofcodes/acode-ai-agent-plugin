@@ -4,6 +4,7 @@ import {
 	formatTokenNumber,
 	saveAiSettingsToLocalStorage
 } from '../chats/settings'
+import { setPluginSetting } from '../helpers/pluginSettings'
 import { Provider } from '../chats/types'
 import { ProviderModelMeta } from '../chats/models/types'
 
@@ -134,6 +135,16 @@ export const settingsContainer = (container: HTMLElement) => {
 		'#setting-openrouter-site-name'
 	)
 
+	const apiKeyInputs: Record<Provider, HTMLInputElement | null> = {
+		openai: container.querySelector<HTMLInputElement>('#setting-apikey-openai'),
+		deepseek: container.querySelector<HTMLInputElement>('#setting-apikey-deepseek'),
+		claude: container.querySelector<HTMLInputElement>('#setting-apikey-claude'),
+		gemini: container.querySelector<HTMLInputElement>('#setting-apikey-gemini'),
+		qwen: container.querySelector<HTMLInputElement>('#setting-apikey-qwen'),
+		ollama: container.querySelector<HTMLInputElement>('#setting-apikey-ollama'),
+		openrouter: container.querySelector<HTMLInputElement>('#setting-apikey-openrouter')
+	}
+
 	const modelTriggers: Record<DropdownProvider, HTMLButtonElement> = {
 		openai: modelOpenAITrigger,
 		deepseek: modelDeepSeekTrigger,
@@ -263,6 +274,12 @@ export const settingsContainer = (container: HTMLElement) => {
 		ollamaHostInput.value = aiSettings.ollamaHost
 		openRouterSiteUrlInput.value = aiSettings.openRouterSiteUrl
 		openRouterSiteNameInput.value = aiSettings.openRouterSiteName
+		for (const p of Object.keys(apiKeyInputs) as Provider[]) {
+			const input = apiKeyInputs[p]
+			if (input) {
+				input.value = aiSettings.apiKeys[p] || ''
+			}
+		}
 		lifetimeTokensEl.textContent = formatTokenNumber(
 			aiSettings.lifetimeTokensUsed
 		)
@@ -445,6 +462,18 @@ export const settingsContainer = (container: HTMLElement) => {
 		aiSettings.openRouterSiteName = openRouterSiteNameInput.value.trim()
 		persistSettings()
 	})
+
+	for (const p of Object.keys(apiKeyInputs) as Provider[]) {
+		const input = apiKeyInputs[p]
+		if (input) {
+			input.addEventListener('change', () => {
+				const val = input.value.trim()
+				aiSettings.apiKeys[p] = val
+				void setPluginSetting(p, val)
+				persistSettings()
+			})
+		}
+	}
 
 	doc.document.addEventListener('click', event => {
 		if (

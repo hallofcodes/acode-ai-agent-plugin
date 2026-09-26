@@ -73,6 +73,7 @@ export default async function* (
 
 		const decoder = new TextDecoder()
 		let pending = ''
+		let currentTurnText = ''
 		const toolCalls: any[] = []
 		const seenToolCallIds = new Set()
 
@@ -93,6 +94,7 @@ export default async function* (
 
 						if (chunk.message?.content) {
 							fullText += chunk.message.content
+							currentTurnText += chunk.message.content
 							yield {
 								type: 'text',
 								delta: chunk.message.content,
@@ -121,6 +123,23 @@ export default async function* (
 		}
 
 		// --- Handle any tool calls at the end of the stream ---
+
+		if (!toolCalls.length && !signal?.aborted) {
+			const registeredTools = new Set(
+				(tools || []).map((t: any) => t?.function?.name).filter(Boolean)
+			)
+			const fallbackCalls = extractFallbackToolCalls(
+				currentTurnText,
+				registeredTools
+			)
+			for (const fallback of fallbackCalls) {
+				const id = fallback.id ?? JSON.stringify(fallback)
+				if (!seenToolCallIds.has(id)) {
+					seenToolCallIds.add(id)
+					toolCalls.push(fallback)
+				}
+			}
+		}
 
 		if (signal?.aborted || !toolCalls.length) {
 			break
@@ -190,3 +209,105 @@ export default async function* (
 		}
 	}
 }
+
+function extractFallbackToolCalls(
+	text: string,
+	registeredTools: Set<string>
+): any[] {
+	if (!text || typeof text !== 'string' || registeredTools.size === 0) return []
+
+	const found: any[] = []
+
+	const tryAdd = (obj: any): boolean => {
+		if (!obj || typeof obj !== 'object') return false
+		if (Array.isArray(obj)) {
+			let anyAdded = false
+			for (const item of obj) {
+				if (tryAdd(item)) anyAdded = true
+			}
+			return anyAdded
+		}
+
+		let name = ''
+		let args: any = {}
+
+		if (typeof obj.name === 'string' && registeredTools.has(obj.name)) {
+			name = obj.name
+			args = obj.arguments ?? {}
+		} else if (
+			typeof obj.function?.name === 'string' &&
+			registeredTools.has(obj.function.name)
+		) {
+			name = obj.function.name
+			args = obj.function.arguments ?? {}
+		}
+
+		if (name) {
+			if (typeof args === 'string') {
+				try {
+					args = JSON.parse(args)
+				} catch {
+					args = {}
+				}
+			}
+			found.push({
+				id: `fallback_${name}_${found.length}`,
+				type: 'function',
+				function: {
+					name,
+					arguments: args && typeof args === 'object' ? args : {}
+				}
+			})
+			return true
+		}
+		return false
+	}
+
+	const trimmed = text.trim()
+
+	// 1. Try parsing whole text as JSON
+	if (
+		(trimmed.startsWith('{') && trimmed.endsWith('}')) ||
+		(trimmed.startsWith('[') && trimmed.endsWith(']'))
+	) {
+		try {
+			if (tryAdd(JSON.parse(trimmed))) return found
+		} catch {}
+	}
+
+	// 2. Try parsing markdown code blocks: ```(?:json)? ... ```
+	const codeBlockRegex = /```(?:json)?\s*([\s\S]*?)\s*```/gi
+	let match: RegExpExecArray | null
+	while ((match = codeBlockRegex.exec(text)) !== null) {
+		const blockContent = match[1].trim()
+		try {
+			if (tryAdd(JSON.parse(blockContent))) return found
+		} catch {}
+	}
+
+	// 3. Scan for JSON object candidates with balanced braces containing "name"
+	let startIndex = -1
+	let braceCount = 0
+	for (let i = 0; i < text.length; i++) {
+		if (text[i] === '{') {
+			if (braceCount === 0) startIndex = i
+			braceCount++
+		} else if (text[i] === '}') {
+			if (braceCount > 0) {
+				braceCount--
+				if (braceCount === 0 && startIndex !== -1) {
+					const candidate = text.slice(startIndex, i + 1)
+					if (candidate.includes('"name"')) {
+						try {
+							tryAdd(JSON.parse(candidate))
+						} catch {}
+					}
+					startIndex = -1
+				}
+			}
+		}
+	}
+
+	return found
+}
+

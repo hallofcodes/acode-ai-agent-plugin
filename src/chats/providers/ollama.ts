@@ -72,20 +72,21 @@ export default async function* (
 		if (!reader) throw new Error('No response body from Ollama')
 
 		const decoder = new TextDecoder()
+		let pending = ''
 		const toolCalls: any[] = []
 		const seenToolCallIds = new Set()
 
 		try {
-			while (signal?.aborted === false) {
+			while (!signal?.aborted) {
 				const { done, value } = await reader.read()
-				if (done || signal?.aborted) break
+				if (signal?.aborted) break
+				pending += done
+					? decoder.decode()
+					: decoder.decode(value, { stream: true })
+				const lines = pending.split('\n')
+				pending = done ? '' : lines.pop()!
 
-				const lines = decoder
-					.decode(value, { stream: true })
-					.split('\n')
-					.filter(Boolean)
-
-				for (const line of lines) {
+				for (const line of lines.filter(Boolean)) {
 					if (signal?.aborted) break
 					try {
 						chunk = JSON.parse(line)
@@ -110,9 +111,10 @@ export default async function* (
 							}
 						}
 					} catch {
-						// incomplete JSON line, skip
+						// Ignore malformed records, including an incomplete final record.
 					}
 				}
+				if (done) break
 			}
 		} finally {
 			reader.releaseLock()

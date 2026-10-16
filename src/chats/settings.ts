@@ -53,6 +53,7 @@ type PersistedAISettings = Partial<
 		| 'provider'
 		| 'models'
 		| 'providers'
+		| 'apiKeys'
 		| 'temperature'
 		| 'maxTokens'
 		| 'openaiHost'
@@ -143,7 +144,7 @@ Note: Ignore <system_injected_preview> tags in history; these are UI-only and no
 	maxTokens: 8064,
 
 	// ── Ollama-only ───────────────────────────────
-	ollamaHost: 'https://ollama.com',
+	ollamaHost: 'http://127.0.0.1:11434',
 
 	// ── OpenAI-only ───────────────────────────────
 	openaiHost: '',
@@ -160,6 +161,7 @@ export const saveAiSettingsToLocalStorage = (): void => {
 	const persistable: PersistedAISettings = {
 		provider: aiSettings.provider,
 		models: { ...aiSettings.models },
+		apiKeys: { ...aiSettings.apiKeys },
 		temperature: aiSettings.temperature,
 		maxTokens: aiSettings.maxTokens,
 		ollamaHost: aiSettings.ollamaHost,
@@ -180,7 +182,15 @@ export const loadAiSettingsFromLocalStorage = (): void => {
 
 		if (typeof parsed.provider === 'string')
 			aiSettings.provider = parsed.provider as Provider
-		if (typeof parsed.models === 'object') aiSettings.models = parsed.models
+		if (typeof parsed.models === 'object' && parsed.models)
+			aiSettings.models = parsed.models
+		if (typeof parsed.apiKeys === 'object' && parsed.apiKeys) {
+			for (const [k, v] of Object.entries(parsed.apiKeys)) {
+				if (typeof v === 'string') {
+					aiSettings.apiKeys[k as Provider] = v
+				}
+			}
+		}
 
 		const temperature = toFiniteNumber(parsed.temperature)
 		if (temperature !== null)

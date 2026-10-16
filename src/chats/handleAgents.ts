@@ -49,13 +49,20 @@ export async function* sendChat(
 	const { provider } = aiSettings
 	const model = aiSettings.models[provider]
 
+	if (provider !== 'ollama' && !aiSettings.apiKeys[provider]?.trim()) {
+		const label = aiSettings.providers[provider] || provider
+		throw new Error(
+			`API key is missing for ${label}. Please configure your API key in Settings.`
+		)
+	}
+
 	let StreamModel: StreamFunction
 
 	try {
 		StreamModel = (await require(`./providers/${provider}`)).default
 	} catch {
 		clg(`Unknown provider: "${provider}"`)
-		throw new Error()
+		throw new Error(`Unknown provider: "${provider}"`)
 	}
 
 	yield* StreamModel(model, messages, signal)

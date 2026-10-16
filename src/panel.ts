@@ -575,10 +575,28 @@ After editing any files you should re-read them to make sure there's no error in
 			completeMessage = completeMessage.trim()
 
 			if (!liveContent) liveContent = initializeLiveResponse()
-			if (liveContent)
-				liveContent.innerHTML += `<div class="error">${escapeHtml(
+			if (liveContent) {
+				const errorMsg =
 					e.message || String(e || 'There was an unknown error')
-				)}</div>`
+				const isMissingKey = errorMsg.toLowerCase().includes('api key')
+				liveContent.innerHTML += `<div class="error">${escapeHtml(
+					errorMsg
+				)}${
+					isMissingKey
+						? ' <button class="act-btn error-settings-btn" type="button" style="margin-left: 8px; display: inline-flex; align-items: center; cursor: pointer; padding: 2px 8px; border-radius: 4px;">Settings</button>'
+						: ''
+				}</div>`
+
+				if (isMissingKey) {
+					liveContent
+						.querySelector('.error-settings-btn')
+						?.addEventListener('click', () => {
+							container
+								.querySelector<HTMLButtonElement>('#settings-btn')
+								?.click()
+						})
+				}
+			}
 		} finally {
 			if (liveContent) {
 				const actionBtns = createEl('div')

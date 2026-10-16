@@ -22,7 +22,8 @@
 	"scripts": {
 		"build": "webpack",
 		"build-release": "webpack --mode production",
-		"start-dev": "node .vscode/start-dev"
+		"start-dev": "node .vscode/start-dev",
+		"test": "node --test tests/*.test.cjs"
 	},
 	"browserslist": "cover 100%,not android < 5",
 	"dependencies": {

@@ -1,0 +1,3 @@
+allowBuilds:
+  '@openrouter/sdk': true
+  protobufjs: true

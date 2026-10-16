@@ -3,7 +3,7 @@
 	"id": "hallofcodes.rutex.coding_agent",
 	"name": "RutexAI Coding Agent",
 	"main": "dist/main.js",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"readme": "./readme.md",
 	"repository": "https://github.com/hallofcodes/acode-ai-agent-plugin",
 	"icon": "icon.png",
@@ -25,6 +25,16 @@
 		"github": "dconco"
 	},
 	"contributors": [
+		{
+			"name": "Jatin Pandey",
+			"role": "contributor",
+			"github": "satiricalguru"
+		},
+		{
+			"name": "Marko Marić",
+			"role": "contributor",
+			"github": "mmaric27"
+		},
 		{
 			"name": "Dev Olly",
 			"role": "contributor",
